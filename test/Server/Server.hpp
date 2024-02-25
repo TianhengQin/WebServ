@@ -1,13 +1,13 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <sys/socket.h>
-#include <unistd.h>
-#include <cstdlib>
-#include <string>
-#include <arpa/inet.h>
-#include <iostream>
-#include <sstream>
+# include <sys/socket.h>
+# include <unistd.h>
+# include <cstdlib>
+# include <string>
+# include <arpa/inet.h>
+# include <iostream>
+# include <sstream>
 
 #define BF_SIZE 4096
 
