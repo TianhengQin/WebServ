@@ -6,6 +6,8 @@
 # include <fstream>
 # include <string>
 # include <map>
+# include <sstream>
+
 
 class Parser {
 private:
