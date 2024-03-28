@@ -52,7 +52,7 @@ void TcpServer::beginListen() {
             return;
         }
         bf[rcvByte] = 0;
-        std::cout << "received: "<< bf << std::endl;
+        std::cout << "received: \n"<< bf << std::endl;
         sendRe();
         close(_new_socket);
     }
