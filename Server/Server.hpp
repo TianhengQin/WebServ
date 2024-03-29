@@ -8,9 +8,13 @@ class Server {
 public:
 
     Server();
+    Server(Server const &sv);
+    Server &operator=(Server const &sv);
     ~Server();
 
     void setup();
+
+    int getFd();
 
 private:
 

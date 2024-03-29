@@ -7,30 +7,31 @@ class WebServ {
 
 public:
 
-    WebServ(Config &f);
+    WebServ(Config &conf);
     ~WebServ();
 
     void run();
 
 private:
 
-    void initFds();
     void addFd(int fd, char rs);
     void rmFd(int fd, char rs);
 
-    void connect();
-    void disconnect();
+    void connect(int fd);
+    void disconnect(int fd);
 
-    void receive();
-    void send();
+    void receive(int fd);
+    void send(int fd);
+
+    void recvCgi();
+    void sendCgi();
 
     std::map<int, Server> _servers;
     std::map<int, Connection> _connections;
 
     fd_set _recvFds;
     fd_set _sendFds;
-    int _fd_max;
-    int _fd_min;
+    int _fdMax;
 
 };
 

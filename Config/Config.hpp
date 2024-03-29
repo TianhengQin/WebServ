@@ -10,6 +10,8 @@ public:
     Config();
     ~Config();
 
+    std::vector<Server> &getServs();
+
 private:
 
     std::vector<Server> _servs;

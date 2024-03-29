@@ -1,6 +1,6 @@
 #include "Log.hpp"
 
-void Log::print(int level, std::string &msg) {
+void Log::print(int level, std::string const &msg) {
 
     if (level < logLevel) {
         return;
@@ -12,6 +12,6 @@ void Log::print(int level, std::string &msg) {
     } else if (level == WARNING) {
         std::cerr << "  ![WARNING] " << msg << std::endl;
     } else if (level == ERROR) {
-        std::cerr << "!!![ERROR]   " << msg << std::endl;
+        std::cerr << "!!![ERROR]!! " << msg << std::endl;
     }
 }

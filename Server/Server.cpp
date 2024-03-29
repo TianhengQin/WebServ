@@ -41,7 +41,6 @@ void Server::initErrorPages() {
     _errorPage[302] = "";
     _errorPage[400] = "";
     _errorPage[401] = "";
-    _errorPage[402] = "";
     _errorPage[403] = "";
     _errorPage[404] = "";
     _errorPage[405] = "";
@@ -51,15 +50,19 @@ void Server::initErrorPages() {
     _errorPage[502] = "";
     _errorPage[503] = "";
     _errorPage[505] = "";
-    _errorPage[505] = "";
 }
 
-
+int Server::getFd() {
+    return _listenFd;
+}
 
 void Server::setup() {
 
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
-
+    if (_listenFd > FD_SETSIZE) {
+        Log::print(WARNING, "Maximum number of fds reached");
+        throw std::out_of_range("Max Fd Num");
+    }
     int option_value = 1;
     setsockopt(_listenFd, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(int));
     _socketAddr.sin_family = AF_INET;
