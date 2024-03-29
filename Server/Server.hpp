@@ -10,17 +10,23 @@ public:
     Server();
     ~Server();
 
+    void setup();
+
 private:
+
+    void initErrorPages();
 
     std::string _servName;
     std::string _root;
     std::string _index;
 
     struct sockaddr_in _socketAddr;
-    unsigned int _socketAddr_len;
+    unsigned int _socketAddrLen;
     unsigned int _host;
     unsigned short _port;
     unsigned int _cliMaxBody;
+
+    int _listenFd;
 
     std::map<int, std::string> _errorPage;
 

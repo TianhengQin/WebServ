@@ -87,8 +87,12 @@ int main(int argc, char *argv[])
                     s = read(pfds[j].fd, buf, sizeof(buf));
                     if (s == -1)
                         errExit("read");
-                    printf("    read %zd bytes: %.*s\n",
-                            s, (int) s, buf);
+                    printf("    read %zd bytes: %.*s\n", s, (int) s, buf);
+                    if (s == 0) {
+                        if (close(pfds[j].fd) == -1)
+                            errExit("close");
+                        num_open_fds--;
+                    }
                 } else {                /* POLLERR | POLLHUP */
                     printf("    closing fd %d\n", pfds[j].fd);
                     if (close(pfds[j].fd) == -1)

@@ -22,4 +22,6 @@
 # include "Request/Request.hpp"
 # include "Config/Config.hpp"
 
+# include "Log/Log.hpp"
+
 #endif
