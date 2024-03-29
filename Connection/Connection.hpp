@@ -9,6 +9,8 @@ public:
 
 private:
 
+    MimeType _mime;
+
     Request _quest;
     Response _sponse;
 

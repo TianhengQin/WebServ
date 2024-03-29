@@ -23,7 +23,7 @@ private:
     std::string _port;
     std::string _cookie;
 
-    MimeType _mime;
+    std::vector<std::string> _accept;
 
 };
 

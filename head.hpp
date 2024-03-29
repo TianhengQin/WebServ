@@ -22,6 +22,7 @@
 # include "Request/Request.hpp"
 # include "Config/Config.hpp"
 # include "MimeType/MimeType.hpp"
+# include "Cgi/Cgi.hpp"
 # include "Log/Log.hpp"
 
 # define SELECT_TIMEOUT 1
