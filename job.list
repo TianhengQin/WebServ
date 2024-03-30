@@ -4,7 +4,7 @@
     - port and host []
     - server name []
     - Limit client body size []
-    - location [T]
+    - location []
         - accepted methods
         - redirection
         - root
@@ -13,7 +13,7 @@
     - status codes
     - GET, POST, DELETE, PUT
 - request
-    - parser []
+    - parser [T]
 - Connection [Q]
     - same host:port
 
