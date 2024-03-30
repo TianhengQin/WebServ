@@ -63,10 +63,16 @@ void Server::setup() {
         Log::print(WARNING, "Maximum number of fds reached");
         throw std::out_of_range("Max Fd Num");
     }
-    int option_value = 1;
-    setsockopt(_listenFd, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(int));
+    int opt = 1;
+    if (setsockopt(_listenFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
+        Log::print(ERROR, "Set socket address reuse failed");
+        throw std::runtime_error("Set Address Reuse Failed");
+    }
     _socketAddr.sin_family = AF_INET;
     _socketAddr.sin_addr.s_addr = _host;
     _socketAddr.sin_port = htons(_port);
-    bind(_listenFd, (struct sockaddr *)&_socketAddr, _socketAddrLen);
+    if (bind(_listenFd, (struct sockaddr *)&_socketAddr, _socketAddrLen) < 0) {
+        Log::print(ERROR, "Socket bind failed");
+        throw std::runtime_error("Socket Bind Failed");
+    }
 }

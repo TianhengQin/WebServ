@@ -11,7 +11,15 @@ WebServ::WebServ(Config &conf) {
 
     for (it = servs.begin(); it != servs.end(); ++it) {
         it->setup();
-        _servers.insert(std::pair(it->getFd(), *it));
+        if (listen(it->getFd(), 1024) == -1) {
+            Log::print(ERROR, "Listen socket failed");
+            throw std::runtime_error("Listen Failed");
+        }
+        if (fcntl(it->getFd(), F_SETFL, O_NONBLOCK) < 0) {
+            Log::print(ERROR, "Set fd nonblocking failed");
+            throw std::runtime_error("Set Nonblock Failed");
+        }
+        _servers.insert(std::make_pair(it->getFd(), *it));
         FD_SET(it->getFd(), &_recvFds);
     }
 
@@ -31,13 +39,14 @@ void WebServ::run() {
     timeout.tv_usec = 0;
 
     int fd;
+    int ready;
 
     while (true) {
 
         FD_COPY(&_recvFds, &recv_dup);
         FD_COPY(&_sendFds, &send_dup);
-        int ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
-
+    
+        ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
         if (ready < 0) {
             Log::print(ERROR, "Select failed");
             throw std::runtime_error("Select Failed");
@@ -45,14 +54,17 @@ void WebServ::run() {
             continue;
         }
         for (fd = 0; fd <= _fdMax; ++fd) {
-            if (FD_ISSET(fd, &recv_dup) && _servers.count(fd)) {
-                connect(fd);
-                receive(fd);
+            if (FD_ISSET(fd, &recv_dup)) {
+                if (_servers.count(fd)) {
+                    connect(fd);
+                } else if (_connections.count(fd)) {
+                    receive(fd);
+                }
             } else if (FD_ISSET(fd, &send_dup) && _connections.count(fd)) {
                 send(fd);
-                disconnect(fd);
             }
         }
+        timeOut();
     }
 }
 
@@ -84,8 +96,34 @@ void WebServ::rmFd(int fd, char rs) {
 
 void WebServ::connect(int fd) {
 
+    struct sockaddr_in connect_addr;
+    unsigned int address_size = sizeof(connect_addr);
+    int connect_fd;
+    Connection connect(_servers[fd]);
+    char bf[INET_ADDRSTRLEN];
+
+    connect_fd = accept(fd, (struct sockaddr *)&connect_addr, (socklen_t*)&address_size);
+    if (connect_fd == -1) {
+        Log::print(ERROR, "Connect failed");
+        return;
+    }
+    addFd(connect_fd, 'r');
+    if (fcntl(connect_fd, F_SETFL, O_NONBLOCK) < 0) {
+        Log::print(ERROR, "Set connection nonblock failed");
+        rmFd(connect_fd, 'r');
+        close(connect_fd);
+        return;
+    }
+    connect.setFd(connect_fd);
+    _connections.insert(std::make_pair(connect_fd, connect));
 }
 
 void WebServ::disconnect(int fd) {
 
+    if (FD_ISSET(fd, &_sendFds))
+        rmFd(fd, 's');
+    if (FD_ISSET(fd, &_recvFds))
+        rmFd(fd, 'r');
+    close(fd);
+    _connections.erase(fd);
 }

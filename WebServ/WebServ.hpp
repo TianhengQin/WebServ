@@ -22,6 +22,7 @@ private:
 
     void receive(int fd);
     void send(int fd);
+    void timeOut();
 
     void recvCgi();
     void sendCgi();

@@ -7,6 +7,11 @@ class Connection {
 
 public:
 
+    Connection(Server const &sv);
+    ~Connection();
+
+    void setFd(int fd);
+
 private:
 
     MimeType _mime;
@@ -14,6 +19,7 @@ private:
     Request _quest;
     Response _sponse;
 
+    int fd;
 };
 
 #endif
