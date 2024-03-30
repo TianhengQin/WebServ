@@ -11,18 +11,21 @@ public:
     ~Request();
 
     void init();
-    void parse(std::string const &rqst);
+    void parse();
+
+    void setFinish();
 
 private:
 
-    int _method;
+    std::string _request;
+    bool _finish;
 
+    int _method;
     std::string _dir;
     std::string _protocol;
     std::string _host;
     std::string _port;
     std::string _cookie;
-
     std::vector<std::string> _accept;
 
 };

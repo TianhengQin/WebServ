@@ -12,7 +12,11 @@ public:
 
     void setFd(int fd);
 
+    void buildResponse();
+
 private:
+
+    Server _server;
 
     MimeType _mime;
 

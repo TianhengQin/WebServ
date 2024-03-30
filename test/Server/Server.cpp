@@ -70,8 +70,8 @@ void TcpServer::acceptConnect(int &nS) {
 std::string TcpServer::Re() {
     std::string html = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello world </p></body></html>";
     std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n"
-        << html;
+    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    // ss << "HTTP/1.1 301 Moved Permanently\nLocation: http://127.0.0.1:8081/index.asp"; //<< html.size() << "\n\n" << html;
     return ss.str();
 }
 
