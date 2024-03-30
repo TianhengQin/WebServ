@@ -3,6 +3,12 @@
 
 # include "head.hpp"
 
+# define GET 1
+# define POST 2
+# define DELETE 4
+# define PUT 8
+# define HEAD 16
+
 class Location {
 
 public:
