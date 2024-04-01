@@ -22,7 +22,6 @@ WebServ::WebServ(Config &conf) {
         _servers.insert(std::make_pair(it->getFd(), *it));
         FD_SET(it->getFd(), &_recvFds);
     }
-
     _fdMax = servs.back().getFd();
 }
 
@@ -68,6 +67,16 @@ void WebServ::run() {
     }
 }
 
+void WebServ::timeOut() {
+    std::time_t currentTime = std::time(nullptr);
+    std::map<int, Connection>::iterator it;
+    for (it = _connections.begin(); it != _connections.end(); ++it) {
+        if(currentTime - it->second.getTimeStamp() > _timeOut) {
+            disconnect(it->first);
+        }
+    }
+}
+
 void WebServ::addFd(int fd, char rs) {
     if (rs == 'r') {
         FD_SET(fd, &_recvFds);
@@ -91,6 +100,16 @@ void WebServ::rmFd(int fd, char rs) {
             --fd;
         }
         _fdMax = fd;
+    }
+}
+
+void WebServ::fdSwitch(int fd, char rs) {
+    if (rs == 's') {
+        FD_SET(fd, &_recvFds);
+        FD_CLR(fd, &_sendFds);
+    } else if (rs == 'r') {
+        FD_SET(fd, &_sendFds);
+        FD_CLR(fd, &_recvFds);
     }
 }
 
@@ -126,4 +145,19 @@ void WebServ::disconnect(int fd) {
         rmFd(fd, 'r');
     close(fd);
     _connections.erase(fd);
+}
+
+void WebServ::receive(int fd) {
+    char bf[RS_BF_SIZE + 1];
+    int received = read(fd, bf, RS_BF_SIZE);
+    if (received < 0) {
+        Log::print(ERROR, "Read error");
+        disconnect(fd);
+    } else if (received == 0) {
+        fdSwitch(fd, 'r');
+        _connections[fd].buildResponse();
+    } else {
+        bf[received] = 0;
+        _connections[fd].receive(bf);
+    }
 }

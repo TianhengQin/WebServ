@@ -3,6 +3,8 @@
 
 # include "head.hpp"
 
+# define RS_BF_SIZE 4096
+
 class WebServ {
 
 public:
@@ -16,6 +18,7 @@ private:
 
     void addFd(int fd, char rs);
     void rmFd(int fd, char rs);
+    void fdSwitch(int fd, char rs);
 
     void connect(int fd);
     void disconnect(int fd);
@@ -33,6 +36,8 @@ private:
     fd_set _recvFds;
     fd_set _sendFds;
     int _fdMax;
+
+    std::time_t _timeOut;
 
 };
 

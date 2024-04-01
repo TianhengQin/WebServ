@@ -14,6 +14,12 @@ public:
 
     void buildResponse();
 
+    void updateTime();
+
+    std::time_t getTimeStamp();
+
+    void receive(std::string const &bf);
+
 private:
 
     Server _server;
@@ -23,7 +29,9 @@ private:
     Request _quest;
     Response _sponse;
 
-    int fd;
+    std::time_t _timeStamp;
+
+    int _fd;
 };
 
 #endif

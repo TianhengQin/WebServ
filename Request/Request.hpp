@@ -15,6 +15,8 @@ public:
 
     void setFinish();
 
+    void append(std::string const &bf);
+
 private:
 
     std::string _request;
