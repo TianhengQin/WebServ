@@ -1,0 +1,37 @@
+server:
+  port: 8080
+  host: 127.0.0.1
+  server_name: localhost
+  error_page:
+    301: /home/ejn.html
+    404: ./home/404.html
+  limit_client_body: 1M #12K
+  root: /www/
+  loaction: /
+    methods: GET PUT DELETE
+    redirection: /afk/afs/
+    root: /
+  loaction: /ajsfga/
+    methods: GET PUT DELETE
+    root: /sf/
+    directory_listing: on #off
+    index: /home/af.html
+
+server:
+  port: 8080
+  host: 127.0.0.1
+  server_name: localhost
+  error_page:
+    301: /home/ejn.html
+    404: ./home/404.html
+  limit_client_body: 1M #12K
+  root: /www/
+  loaction: /
+    methods: GET PUT DELETE
+    redirection: /afk/afs/
+    root: /
+  loaction: /ajsfga/
+    methods: GET PUT DELETE
+    root: /sf/
+    directory_listing: on #off
+    request_directory: /home/af.html

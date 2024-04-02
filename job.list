@@ -1,0 +1,23 @@
+- Timeout Client []
+- Configuration file []
+    - default error pages []
+    - port and host []
+    - server name []
+    - Limit client body size []
+    - location []
+        - accepted methods
+        - redirection
+        - root
+        - directory listing
+- HTTP response
+    - status codes
+    - GET, POST, DELETE, PUT
+- request
+    - parser [T]
+- Connection [Q]
+    - same host:port
+
+
+
+- CGI
+- cookies and session
