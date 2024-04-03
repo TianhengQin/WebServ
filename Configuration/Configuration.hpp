@@ -2,9 +2,9 @@
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
-class Config {
+class Configuration {
 
 private:
     std::string         _filename;
@@ -12,10 +12,10 @@ private:
 
 
 public:
-    Config(void);
-    Config(std::string filename);
+    Configuration(void);
+    Configuration(std::string filename);
 
-    ~Config();
+    ~Configuration();
 
     std::vector<Server> &getServs(void);
 

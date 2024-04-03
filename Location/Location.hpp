@@ -1,7 +1,7 @@
 #ifndef LOCATION_HPP
 # define LOCATION_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 # define GET 1
 # define POST 2

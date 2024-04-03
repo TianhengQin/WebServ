@@ -1,7 +1,7 @@
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 class Connection {
 

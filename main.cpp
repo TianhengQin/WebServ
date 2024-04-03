@@ -1,5 +1,5 @@
 
-#include "head.hpp"
+#include "Head.hpp"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     try {
-        Config config(argv[1]);
+        Configuration config(argv[1]);
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

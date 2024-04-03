@@ -1,7 +1,7 @@
 #ifndef MIMETYPE_HPP
 # define MIMETYPE_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 class MimeType {
 

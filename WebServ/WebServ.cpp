@@ -1,6 +1,6 @@
 #include "WebServ.hpp"
 
-WebServ::WebServ(Config &conf) {
+WebServ::WebServ(Configuration &conf) {
 
     FD_ZERO(&_recvFds);
     FD_ZERO(&_sendFds);

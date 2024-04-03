@@ -1,7 +1,7 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 # define RS_BF_SIZE 4096
 
@@ -9,7 +9,7 @@ class WebServ {
 
 public:
 
-    WebServ(Config &conf);
+    WebServ(Configuration &conf);
     ~WebServ();
 
     void run();

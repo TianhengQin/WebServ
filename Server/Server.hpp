@@ -1,7 +1,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 class Server {
 
@@ -34,7 +34,7 @@ private:
 
     std::map<int, std::string> _errorPage;
 
-    std::vector<Location> _locations;
+    // std::vector<Location> _locations;
 
 };
 

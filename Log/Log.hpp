@@ -1,7 +1,7 @@
 #ifndef LOG_HPP
 # define LOG_HPP
 
-# include "head.hpp"
+# include "../Head.hpp"
 
 # define DEBUG 0
 # define INFO 1
