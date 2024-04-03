@@ -1,5 +1,5 @@
 
-#include "Config.hpp"
+#include "Configuration.hpp"
 
 Config::Config(void) : _servs(std::vector<Server>(1, Server())) {
     std::cout << "Config constructor (default)" << std::endl;

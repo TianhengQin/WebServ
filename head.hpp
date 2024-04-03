@@ -21,7 +21,7 @@
 # include "Location/Location.hpp"
 # include "Response/Response.hpp"
 # include "Request/Request.hpp"
-# include "Config/Config.hpp"
+# include "Configuration/Configuration.hpp"
 # include "MimeType/MimeType.hpp"
 # include "Cgi/Cgi.hpp"
 # include "Log/Log.hpp"

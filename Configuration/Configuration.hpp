@@ -1,6 +1,6 @@
 
-#ifndef CONFIG_HPP
-# define CONFIG_HPP
+#ifndef CONFIGURATION_HPP
+# define CONFIGURATION_HPP
 
 # include "head.hpp"
 
