@@ -7,6 +7,7 @@
 class Config {
 
 private:
+    std::string         _filename;
     std::vector<Server> _servs;
 
 
