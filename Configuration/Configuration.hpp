@@ -8,7 +8,7 @@ class Configuration {
 
 private:
     std::string         _filename;
-    std::vector<Server> _servs;
+    // std::vector<Server> _servs;
 
 
 public:
@@ -17,7 +17,7 @@ public:
 
     ~Configuration();
 
-    std::vector<Server> &getServs(void);
+    // std::vector<Server> &getServs(void);
 
 
 };

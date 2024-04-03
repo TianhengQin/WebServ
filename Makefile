@@ -8,7 +8,8 @@ INCLUDE	= -I./Head.hpp
 
 
 SRCS	= main.cpp \
-		  Configuration/Configuration.cpp
+		  Configuration/Configuration.cpp 
+#		 Server/Server.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

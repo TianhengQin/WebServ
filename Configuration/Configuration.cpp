@@ -1,8 +1,10 @@
 
 #include "Configuration.hpp"
 
-Configuration::Configuration(void) : _servs(std::vector<Server>(1, Server())) {
+Configuration::Configuration(void) {
     std::cout << "Configuration constructor (default)" << std::endl;
+    this->_filename = "";
+    // this->_servs = std::vector<Server>(1, Server());
 }
 
 Configuration::Configuration(std::string filename) {
