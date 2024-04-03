@@ -2,7 +2,7 @@
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
-# include "../Head.hpp"
+# include "../head.hpp"
 
 class Configuration {
 
