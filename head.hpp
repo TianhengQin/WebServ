@@ -14,6 +14,7 @@
 
 # include <vector>
 # include <map>
+# include <stack>
 
 // class WebServ;
 // class Server;
