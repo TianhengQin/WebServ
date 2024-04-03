@@ -1,3 +1,4 @@
+
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
@@ -5,16 +6,18 @@
 
 class Config {
 
-public:
+private:
+    std::vector<Server> _servs;
 
-    Config();
+
+public:
+    Config(void);
+    Config(std::string filename);
+
     ~Config();
 
-    std::vector<Server> &getServs();
+    std::vector<Server> &getServs(void);
 
-private:
-
-    std::vector<Server> _servs;
 
 };
 
