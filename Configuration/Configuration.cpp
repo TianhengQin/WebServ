@@ -8,8 +8,21 @@ Configuration::Configuration(void) {
 }
 
 Configuration::Configuration(std::string filename) : _filename(filename) {
-    std::cout << "Configuration constructor using " << filename << std::endl;
-    // TODO: parse the file and fill _servs
+    std::cout << "Configuration constructor using: " << filename << std::endl;
+    
+    // Read file content to a string
+    std::ifstream file(this->_filename.c_str());
+    if (!file.is_open()) {
+        throw std::runtime_error("Error opening file: " + this->_filename);
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string fileContent = buffer.str();
+    file.close();
+    std::cout << "File content:\n" << fileContent << std::endl;
+
+    // Parse file content
+
     
 }
 
