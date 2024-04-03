@@ -1,5 +1,5 @@
 
-NAME	= webserv
+NAME	= webserver
 
 CC		= c++
 CFLAGS	= -std=c++98
@@ -9,7 +9,6 @@ INCLUDE	= -I./Head.hpp
 
 SRCS	= main.cpp \
 		  Configuration/Configuration.cpp 
-#		 Server/Server.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

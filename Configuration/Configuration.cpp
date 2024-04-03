@@ -7,7 +7,7 @@ Configuration::Configuration(void) {
     // this->_servs = std::vector<Server>(1, Server());
 }
 
-Configuration::Configuration(std::string filename) {
+Configuration::Configuration(std::string filename) : _filename(filename) {
     std::cout << "Configuration constructor using " << filename << std::endl;
     // TODO: parse the file and fill _servs
     
