@@ -1,4 +1,8 @@
 
+# The program name must be "webserv".
+# Todo: Change the WebServ folder name
+# NAME	= webserv 
+
 NAME	= webserver
 
 CC		= c++
