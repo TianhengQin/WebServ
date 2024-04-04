@@ -21,7 +21,9 @@ private:
 
     std::string _request;
     bool _finish;
+    std::string _body;
 
+    bool _bad;
     int _method;
     std::string _dir;
     std::string _protocol;

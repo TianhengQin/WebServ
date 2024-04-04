@@ -46,12 +46,19 @@ void TcpServer::beginListen() {
         acceptConnect(_new_socket);
 
         char bf[BF_SIZE + 1] = {0};
+        bf[BF_SIZE] = 0;
         rcvByte = read(_new_socket, bf, BF_SIZE);
         if (rcvByte < 0) {
             std::cout << "Failed reading" << std::endl;
             return;
         }
-        bf[rcvByte] = 0;
+        //         bf[BF_SIZE] = 0;
+        // rcvByte = read(_new_socket, bf, BF_SIZE);
+        // if (rcvByte < 0) {
+        //     std::cout << "Failed reading" << std::endl;
+        //     return;
+        // }
+        // bf[rcvByte] = 0;
         std::cout << "received: \n"<< bf << std::endl;
         sendRe();
         close(_new_socket);
@@ -68,7 +75,18 @@ void TcpServer::acceptConnect(int &nS) {
 }
 
 std::string TcpServer::Re() {
-    std::string html = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello world </p></body></html>";
+
+    std::string line;
+    std::string html;
+    std::ifstream myfile("website/test.html");
+    if (myfile.is_open()) {
+        while (std::getline(myfile, line)) {
+            html = html + line;
+        }
+        myfile.close();
+    }
+
+    // std::string html = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello world </p></body></html>";
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     // ss << "HTTP/1.1 301 Moved Permanently\nLocation: http://127.0.0.1:8081/index.asp"; //<< html.size() << "\n\n" << html;

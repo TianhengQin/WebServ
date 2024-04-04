@@ -8,6 +8,8 @@
 # include <arpa/inet.h>
 # include <iostream>
 # include <sstream>
+# include <fstream>
+
 
 #define BF_SIZE 4096
 

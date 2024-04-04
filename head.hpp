@@ -28,17 +28,17 @@
 // class MimeType;
 // class Cgi;
 
-// # include "WebServ/WebServ.hpp"
-// # include "Connection/Connection.hpp"
-// # include "Response/Response.hpp"
-// # include "Request/Request.hpp"
-// # include "MimeType/MimeType.hpp"
-// # include "Cgi/Cgi.hpp"
-// # include "Log/Log.hpp"
+# include "WebServ/WebServ.hpp"
+# include "Connection/Connection.hpp"
+# include "Response/Response.hpp"
+# include "Request/Request.hpp"
+# include "MimeType/MimeType.hpp"
+# include "Cgi/Cgi.hpp"
+# include "Log/Log.hpp"
 
-// # include "Server/Server.hpp"
+# include "Server/Server.hpp"
 # include "Configuration/Configuration.hpp"
-// # include "Location/Location.hpp"
+# include "Location/Location.hpp"
 
 # define SELECT_TIMEOUT 1
 
