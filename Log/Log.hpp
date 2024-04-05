@@ -12,7 +12,7 @@ int logLevel;
 
 namespace Log {
 
-    void print(int level, std::string const &msg);
+    void print(int level, std::string const &msg, unsigned long i);
 
 };
 

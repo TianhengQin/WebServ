@@ -12,11 +12,11 @@ WebServ::WebServ(Configuration &conf) {
     for (it = servs.begin(); it != servs.end(); ++it) {
         it->setup();
         if (listen(it->getFd(), 1024) == -1) {
-            Log::print(ERROR, "Listen socket failed");
+            Log::print(ERROR, "Listen socket failed on fd ", it->getFd());
             throw std::runtime_error("Listen Failed");
         }
         if (fcntl(it->getFd(), F_SETFL, O_NONBLOCK) < 0) {
-            Log::print(ERROR, "Set fd nonblocking failed");
+            Log::print(ERROR, "Set fd nonblocking failed on fd ", it->getFd());
             throw std::runtime_error("Set Nonblock Failed");
         }
         _servers.insert(std::make_pair(it->getFd(), *it));
@@ -47,7 +47,7 @@ void WebServ::run() {
     
         ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
         if (ready < 0) {
-            Log::print(ERROR, "Select failed");
+            Log::print(ERROR, "Select failed ", 0);
             throw std::runtime_error("Select Failed");
         } else if (ready == 0) {
             continue;
@@ -123,12 +123,12 @@ void WebServ::connect(int fd) {
 
     connect_fd = accept(fd, (struct sockaddr *)&connect_addr, (socklen_t*)&address_size);
     if (connect_fd == -1) {
-        Log::print(ERROR, "Connect failed");
+        Log::print(ERROR, "Connect failed on fd ", fd);
         return;
     }
     addFd(connect_fd, 'r');
     if (fcntl(connect_fd, F_SETFL, O_NONBLOCK) < 0) {
-        Log::print(ERROR, "Set connection nonblock failed");
+        Log::print(ERROR, "Set connection nonblock failed on fd", connect_fd);
         rmFd(connect_fd, 'r');
         close(connect_fd);
         return;
@@ -151,7 +151,7 @@ void WebServ::receive(int fd) {
     char bf[RS_BF_SIZE + 1];
     int received = read(fd, bf, RS_BF_SIZE);
     if (received < 0) {
-        Log::print(ERROR, "Read error");
+        Log::print(ERROR, "Read error on fd ", fd);
         disconnect(fd);
     } else if (received == 0) {
         fdSwitch(fd, 'r');
