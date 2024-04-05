@@ -9,6 +9,10 @@ public:
 
 private:
 
+    short _code;
+    std::string _phrase;
+    std::string _body;
+
 };
 
 #endif

@@ -161,3 +161,9 @@ void WebServ::receive(int fd) {
         _connections[fd].receive(bf);
     }
 }
+
+void WebServ::send(int fd) {
+    if(_connections[fd].send() == 0) {
+        disconnect(fd);
+    }
+}

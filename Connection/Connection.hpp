@@ -19,6 +19,7 @@ public:
     std::time_t getTimeStamp();
 
     void receive(std::string const &bf);
+    int send();
 
 private:
 
@@ -30,6 +31,8 @@ private:
     Response _sponse;
 
     std::time_t _timeStamp;
+
+    std::string _sendBf;
 
     int _fd;
 };
