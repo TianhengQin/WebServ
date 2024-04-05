@@ -15,7 +15,7 @@ public:
 
     void setFinish();
 
-    void append(std::string const &bf);
+    void append(char const *bf);
 
 private:
 

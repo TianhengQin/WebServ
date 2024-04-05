@@ -10,21 +10,21 @@ WebServ::WebServ(Configuration &conf) {
     std::vector<Server>::iterator it;
     std::vector<Server>::iterator itr;
     std::vector<Server>::iterator its;
-    int same_no;
+    int same_nb;
 
     for (it = servs.begin(); it != servs.end(); ++it) {
         it->setup();
-        same_no = 0;
+        same_nb = 0;
         for (itr = servs.begin(); it != itr; ++itr) {
             if (it->getHost() == itr->getHost() && it->getPort() == itr->getPort()) {
-                if (same_no == 0) {
+                if (same_nb == 0) {
                     its = itr;
                 }
-                ++same_no;
+                ++same_nb;
             }
         }
-        if (same_no) {
-            _servers.insert(std::make_pair(itr->getFd() + 1024 * same_no, *it));
+        if (same_nb) {
+            _servers.insert(std::make_pair(its->getFd() + 1024 * same_nb, *it));
             continue;
         }
         if (listen(it->getFd(), 1024) == -1) {

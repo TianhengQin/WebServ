@@ -18,7 +18,7 @@ public:
 
     std::time_t getTimeStamp();
 
-    void receive(std::string const &bf);
+    void receive(char const *bf);
     int send();
 
 private:

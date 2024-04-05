@@ -27,7 +27,7 @@ std::time_t Connection::getTimeStamp() {
     return _timeStamp;
 }
 
-void Connection::receive(std::string const &bf) {
+void Connection::receive(char const *bf) {
     _quest.append(bf);
     updateTime();
 }
