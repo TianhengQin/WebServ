@@ -9,19 +9,22 @@ WebServ::WebServ(Configuration &conf) {
 
     std::vector<Server>::iterator it;
     std::vector<Server>::iterator itr;
-    bool check_same;
+    std::vector<Server>::iterator its;
+    int same_no;
 
     for (it = servs.begin(); it != servs.end(); ++it) {
         it->setup();
-        check_same = false;
+        same_no = 0;
         for (itr = servs.begin(); it != itr; ++itr) {
             if (it->getHost() == itr->getHost() && it->getPort() == itr->getPort()) {
-                check_same = true;
-                break;
+                if (same_no == 0) {
+                    its = itr;
+                }
+                ++same_no;
             }
         }
-        if (check_same) {
-            _servers.insert(std::make_pair(itr->getFd() + 1024, *it));
+        if (same_no) {
+            _servers.insert(std::make_pair(itr->getFd() + 1024 * same_no, *it));
             continue;
         }
         if (listen(it->getFd(), 1024) == -1) {
@@ -37,7 +40,6 @@ WebServ::WebServ(Configuration &conf) {
     }
     _fdMax = servs.back().getFd();
 }
-
 
 WebServ::~WebServ() {}
 
