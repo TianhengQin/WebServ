@@ -118,7 +118,7 @@ void WebServ::connect(int fd) {
     struct sockaddr_in connect_addr;
     unsigned int address_size = sizeof(connect_addr);
     int connect_fd;
-    Connection connect(_servers[fd]);
+    Connection connect(_servers, fd);
     char bf[INET_ADDRSTRLEN];
 
     connect_fd = accept(fd, (struct sockaddr *)&connect_addr, (socklen_t*)&address_size);
@@ -128,7 +128,7 @@ void WebServ::connect(int fd) {
     }
     addFd(connect_fd, 'r');
     if (fcntl(connect_fd, F_SETFL, O_NONBLOCK) < 0) {
-        Log::print(ERROR, "Set connection nonblock failed on fd", connect_fd);
+        Log::print(ERROR, "Set connection nonblock failed on fd ", connect_fd);
         rmFd(connect_fd, 'r');
         close(connect_fd);
         return;

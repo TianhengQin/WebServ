@@ -9,7 +9,7 @@ public:
 
 private:
 
-    short _code;
+    int _code;
     std::string _phrase;
     std::string _body;
 

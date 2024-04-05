@@ -7,7 +7,7 @@ class Connection {
 
 public:
 
-    Connection(Server const &sv);
+    Connection(std::map<int, Server> &svs, int fd);
     ~Connection();
 
     void setFd(int fd);
@@ -23,7 +23,7 @@ public:
 
 private:
 
-    Server _server;
+    std::map<std::string, Server> _server;
 
     MimeType _mime;
 
