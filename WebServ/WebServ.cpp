@@ -8,9 +8,22 @@ WebServ::WebServ(Configuration &conf) {
     std::vector<Server> servs = conf.getServs();
 
     std::vector<Server>::iterator it;
+    std::vector<Server>::iterator itr;
+    bool check_same;
 
     for (it = servs.begin(); it != servs.end(); ++it) {
         it->setup();
+        check_same = false;
+        for (itr = servs.begin(); it != itr; ++itr) {
+            if (it->getHost() == itr->getHost() && it->getPort() == itr->getPort()) {
+                check_same = true;
+                break;
+            }
+        }
+        if (check_same) {
+            _servers.insert(std::make_pair(itr->getFd() + 1024, *it));
+            continue;
+        }
         if (listen(it->getFd(), 1024) == -1) {
             Log::print(ERROR, "Listen socket failed on fd ", it->getFd());
             throw std::runtime_error("Listen Failed");

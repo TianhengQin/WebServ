@@ -15,6 +15,9 @@ public:
     void setup();
 
     int getFd();
+    std::string &getName();
+    unsigned int getHost();
+    unsigned short getPort();
 
 private:
 
@@ -34,7 +37,7 @@ private:
 
     std::map<int, std::string> _errorPage;
 
-    // std::vector<Location> _locations;
+    std::vector<Location> _locations;
 
 };
 

@@ -56,6 +56,18 @@ int Server::getFd() {
     return _listenFd;
 }
 
+std::string &Server::getName() {
+    return _servName;
+}
+
+unsigned int Server::getHost() {
+    return _host;
+}
+
+unsigned short Server::getPort() {
+    return _port;
+}
+
 void Server::setup() {
 
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
