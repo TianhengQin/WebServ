@@ -1,5 +1,6 @@
 
-#include "Head.hpp"
+// #include "Head.hpp"
+#include "Configuration/Configuration.hpp"
 
 int main(int argc, char **argv) {
     try {
@@ -8,8 +9,8 @@ int main(int argc, char **argv) {
         }
         Configuration config(argv[1]);
         // std::cout << "Configuration file: " << std::endl;
-        WebServ web_serv(config);
-        web_serv.run();
+        // WebServ web_serv(config);
+        // web_serv.run();
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;//Log::print
         return 1;
