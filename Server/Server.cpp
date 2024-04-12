@@ -75,6 +75,7 @@ void Server::setup() {
         Log::print(WARNING, "Maximum number of fds reached ", _listenFd);
         throw std::out_of_range("Max Fd Num");
     }
+    Log::print(INFO, "Listening ", _listenFd);
     int opt = 1;
     if (setsockopt(_listenFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
         Log::print(ERROR, "Set socket address reuse failed ", 0);
@@ -87,4 +88,39 @@ void Server::setup() {
         Log::print(ERROR, "Socket bind failed on ", _listenFd);
         throw std::runtime_error("Socket Bind Failed");
     }
+    Log::print(INFO, "  Socket ", _host);
+    Log::print(INFO, "  port ", _port);
+}
+
+
+void Server::setServName(std::string const &nam) {
+    _servName = nam;
+}
+
+void Server::setRoot(std::string const &rt) {
+    _root = rt;
+}
+
+void Server::setIndex(std::string const &idx) {
+    _index = idx;
+}
+
+void Server::setHost(std::string const &hst) {
+    _host = inet_addr(hst.c_str());
+}
+
+void Server::setPort(unsigned short pt) {
+    _port = pt;
+}
+
+void Server::setCliMaxBody(unsigned int cmb) {
+    _cliMaxBody = cmb;
+}
+
+void Server::setErrPage(int code, std::string const &path) {
+    _errorPage[code] = path;
+}
+
+void Server::setLocation(Location &loc) {
+    _locations.push_back(loc);
 }

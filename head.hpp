@@ -37,7 +37,8 @@
 # include "Log/Log.hpp"
 
 # include "Server/Server.hpp"
-# include "Configuration/Configuration.hpp"
+// # include "Configuration/Configuration.hpp"
+# include "TestConfig/Configuration.hpp"
 # include "Location/Location.hpp"
 
 # define SELECT_TIMEOUT 1

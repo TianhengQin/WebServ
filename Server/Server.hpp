@@ -19,6 +19,15 @@ public:
     unsigned int getHost();
     unsigned short getPort();
 
+    void setServName(std::string const &nam);
+    void setRoot(std::string const &rt);
+    void setIndex(std::string const &idx);
+    void setHost(std::string const &hst);
+    void setPort(unsigned short pt);
+    void setCliMaxBody(unsigned int cmb);
+    void setErrPage(int code, std::string const &path);
+    void setLocation(Location &loc);
+
 private:
 
     void initErrorPages();
