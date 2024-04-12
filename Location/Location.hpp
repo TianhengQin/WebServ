@@ -13,6 +13,25 @@ class Location {
 
 public:
 
+    Location();
+    Location(Location const &loc);
+    Location &operator=(Location const &loc);
+    ~Location();
+
+    std::string &getPath();
+    std::string &getRoot();
+    std::string &getIndex();
+    std::string &getRedir();
+    int getMethods();
+    bool getDirListing();
+
+    void setPath(std::string const pth);
+    void setRoot(std::string const rt);
+    void setIndex(std::string const idx);
+    void setRedir(std::string const rdr);
+    void setMethods(int mtd);
+    void setDirListing(bool dl);
+
 private:
 
     std::string _path;
