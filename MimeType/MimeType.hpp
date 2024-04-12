@@ -1,7 +1,7 @@
 #ifndef MIMETYPE_HPP
 # define MIMETYPE_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
 
 class MimeType {
 

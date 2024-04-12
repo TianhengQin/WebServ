@@ -1,12 +1,19 @@
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
+# include "../Server/Server.hpp"
+# include "../Response/Response.hpp"
+# include "../Request/Request.hpp"
+# include "../Log/Log.hpp"
+// class Response;
+// class Request;
 
 class Connection {
 
 public:
 
+    Connection();
     Connection(std::map<int, Server> &svs, int fd);
     ~Connection();
 
@@ -24,8 +31,6 @@ public:
 private:
 
     std::map<std::string, Server> _server;
-
-    MimeType _mime;
 
     Request _quest;
     Response _sponse;

@@ -134,7 +134,7 @@ void WebServ::connect(int fd) {
     unsigned int address_size = sizeof(connect_addr);
     int connect_fd;
     Connection connect(_servers, fd);
-    char bf[INET_ADDRSTRLEN];
+    // char bf[INET_ADDRSTRLEN];
 
     connect_fd = accept(fd, (struct sockaddr *)&connect_addr, (socklen_t*)&address_size);
     if (connect_fd == -1) {

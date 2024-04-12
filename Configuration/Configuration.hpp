@@ -2,7 +2,7 @@
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
-# include "../head.hpp"
+# include "../CppLib.hpp"
 
 class Configuration {
 

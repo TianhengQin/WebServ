@@ -1,5 +1,7 @@
 #include "Connection.hpp"
 
+Connection::Connection() {}
+
 Connection::Connection(std::map<int, Server> &svs, int fd) {
     _server.insert(std::make_pair(svs[fd].getName(), svs[fd]));
     fd += 1024;

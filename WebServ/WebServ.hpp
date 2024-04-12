@@ -1,9 +1,14 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
+# include "../TestConfig/Configuration.hpp"
+# include "../Server/Server.hpp"
+# include "../Connection/Connection.hpp"
 
-# define RS_BF_SIZE 4096
+// class Configuration;
+class Server;
+class Connection;
 
 class WebServ {
 

@@ -1,14 +1,12 @@
 #ifndef LOG_HPP
 # define LOG_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
 
 # define DEBUG 0
 # define INFO 1
 # define WARNING 2
 # define ERROR 3
-
-int logLevel;
 
 namespace Log {
 

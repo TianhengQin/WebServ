@@ -1,7 +1,7 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
 
 class Request {
 

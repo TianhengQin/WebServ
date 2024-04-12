@@ -1,7 +1,8 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "../Head.hpp"
+# include "../CppLib.hpp"
+# include "../MimeType/MimeType.hpp"
 
 class Response {
 

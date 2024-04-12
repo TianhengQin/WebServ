@@ -9,7 +9,6 @@ server:
   root: ./websites
   loaction: /
     methods: GET PUT DELETE
-    redirection: /
     root: /
   loaction: /test
     methods: GET PUT DELETE
@@ -24,7 +23,6 @@ server:
   root: ./websites
   loaction: /
     methods: GET PUT DELETE
-    redirection: /
     root: /
 
 server:

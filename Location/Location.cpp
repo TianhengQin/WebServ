@@ -20,6 +20,7 @@ Location &Location::operator=(Location const &loc) {
     _redir = loc._redir;
     _methods = loc._methods;
     _dirListing = loc._dirListing;
+    return *this;
 }
 
 Location::~Location() {}
