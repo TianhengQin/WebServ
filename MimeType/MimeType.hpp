@@ -1,7 +1,7 @@
 #ifndef MIMETYPE_HPP
 # define MIMETYPE_HPP
 
-# include "../CppLib.hpp"
+# include "Head.hpp"
 
 class MimeType {
 
@@ -17,7 +17,5 @@ private:
     std::map<std::string, std::string> _mmty;
 
 };
-
-MimeType mm_ty;
 
 #endif

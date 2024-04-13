@@ -1,13 +1,14 @@
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
-# include "../CppLib.hpp"
-# include "../Server/Server.hpp"
-# include "../Response/Response.hpp"
-# include "../Request/Request.hpp"
-# include "../Log/Log.hpp"
+# include "Head.hpp"
+# include "Server.hpp"
+# include "Response.hpp"
+# include "MimeType.hpp"
+# include "Request.hpp"
 // class Response;
 // class Request;
+// class Server;
 
 class Connection {
 
@@ -34,6 +35,8 @@ private:
 
     Request _quest;
     Response _sponse;
+
+    MimeType _mmty;
 
     std::time_t _timeStamp;
 

@@ -1,8 +1,8 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "../CppLib.hpp"
-# include "../MimeType/MimeType.hpp"
+# include "Head.hpp"
+# include "MimeType.hpp"
 
 class Response {
 
@@ -21,6 +21,8 @@ private:
     int _code;
     std::string _phrase;
     std::string _body;
+
+    MimeType _mmTy;
 
     std::string _mimeType;
 

@@ -2,7 +2,7 @@
 
 void Log::print(int level, std::string const &msg, unsigned long i) {
 
-    if (level < logLevel) {
+    if (level < LEVEL) {
         return;
     }
     if (level == DEBUG) {

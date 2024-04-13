@@ -1,6 +1,14 @@
 
-#include "CppLib.hpp"
-#include "Class.hpp"
+# include "Head.hpp"
+# include "WebServ.hpp"
+# include "Response.hpp"
+# include "Connection.hpp"
+# include "MimeType.hpp"
+# include "Cgi.hpp"
+# include "Log.hpp"
+# include "Server.hpp"
+# include "Configuration.hpp"
+# include "Location.hpp"
 // int main(int argc, char **argv) {
 //     try {
 //         if (argc != 2) {

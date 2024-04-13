@@ -2,3 +2,5 @@ a.out
 .vscode
 .DS_*
 _test*.*
+*.o
+webserver

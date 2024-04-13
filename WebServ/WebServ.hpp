@@ -1,14 +1,10 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "../CppLib.hpp"
-# include "../TestConfig/Configuration.hpp"
-# include "../Server/Server.hpp"
-# include "../Connection/Connection.hpp"
-
-// class Configuration;
-class Server;
-class Connection;
+# include "Head.hpp"
+# include "Configuration.hpp"
+# include "Server.hpp"
+# include "Connection.hpp"
 
 class WebServ {
 

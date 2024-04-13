@@ -1,11 +1,11 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "../CppLib.hpp"
-# include "../Location/Location.hpp"
-# include "../Log/Log.hpp"
+# include "Head.hpp"
+# include "Location.hpp"
+// # include "../Log/Log.hpp"
 
-class Location;
+// class Location;
 
 class Server {
 

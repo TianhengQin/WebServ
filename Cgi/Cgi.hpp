@@ -1,7 +1,7 @@
 #ifndef CGI_HPP
 # define CGI_HPP
 
-# include "../CppLib.hpp"
+# include "Head.hpp"
 
 class Cgi {
 
