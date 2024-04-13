@@ -172,15 +172,18 @@ void WebServ::receive(int fd) {
         Log::print(ERROR, "Read error on fd ", fd);
         disconnect(fd);
     } else if (received == 0) {
+        Log::print(DEBUG, "Received 0 on ", fd);
         fdSwitch(fd, 'r');
         _connections[fd].buildResponse();
     } else {
         bf[received] = 0;
+        std::cout << "Received " << received << "\n" << bf << std::endl;
         _connections[fd].receive(bf);
     }
 }
 
 void WebServ::send(int fd) {
+    Log::print(DEBUG, "Sending on ", fd);
     if(_connections[fd].send() == 0) {
         disconnect(fd);
     }

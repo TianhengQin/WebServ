@@ -17,6 +17,11 @@ public:
 
     void append(char const *bf);
 
+    // bool getBad();
+    // int getMethod();
+    // std::string &getDir();
+    // std::
+
 private:
 
     std::string _request;
