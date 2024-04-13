@@ -19,6 +19,21 @@ void Connection::setFd(int fd) {
 
 void Connection::buildResponse() {
 
+    std::string line;
+    std::string html;
+    std::ifstream myfile("_test/website/test.html");
+    if (myfile.is_open()) {
+        while (std::getline(myfile, line)) {
+            html = html + line;
+        }
+        myfile.close();
+    }
+
+    // std::string html = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello world </p></body></html>";
+    std::ostringstream ss;
+    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    // ss << "HTTP/1.1 301 Moved Permanently\nLocation: http://127.0.0.1:8081/index.asp"; //<< html.size() << "\n\n" << html;
+    _sendBf = ss.str();
 }
 
 void Connection::updateTime() {
@@ -37,12 +52,14 @@ void Connection::receive(char const *bf) {
 int Connection::send() {
     size_t sent;
     size_t bf_size = _sendBf.size();
+    Log::print(DEBUG, "Response buffer ", bf_size);
     if (bf_size <= RS_BF_SIZE) {
-        sent = write(_fd, _sendBf.c_str(), RS_BF_SIZE);
+        sent = write(_fd, _sendBf.c_str(), bf_size);
         if (sent < 0) {
             Log::print(ERROR, "Write error on fd ", _fd);
             throw std::runtime_error("Write Failed");
         }
+        Log::print(DEBUG, "Response sent ", sent);
         _sendBf.clear();
         updateTime();
         return 0;

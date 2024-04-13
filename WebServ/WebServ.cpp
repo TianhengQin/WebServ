@@ -2,6 +2,8 @@
 
 WebServ::WebServ(Configuration &conf) {
 
+    _timeOut = 999999999999L;
+
     FD_ZERO(&_recvFds);
     FD_ZERO(&_sendFds);
 
@@ -43,9 +45,7 @@ WebServ::WebServ(Configuration &conf) {
     _fdMax = servs.back().getFd();
 }
 
-WebServ::~WebServ() {
-    _timeOut = 100;
-}
+WebServ::~WebServ() {}
 
 void WebServ::run() {
 
@@ -88,7 +88,7 @@ void WebServ::run() {
 }
 
 void WebServ::timeOut() {
-    Log::print(DEBUG, "Check time out ", 0);
+    Log::print(DEBUG, "==== Check time out ", 0);
     std::vector<int> timeOutList;
     std::time_t currentTime = std::time(nullptr);
     std::map<int, Connection>::iterator it;
@@ -99,6 +99,7 @@ void WebServ::timeOut() {
         }
     }
     if (timeOutList.empty()) {
+        Log::print(DEBUG, "==== No time out", 0);
         return;
     }
     std::vector<int>::iterator itt;
@@ -195,7 +196,7 @@ void WebServ::receive(int fd) {
         Log::print(DEBUG, "build complete ", fd);
     } else {
         bf[received] = 0;
-        std::cout << "Received " << received << "\n" << bf << std::endl;
+        std::cout << "\nReceived " << received << "\n" << bf << std::endl;
         _connections[fd].receive(bf);
     }
 }
