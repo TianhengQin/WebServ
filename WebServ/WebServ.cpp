@@ -43,7 +43,9 @@ WebServ::WebServ(Configuration &conf) {
     _fdMax = servs.back().getFd();
 }
 
-WebServ::~WebServ() {}
+WebServ::~WebServ() {
+    _timeOut = 100;
+}
 
 void WebServ::run() {
 
@@ -86,13 +88,24 @@ void WebServ::run() {
 }
 
 void WebServ::timeOut() {
+    Log::print(DEBUG, "Check time out ", 0);
+    std::vector<int> timeOutList;
     std::time_t currentTime = std::time(nullptr);
     std::map<int, Connection>::iterator it;
     for (it = _connections.begin(); it != _connections.end(); ++it) {
+        Log::print(DEBUG, "Checking ", 0);
         if(currentTime - it->second.getTimeStamp() > _timeOut) {
-            disconnect(it->first);
+            timeOutList.push_back(it->first);
         }
     }
+    if (timeOutList.empty()) {
+        return;
+    }
+    std::vector<int>::iterator itt;
+    for (itt = timeOutList.begin(); itt != timeOutList.end(); ++itt) {
+        disconnect(*itt);
+    }
+    Log::print(DEBUG, "Check time out finish", 0);
 }
 
 void WebServ::addFd(int fd, char rs) {
@@ -152,6 +165,7 @@ void WebServ::connect(int fd) {
         return;
     }
     connect.setFd(connect_fd);
+    Log::print(DEBUG, "New connection on ", connect_fd);
     _connections.insert(std::make_pair(connect_fd, connect));
 }
 
@@ -162,7 +176,9 @@ void WebServ::disconnect(int fd) {
     if (FD_ISSET(fd, &_recvFds))
         rmFd(fd, 'r');
     close(fd);
+    Log::print(DEBUG, "Closed ", fd);
     _connections.erase(fd);
+    Log::print(DEBUG, "Remove connection ", fd);
 }
 
 void WebServ::receive(int fd) {
@@ -174,7 +190,9 @@ void WebServ::receive(int fd) {
     } else if (received == 0) {
         Log::print(DEBUG, "Received 0 on ", fd);
         fdSwitch(fd, 'r');
+        Log::print(DEBUG, "Switch to send ", fd);
         _connections[fd].buildResponse();
+        Log::print(DEBUG, "build complete ", fd);
     } else {
         bf[received] = 0;
         std::cout << "Received " << received << "\n" << bf << std::endl;
