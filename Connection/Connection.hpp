@@ -6,9 +6,6 @@
 # include "Response.hpp"
 # include "MimeType.hpp"
 # include "Request.hpp"
-// class Response;
-// class Request;
-// class Server;
 
 class Connection {
 

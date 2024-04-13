@@ -13,20 +13,22 @@ WebServ::WebServ(Configuration &conf) {
     int same_nb;
 
     for (it = servs.begin(); it != servs.end(); ++it) {
-        it->setup();
         same_nb = 0;
-        for (itr = servs.begin(); it != itr; ++itr) {
+        for (itr = servs.begin(); itr != it; ++itr) {
             if (it->getHost() == itr->getHost() && it->getPort() == itr->getPort()) {
                 if (same_nb == 0) {
                     its = itr;
+                    // Log::print(DEBUG, "Same host:port", 0);
                 }
                 ++same_nb;
             }
         }
+        // Log::print(DEBUG, "Same host:port num ", same_nb);
         if (same_nb) {
             _servers.insert(std::make_pair(its->getFd() + 1024 * same_nb, *it));
             continue;
         }
+        it->setup();
         if (listen(it->getFd(), 1024) == -1) {
             Log::print(ERROR, "Listen socket failed on fd ", it->getFd());
             throw std::runtime_error("Listen Failed");
@@ -60,6 +62,7 @@ void WebServ::run() {
         FD_COPY(&_recvFds, &recv_dup);
         FD_COPY(&_sendFds, &send_dup);
     
+        Log::print(DEBUG, "Selecting ", 0);
         ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
         if (ready < 0) {
             Log::print(ERROR, "Select failed ", 0);

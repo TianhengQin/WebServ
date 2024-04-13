@@ -19,6 +19,10 @@ int TcpServer::upServer() {
     if(_socket < 0) {
         return 1;
     }
+    std::cout << _socket << std::endl;
+    std::cout << _socketAddr.sin_addr.s_addr << std::endl;
+    std::cout << _socketAddr.sin_port << std::endl;
+    std::cout << _socketAddr_len << std::endl;
     if(bind(_socket, (sockaddr *)&_socketAddr, _socketAddr_len) < 0) {
         return 1;
     }

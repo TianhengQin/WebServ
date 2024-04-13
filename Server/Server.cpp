@@ -32,6 +32,7 @@ Server &Server::operator=(const Server &sv) {
         this->_locations = sv._locations;
         this->_listenFd = sv._listenFd;
         this->_socketAddr = sv._socketAddr;
+        this->_socketAddrLen = sv._socketAddrLen;
     }
     return (*this);
 }
@@ -84,14 +85,13 @@ void Server::setup() {
     _socketAddr.sin_family = AF_INET;
     _socketAddr.sin_addr.s_addr = _host;
     _socketAddr.sin_port = htons(_port);
-    if (bind(_listenFd, (struct sockaddr *)&_socketAddr, _socketAddrLen) < 0) {
+    Log::print(INFO, "  Socket ", _host);
+    Log::print(INFO, "  port ", _port);
+    if (bind(_listenFd, (sockaddr *)&_socketAddr, _socketAddrLen) < 0) {
         Log::print(ERROR, "Socket bind failed on ", _listenFd);
         throw std::runtime_error("Socket Bind Failed");
     }
-    Log::print(INFO, "  Socket ", _host);
-    Log::print(INFO, "  port ", _port);
 }
-
 
 void Server::setServName(std::string const &nam) {
     _servName = nam;
