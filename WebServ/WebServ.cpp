@@ -188,7 +188,7 @@ void WebServ::receive(int fd) {
     if (received < 0) {
         Log::print(ERROR, "Read error on fd ", fd);
         disconnect(fd);
-    } else if (received == 0) {
+    } else if (received == 0 || received < RS_BF_SIZE) {
         Log::print(DEBUG, "Received 0 on ", fd);
         fdSwitch(fd, 'r');
         Log::print(DEBUG, "Switch to send ", fd);

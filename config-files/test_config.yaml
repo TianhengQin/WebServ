@@ -33,4 +33,3 @@ server:
   loaction: /
     methods: GET PUT DELETE
     root: /
-
