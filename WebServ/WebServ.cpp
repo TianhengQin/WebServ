@@ -189,18 +189,15 @@ void WebServ::receive(int fd) {
         Log::print(ERROR, "Read error on fd ", fd);
         disconnect(fd);
     } else if (received < RS_BF_SIZE) {
-        bf[received] = 0;
-        std::cout << "\nReceived " << received << "\n" << bf << std::endl;
-        _connections[fd].receive(bf);
+        _connections[fd].receive(bf, received);
         Log::print(DEBUG, "Received finish ", fd);
         fdSwitch(fd, 'r');
         Log::print(DEBUG, "Switch to send ", fd);
         _connections[fd].buildResponse();
         Log::print(DEBUG, "build complete ", fd);
     } else {
-        bf[received] = 0;
-        std::cout << "\nReceived " << received << "\n" << bf << std::endl;
-        _connections[fd].receive(bf);
+        _connections[fd].receive(bf, received);
+        Log::print(INFO, "Received ", received);
     }
 }
 

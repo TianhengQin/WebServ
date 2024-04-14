@@ -15,8 +15,9 @@ public:
 
     void setFinish();
 
-    void append(char const *bf);
+    void append(char const *bf, size_t n);
 
+    std::string &get();
     // bool getBad();
     // int getMethod();
     // std::string &getDir();

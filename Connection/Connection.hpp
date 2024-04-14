@@ -23,7 +23,7 @@ public:
 
     std::time_t getTimeStamp();
 
-    void receive(char const *bf);
+    void receive(char const *bf, size_t rcvd);
     int send();
 
 private:

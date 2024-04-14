@@ -19,6 +19,14 @@ void Connection::setFd(int fd) {
 
 void Connection::buildResponse() {
 
+    std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
+
+    size_t pos = _quest.get().find("\r\n\r\n");
+    f2 << _quest.get().substr(pos + 4);
+
+    Log::print(INFO, _quest.get(), 0);
+    Log::print(INFO, "size :", _quest.get().size());
+
     std::string line;
     std::string html;
     std::ifstream myfile("_test/website/test.html");
@@ -41,8 +49,8 @@ std::time_t Connection::getTimeStamp() {
     return _timeStamp;
 }
 
-void Connection::receive(char const *bf) {
-    _quest.append(bf);
+void Connection::receive(char const *bf, size_t rcvd) {
+    _quest.append(bf, rcvd);
     updateTime();
 }
 
