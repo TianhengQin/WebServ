@@ -70,6 +70,7 @@ void WebServ::run() {
             Log::print(ERROR, "Select failed ", 0);
             throw std::runtime_error("Select Failed");
         } else if (ready == 0) {
+            timeOut();
             continue;
         }
         for (fd = 0; fd <= _fdMax; ++fd) {

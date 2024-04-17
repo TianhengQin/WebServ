@@ -24,7 +24,7 @@ void Connection::buildResponse() {
     size_t pos = _quest.get().find("\r\n\r\n");
     f2 << _quest.get().substr(pos + 4);
 
-    Log::print(INFO, _quest.get(), 0);
+    Log::print(INFO, _quest.get().substr(0,100), 0);
     Log::print(INFO, "size :", _quest.get().size());
 
     std::string line;
