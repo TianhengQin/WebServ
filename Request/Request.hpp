@@ -14,6 +14,7 @@
 # define REQUEST_HPP
 
 # include "Head.hpp"
+# include "Location.hpp"
 
 class Request {
 
