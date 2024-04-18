@@ -7,7 +7,17 @@ class Cgi {
 
 public:
 
+    Cgi();
+    ~Cgi();
+
+    int getConnectFd();
+
 private:
+
+    int _connectFd;
+    int _pipeIn[2];
+    int _pipeOut[2];
+    int pid;
 
 };
 

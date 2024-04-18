@@ -77,7 +77,7 @@ void WebServ::run() {
             if (FD_ISSET(fd, &recv_dup)) {
                 if (_servers.count(fd)) {
                     connect(fd);
-                } else if (_connections.count(fd)) {
+                } else if (_connections.count(fd) && _connections[fd].cgi() == 0) {
                     receive(fd);
                 }
             } else if (FD_ISSET(fd, &send_dup) && _connections.count(fd)) {

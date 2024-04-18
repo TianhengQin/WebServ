@@ -37,6 +37,7 @@ int main() {
             web_serv.run();
         } catch (std::exception &e) {
             Log::print(ERROR, e.what(), 0);
+            Log::print(WARNING, "Watch Dog ", watch_dog);
         }
     }
     Log::print(ERROR, "Server Stopped", 0);
