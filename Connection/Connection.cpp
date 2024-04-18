@@ -39,6 +39,7 @@ void Connection::buildResponse() {
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     _sendBf = ss.str();
+    _keepAlive = false;
 }
 
 void Connection::updateTime() {
@@ -77,4 +78,8 @@ int Connection::send() {
     _sendBf.erase(0, RS_BF_SIZE);
     updateTime();
     return 1;
+}
+
+bool Connection::session() {
+    return _keepAlive;
 }

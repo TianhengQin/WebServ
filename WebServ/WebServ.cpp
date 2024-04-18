@@ -205,6 +205,10 @@ void WebServ::receive(int fd) {
 void WebServ::send(int fd) {
     Log::print(DEBUG, "Sending on ", fd);
     if(_connections[fd].send() == 0) {
-        disconnect(fd);
+        if (_connections[fd].session() == true) {
+            fdSwitch(fd, 's');
+        } else {
+            disconnect(fd);
+        }
     }
 }

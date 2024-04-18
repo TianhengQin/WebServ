@@ -28,19 +28,19 @@
 
 
 int main() {
-    int watch_dog = 10;
-    try {
+    // int watch_dog = 10;
+    // try {
         Log::print(INFO, "Server Restarting ...", 0);
         Configuration config;
         WebServ web_serv(config);
         web_serv.run();
-    } catch (std::exception &e) {
-        Log::print(ERROR, e.what(), 0);
-        --watch_dog;
-        if (!watch_dog) {
-            Log::print(ERROR, "Server Stopped", 0);
-            return 1;
-        }
-    }
+    // } catch (std::exception &e) {
+    //     Log::print(ERROR, e.what(), 0);
+    //     --watch_dog;
+    //     if (!watch_dog) {
+    //         Log::print(ERROR, "Server Stopped", 0);
+    //         return 1;
+    //     }
+    // }
     return 0;
 }

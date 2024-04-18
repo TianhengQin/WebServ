@@ -32,6 +32,6 @@
 
 # define SELECT_TIMEOUT 1
 
-# define RS_BF_SIZE 4096
+# define RS_BF_SIZE 8192
 
 #endif

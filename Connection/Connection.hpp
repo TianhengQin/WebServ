@@ -25,6 +25,7 @@ public:
 
     void receive(char const *bf, size_t rcvd);
     int send();
+    bool session();
 
 private:
 
@@ -40,6 +41,9 @@ private:
     std::string _sendBf;
 
     int _fd;
+
+    bool _keepAlive;
+
 };
 
 #endif
