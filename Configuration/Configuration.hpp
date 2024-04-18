@@ -23,7 +23,8 @@
 class Configuration {
 
 private:
-    std::string         _filename;
+    std::string                         _filename;
+    std::map<std::string, std::string>  _config;
     // std::vector<Server> _servs;
 
 
