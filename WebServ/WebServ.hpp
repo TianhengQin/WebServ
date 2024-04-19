@@ -5,6 +5,7 @@
 # include "Configuration.hpp"
 # include "Server.hpp"
 # include "Connection.hpp"
+# include "Cgi.hpp"
 
 class WebServ {
 
@@ -28,11 +29,13 @@ private:
     void send(int fd);
     void timeOut();
 
-    void recvCgi();
-    void sendCgi();
+    void openCgi(int fd);
+    void recvCgi(int fd);
+    void sendCgi(int fd);
 
     std::map<int, Server> _servers;
     std::map<int, Connection> _connections;
+    std::map<int, Cgi> _cgi;
 
     fd_set _recvFds;
     fd_set _sendFds;

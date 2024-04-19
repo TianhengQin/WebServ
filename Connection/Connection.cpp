@@ -83,3 +83,7 @@ int Connection::send() {
 bool Connection::session() {
     return _keepAlive;
 }
+
+bool Connection::cgi() {
+    return _cgi;
+}

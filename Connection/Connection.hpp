@@ -26,6 +26,7 @@ public:
     void receive(char const *bf, size_t rcvd);
     int send();
     bool session();
+    bool cgi();
 
 private:
 
@@ -43,7 +44,7 @@ private:
     int _fd;
 
     bool _keepAlive;
-
+    bool _cgi;
 };
 
 #endif

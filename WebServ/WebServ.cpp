@@ -77,11 +77,17 @@ void WebServ::run() {
             if (FD_ISSET(fd, &recv_dup)) {
                 if (_servers.count(fd)) {
                     connect(fd);
-                } else if (_connections.count(fd) && _connections[fd].cgi() == 0) {
+                } else if (_connections.count(fd) && _connections[fd].cgi() == false) {
                     receive(fd);
+                } else if (_cgi.count(fd)) {
+                    recvCgi(fd);
                 }
-            } else if (FD_ISSET(fd, &send_dup) && _connections.count(fd)) {
-                send(fd);
+            } else if (FD_ISSET(fd, &send_dup)) {
+                if (_connections.count(fd)) {
+                    send(fd);
+                } else if (_cgi.count(fd)) {
+                    sendCgi(fd);
+                }
             }
         }
         timeOut();
@@ -152,7 +158,6 @@ void WebServ::connect(int fd) {
     unsigned int address_size = sizeof(connect_addr);
     int connect_fd;
     Connection connect(_servers, fd);
-    // char bf[INET_ADDRSTRLEN];
 
     connect_fd = accept(fd, (struct sockaddr *)&connect_addr, (socklen_t*)&address_size);
     if (connect_fd == -1) {
@@ -195,6 +200,9 @@ void WebServ::receive(int fd) {
         fdSwitch(fd, 'r');
         Log::print(DEBUG, "Switch to send ", fd);
         _connections[fd].buildResponse();
+        if (_connections[fd].cgi() == true) {
+            openCgi();
+        }
         Log::print(DEBUG, "build complete ", fd);
     } else {
         _connections[fd].receive(bf, received);
