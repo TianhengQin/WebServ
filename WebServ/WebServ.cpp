@@ -225,11 +225,16 @@ void WebServ::openCgi(int fd) {
 
     Cgi cgi(_connections[fd]);
 
+    if (_connections[fd].cgiState() == CGI_FAILED) {
+        _connections[fd].buildCgiResponse();
+        return;
+    }
     addFd(cgi.getPipeInFd(), 's');
     addFd(cgi.getPipeOutFd(), 'r');
     _cgis.insert(std::make_pair(fd, cgi));
     _cgiFds[cgi.getPipeInFd()] = fd;
     _cgiFds[cgi.getPipeOutFd()] = fd;
+    _cgis[fd].run(_connections[fd]);
 }
 
 void WebServ::closeCgi(int fd, int state) {
@@ -250,6 +255,9 @@ void WebServ::recvCgi(int fd) {
     if (re < 0) {
         closeCgi(fd, CGI_FAILED);
     } else if (re == 0) {
+        if (_cgis[_cgiFds[fd]].end()) {
+            closeCgi(fd, CGI_FAILED);
+        }
         int conn = _cgis[_cgiFds[fd]].getConnectFd();
         _connections[conn].setResponse(_cgis[_cgiFds[fd]].response());
         rmFd(fd, 'r');

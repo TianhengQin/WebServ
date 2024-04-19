@@ -12,6 +12,9 @@ public:
     Cgi(Connection &conn);
     ~Cgi();
 
+    int setup(Connection &conn);
+    int run(Connection &conn);
+    int end();
     int getConnectFd();
     int getPipeOutFd();
     int getPipeInFd();
@@ -30,6 +33,7 @@ private:
 
     std::string _sendBf;
     std::string _recvBf;
+    std::string _program;
 
 };
 

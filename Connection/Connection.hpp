@@ -35,6 +35,7 @@ public:
     int cgiState();
     void setCgiState(int s);
     void buildCgiResponse();
+    std::string &getCgiProgram();
 
 private:
 

@@ -102,4 +102,8 @@ void Connection::setCgiState(int s) {
     _cgiState = s;
 }
 
+std::string &Connection::getCgiProgram() {
+    return _cgiProgram;
+}
+
 void Connection::buildCgiResponse() {}
