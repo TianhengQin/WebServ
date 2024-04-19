@@ -17,6 +17,10 @@ void Connection::setFd(int fd) {
     this->_fd = fd;
 }
 
+int Connection::getFd() {
+    return _fd;
+}
+
 void Connection::buildResponse() {
 
     std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
@@ -42,6 +46,10 @@ void Connection::buildResponse() {
     _keepAlive = false;
 }
 
+void Connection::setResponse(std::string &bf) {
+    _sendBf = bf;
+}
+
 void Connection::updateTime() {
     _timeStamp = std::time(nullptr);
 }
@@ -56,12 +64,13 @@ void Connection::receive(char const *bf, size_t rcvd) {
 }
 
 int Connection::send() {
-    size_t sent;
+    int sent;
     size_t bf_size = _sendBf.size();
     Log::print(DEBUG, "Response buffer ", bf_size);
     if (bf_size <= RS_BF_SIZE) {
         sent = write(_fd, _sendBf.c_str(), bf_size);
         if (sent < 0) {
+            close(_fd);
             Log::print(ERROR, "Write error on fd ", _fd);
             throw std::runtime_error("Write Failed");
         }
@@ -72,6 +81,7 @@ int Connection::send() {
     }
     sent = write(_fd, _sendBf.c_str(), RS_BF_SIZE);
     if (sent < 0) {
+        close(_fd);
         Log::print(ERROR, "Write error on fd ", _fd);
         throw std::runtime_error("Write Failed");
     }
@@ -84,6 +94,12 @@ bool Connection::session() {
     return _keepAlive;
 }
 
-bool Connection::cgi() {
-    return _cgi;
+int Connection::cgiState() {
+    return _cgiState;
 }
+
+void Connection::setCgiState(int s) {
+    _cgiState = s;
+}
+
+void Connection::buildCgiResponse() {}

@@ -7,6 +7,10 @@
 # include "MimeType.hpp"
 # include "Request.hpp"
 
+# define CGI_ON 1
+# define CGI_OFF 0
+# define CGI_FAILED -1
+
 class Connection {
 
 public:
@@ -16,8 +20,10 @@ public:
     ~Connection();
 
     void setFd(int fd);
+    int getFd();
 
     void buildResponse();
+    void setResponse(std::string &bf);
 
     void updateTime();
 
@@ -26,7 +32,9 @@ public:
     void receive(char const *bf, size_t rcvd);
     int send();
     bool session();
-    bool cgi();
+    int cgiState();
+    void setCgiState(int s);
+    void buildCgiResponse();
 
 private:
 
@@ -40,11 +48,15 @@ private:
     std::time_t _timeStamp;
 
     std::string _sendBf;
+    std::string _cgiSendBf;
 
     int _fd;
 
     bool _keepAlive;
-    bool _cgi;
+
+    int _cgiState;
+
+    std::string _cgiProgram;
 };
 
 #endif

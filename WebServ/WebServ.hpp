@@ -30,12 +30,14 @@ private:
     void timeOut();
 
     void openCgi(int fd);
+    void closeCgi(int fd, int state);
     void recvCgi(int fd);
     void sendCgi(int fd);
 
     std::map<int, Server> _servers;
     std::map<int, Connection> _connections;
-    std::map<int, Cgi> _cgi;
+    std::map<int, int> _cgiFds;
+    std::map<int, Cgi> _cgis;
 
     fd_set _recvFds;
     fd_set _sendFds;

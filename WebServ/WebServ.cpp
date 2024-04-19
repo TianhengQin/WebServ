@@ -77,15 +77,15 @@ void WebServ::run() {
             if (FD_ISSET(fd, &recv_dup)) {
                 if (_servers.count(fd)) {
                     connect(fd);
-                } else if (_connections.count(fd) && _connections[fd].cgi() == false) {
+                } else if (_connections.count(fd) && _connections[fd].cgiState() != CGI_ON) {
                     receive(fd);
-                } else if (_cgi.count(fd)) {
+                } else if (_cgiFds.count(fd)) {
                     recvCgi(fd);
                 }
             } else if (FD_ISSET(fd, &send_dup)) {
                 if (_connections.count(fd)) {
                     send(fd);
-                } else if (_cgi.count(fd)) {
+                } else if (_cgiFds.count(fd)) {
                     sendCgi(fd);
                 }
             }
@@ -128,9 +128,9 @@ void WebServ::addFd(int fd, char rs) {
 }
 
 void WebServ::rmFd(int fd, char rs) {
-    if (rs == 'r') {
+    if (rs == 'r' && FD_ISSET(fd, &_recvFds)) {
         FD_CLR(fd, &_recvFds);
-    } else if (rs == 's') {
+    } else if (rs == 's' && FD_ISSET(fd, &_sendFds)) {
         FD_CLR(fd, &_sendFds);
     }
     if (fd == _fdMax) {
@@ -200,8 +200,8 @@ void WebServ::receive(int fd) {
         fdSwitch(fd, 'r');
         Log::print(DEBUG, "Switch to send ", fd);
         _connections[fd].buildResponse();
-        if (_connections[fd].cgi() == true) {
-            openCgi();
+        if (_connections[fd].cgiState() == CGI_ON) {
+            openCgi(fd);
         }
         Log::print(DEBUG, "build complete ", fd);
     } else {
@@ -218,5 +218,46 @@ void WebServ::send(int fd) {
         } else {
             disconnect(fd);
         }
+    }
+}
+
+void WebServ::openCgi(int fd) {
+
+    Cgi cgi(_connections[fd]);
+
+    addFd(cgi.getPipeInFd(), 's');
+    addFd(cgi.getPipeOutFd(), 'r');
+    _cgis.insert(std::make_pair(fd, cgi));
+    _cgiFds[cgi.getPipeInFd()] = fd;
+    _cgiFds[cgi.getPipeOutFd()] = fd;
+}
+
+void WebServ::closeCgi(int fd, int state) {
+    int inFd = _cgis[_cgiFds[fd]].getPipeInFd();
+    int outFd = _cgis[_cgiFds[fd]].getPipeOutFd();
+    int conn = _cgis[_cgiFds[fd]].getConnectFd();
+    rmFd(inFd, 's');
+    rmFd(outFd, 'r');
+    _cgis.erase(_cgiFds[fd]);
+    _cgiFds.erase(outFd);
+    _cgiFds.erase(inFd);
+    Log::print(INFO, "Close Cgi on connection ", conn);
+    _connections[conn].setCgiState(state);
+}
+
+void WebServ::recvCgi(int fd) {
+    int re = _cgis[_cgiFds[fd]].receive();
+    if (re < 0) {
+        closeCgi(fd, CGI_FAILED);
+    } else if (re == 0) {
+        int conn = _cgis[_cgiFds[fd]].getConnectFd();
+        _connections[conn].setResponse(_cgis[_cgiFds[fd]].response());
+        rmFd(fd, 'r');
+    }
+}
+
+void WebServ::sendCgi(int fd) {
+    if (_cgis[_cgiFds[fd]].send() == 0) {
+        rmFd(fd, 's');
     }
 }
