@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <ast.hpp>
 
 int main() {
     auto http = std::make_shared<Block>("http", std::vector<std::string>{});

@@ -1,6 +1,9 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <iostream>
+#include <stream>
+
 
 // Base class for any node in the AST
 class ASTNode {
