@@ -4,8 +4,8 @@
 
 // # include "../Head.hpp"
 # include "ASTNode.hpp"
-// # include "Server.hpp"
 # include "NginxParser.hpp"
+# include "Server.hpp"
 
 # include <string>
 # include <iostream>
@@ -29,7 +29,7 @@ class Configuration {
 private:
     std::string         _filename;
     Block*              _root;
-    // std::vector<Server> _servs;
+    std::vector<Server> _servs;
 
 
 public:
@@ -38,7 +38,7 @@ public:
 
     ~Configuration();
 
-    // std::vector<Server> &getServs(void);
+    std::vector<Server> &getServs(void);
 
 };
 

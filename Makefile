@@ -3,19 +3,20 @@
 # Todo: Change the WebServ folder name
 # NAME	= webserv 
 
-NAME	= webserver
+NAME		= webserver
 
-CXX		= c++
-CXXFLAGS= -std=c++98
-CXXFLAGS+= -Wall -Wextra -Werror
-INCLUDE	= -I./TestConfig/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
-		  -I./Log/ -I./MimeType/ -I./Request/ -I./Response/ -I./WebServ/ -I./
+CXX			= c++
+CXXFLAGS	= -std=c++11
+CXXFLAGS	+= -Wall -Wextra -Werror
+INCLUDE		= -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
+			-I./Log/ -I./MimeType/ -I./Request/ -I./Response/ -I./WebServ/ -I./
 
 # SRCS	= main.cpp \
 # 		  Configuration/Configuration.cpp \
 
 SRCS	= main.cpp \
-		  TestConfig/Configuration.cpp \
+		  Configuration/Configuration.cpp \
+		  Configuration/NginxParser.cpp \
 		  Cgi/Cgi.cpp Request/Request.cpp Connection/Connection.cpp Location/Location.cpp Log/Log.cpp \
 		  MimeType/MimeType.cpp Response/Response.cpp \
 		  Server/Server.cpp WebServ/WebServ.cpp

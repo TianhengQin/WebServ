@@ -42,3 +42,6 @@ Configuration::~Configuration() {
     std::cout << "Configuration destructor" << std::endl;
 }
 
+std::vector<Server> &Configuration::getServs(void) {
+    return _servs;
+}
