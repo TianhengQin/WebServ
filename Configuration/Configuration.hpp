@@ -5,7 +5,7 @@
 // # include "../Head.hpp"
 # include "ASTNode.hpp"
 // # include "Server.hpp"
-# include "NGINXParser.hpp"
+# include "NginxParser.hpp"
 
 # include <string>
 # include <iostream>

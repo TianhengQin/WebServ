@@ -1,7 +1,7 @@
 
 #include "Configuration.hpp"
 // #include "ASTNode.hpp"
-// #include "NGINXParser.hpp"
+// #include "NginxParser.hpp"
 
 
 int main(int argc, char** argv) {
