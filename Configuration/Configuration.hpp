@@ -3,6 +3,10 @@
 # define CONFIGURATION_HPP
 
 // # include "../Head.hpp"
+# include "ASTNode.hpp"
+// # include "Server.hpp"
+# include "NGINXParser.hpp"
+
 # include <string>
 # include <iostream>
 # include <fstream>
@@ -23,8 +27,8 @@
 class Configuration {
 
 private:
-    std::string                         _filename;
-    std::map<std::string, std::string>  _config;
+    std::string         _filename;
+    Block*              _root;
     // std::vector<Server> _servs;
 
 
@@ -35,7 +39,6 @@ public:
     ~Configuration();
 
     // std::vector<Server> &getServs(void);
-
 
 };
 
