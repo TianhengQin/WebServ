@@ -22,7 +22,7 @@ std::vector<ASTNode * > Block::getChildren(void) const {
 }
 
 void Block::print(int level) const {
-	std::string indentation(level * 2, ' ');
+	std::string indentation(level * INDENT_SIZE, ' ');
 	std::cout << indentation << _name;
 	for (const auto& arg : _arguments) {
 		std::cout << " " << arg;

@@ -7,6 +7,7 @@
 # include <memory>
 # include <iostream>
 
+#define INDENT_SIZE 4
 
 // Base class for any node in the AST
 class ASTNode {

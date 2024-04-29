@@ -6,7 +6,7 @@
 # include "../AST/ASTNode.hpp"
 # include "../AST/Block.hpp"
 # include "../AST/Directive.hpp"
-# include "NginxParser.hpp"
+# include "Parser/NginxParser.hpp"
 # include "Server.hpp"
 
 # include <string>
