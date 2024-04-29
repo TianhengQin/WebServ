@@ -93,34 +93,34 @@ void Server::setup() {
     }
 }
 
-void Server::setServName(std::string const &nam) {
-    _servName = nam;
+void Server::setServName(std::string &nam) {
+    this->_servName = nam;
 }
 
-void Server::setRoot(std::string const &rt) {
-    _root = rt;
+void Server::setRoot(std::string &rt) {
+    this->_root = rt;
 }
 
-void Server::setIndex(std::string const &idx) {
-    _index = idx;
+void Server::setIndex(std::string &idx) {
+    this->_index = idx;
 }
 
-void Server::setHost(std::string const &hst) {
-    _host = inet_addr(hst.c_str());
+void Server::setHost(std::string &hst) {
+    this->_host = inet_addr(hst.c_str());
 }
 
 void Server::setPort(unsigned short pt) {
-    _port = pt;
+    this->_port = pt;
 }
 
 void Server::setCliMaxBody(unsigned int cmb) {
-    _cliMaxBody = cmb;
+    this->_cliMaxBody = cmb;
 }
 
 void Server::setErrPage(int code, std::string const &path) {
-    _errorPage[code] = path;
+    this->_errorPage[code] = path;
 }
 
 void Server::setLocation(Location &loc) {
-    _locations.push_back(loc);
+    this->_locations.push_back(loc);
 }

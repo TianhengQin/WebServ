@@ -28,12 +28,14 @@ Configuration::Configuration(std::string filename) : _filename(filename)
 			for (ASTNode *http_child : block->getChildren()) {
 				if (http_child->getName() == "server") {
 					http_child->print(); // debug
-					Server *server = new Server();
+					// Server *server = new Server();
 
 					// TODO: implement setup method
 					// server->setup(http_child); 
 					
-					this->_servs.push_back(*server);
+					// this->_servs.push_back(*server);
+					Server cur;
+					
 				}
 			}
 		}
