@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef BLOCK_HPP
+# define BLOCK_HPP
 
 # include "ASTNode.hpp"
 
@@ -7,28 +8,20 @@
 // Block node, represents a block that can contain directives or other blocks
 class Block : public ASTNode {
 private:
-	std::string                             _name;
-	std::vector<std::string>                _arguments;
-	std::vector<ASTNode * >                 _children;
+	std::string					_name;
+	std::vector<std::string>	_arguments;
+	std::vector<ASTNode * > 	_children;
 
 public:
-	Block(const std::string& name, const std::vector<std::string>& arguments)
-		: _name(name), _arguments(arguments) {}
+	Block(const std::string& name, const std::vector<std::string>& arguments);
 
-	void addChild(ASTNode * child) {
-		_children.push_back(child);
-	}
+	void addChild(ASTNode * child);
 
-	void print(int level = 0) const override {
-		std::string indentation(level * 2, ' ');
-		std::cout << indentation << _name;
-		for (const auto& arg : _arguments) {
-			std::cout << " " << arg;
-		}
-		std::cout << " {" << std::endl;
-		for (const auto& child : _children) {
-			child->print(level + 1);
-		}
-		std::cout << indentation << "}" << std::endl;
-	}
+	std::string					getName(void) const;
+	std::vector<std::string>	getArguments(void) const;
+	std::vector<ASTNode * >		getChildren(void) const;
+
+	void print(int level = 0) const override;
 };
+
+#endif // BLOCK_HPP

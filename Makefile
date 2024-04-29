@@ -15,6 +15,7 @@ INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ 
 # 		  Configuration/Configuration.cpp \
 
 SRCS	= main.cpp \
+		  AST/ASTNode.cpp AST/Block.cpp AST/Directive.cpp \
 		  Configuration/Configuration.cpp \
 		  Configuration/NginxParser.cpp \
 		  Cgi/Cgi.cpp Request/Request.cpp Connection/Connection.cpp Location/Location.cpp Log/Log.cpp \
