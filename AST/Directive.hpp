@@ -13,8 +13,8 @@ private:
 public:
 	Directive(const std::string& name, const std::vector<std::string>& arguments);
 
-	std::string					getName(void) const;
-	std::vector<std::string>	getArguments(void) const;
+	std::string					getName(void) const override;
+	std::vector<std::string>	getArguments(void) const override;
 
 	void print(int level = 0) const override;
 };

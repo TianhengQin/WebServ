@@ -17,9 +17,10 @@ public:
 
 	void addChild(ASTNode * child);
 
-	std::string					getName(void) const;
-	std::vector<std::string>	getArguments(void) const;
+	std::string					getName(void) const override;
+	std::vector<std::string>	getArguments(void) const override;
 	std::vector<ASTNode * >		getChildren(void) const;
+	std::vector<ASTNode * >		getServers(void);
 
 	void print(int level = 0) const override;
 };

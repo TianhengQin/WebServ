@@ -33,3 +33,14 @@ void Block::print(int level) const {
 	}
 	std::cout << indentation << "}" << std::endl;
 }
+
+// Replaced in Configuration.cpp
+std::vector<ASTNode * > Block::getServers(void) {
+	std::vector<ASTNode *> servers;
+	for (const auto& child : this->_children) {
+		if (child->getName() == "server") {
+			servers.push_back(child);
+		}
+	}
+	return servers;
+}

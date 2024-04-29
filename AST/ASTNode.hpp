@@ -13,7 +13,10 @@
 class ASTNode {
 public:
 	virtual ~ASTNode() {}
-	virtual void print(int level = 0) const = 0;
+
+	virtual std::string					getName(void) const = 0;
+	virtual std::vector<std::string>	getArguments(void) const = 0;
+	virtual void						print(int level = 0) const = 0;
 };
 
 
