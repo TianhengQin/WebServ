@@ -2,7 +2,10 @@
 #ifndef NGINXPARSER_HPP
 # define NGINXPARSER_HPP
 
-# include "ASTNode.hpp"
+# include "../AST/ASTNode.hpp"
+# include "../AST/Block.hpp"
+# include "../AST/Directive.hpp"
+
 
 # include <string>
 # include <iostream>

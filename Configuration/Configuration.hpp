@@ -3,7 +3,9 @@
 # define CONFIGURATION_HPP
 
 // # include "../Head.hpp"
-# include "ASTNode.hpp"
+# include "../AST/ASTNode.hpp"
+# include "../AST/Block.hpp"
+# include "../AST/Directive.hpp"
 # include "NginxParser.hpp"
 # include "Server.hpp"
 
@@ -27,18 +29,18 @@
 class Configuration {
 
 private:
-    std::string         _filename;
-    Block*              _root;
-    std::vector<Server> _servs;
+	std::string			_filename;
+	Block*				_root;
+	std::vector<Server> _servs;
 
 
 public:
-    Configuration(void);
-    Configuration(std::string filename);
+	Configuration(void);
+	Configuration(std::string filename);
 
-    ~Configuration();
+	~Configuration();
 
-    std::vector<Server> &getServs(void);
+	std::vector<Server> &getServs(void);
 
 };
 
