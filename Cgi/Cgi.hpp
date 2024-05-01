@@ -12,7 +12,7 @@ public:
     Cgi(Connection &conn);
     ~Cgi();
 
-    int setup(Connection &conn);
+    // int setup(Connection &conn);
     int run(Connection &conn);
     int end();
     int getConnectFd();
@@ -22,6 +22,7 @@ public:
     int send();
     int receive();
 
+    void setRequestBody(std::string &rb);
     std::string &response();
 
 private:

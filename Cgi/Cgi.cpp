@@ -126,3 +126,7 @@ int Cgi::receive() {
 std::string &Cgi::response() {
     return _recvBf;
 }
+
+void Cgi::setRequestBody(std::string &rb) {
+    _sendBf = rb;
+}

@@ -10,9 +10,9 @@ server:
   loaction: /
     methods: GET PUT DELETE
     root: /
-    cgi: .php php-fpm
-    cgi: .py python3
-    cgi: .sh bash
+    cgi: .php /usr/bin/php
+    cgi: .py /usr/local/bin/python3
+    cgi: .sh /bin/bash
   loaction: /test
     methods: GET PUT DELETE
     root: /test_page

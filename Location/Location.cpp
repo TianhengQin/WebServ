@@ -72,3 +72,7 @@ void Location::setMethods(int mtd) {
 void Location::setDirListing(bool dl) {
     _dirListing = dl;
 }
+
+void Location::setCgi(std::string const ext, std::string const bin) {
+    _cgiMap[ext] = bin;
+}
