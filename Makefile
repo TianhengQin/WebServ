@@ -8,7 +8,7 @@ NAME		= webserver
 CXX			= c++
 CXXFLAGS	= -std=c++11
 CXXFLAGS	+= -Wall -Wextra -Werror
-INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
+INCLUDE		= -I./AST -I./TestConfig/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
 			-I./Log/ -I./MimeType/ -I./Parser/ -I./Request/ -I./Response/ -I./WebServ/ -I./
 
 # SRCS	= main.cpp \
@@ -16,7 +16,7 @@ INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ 
 
 SRCS	= main.cpp \
 		  AST/ASTNode.cpp AST/Block.cpp AST/Directive.cpp \
-		  Configuration/Configuration.cpp \
+		  TestConfig/Configuration.cpp \
 		  Parser/NginxParser.cpp \
 		  Cgi/Cgi.cpp Request/Request.cpp Connection/Connection.cpp Location/Location.cpp Log/Log.cpp \
 		  MimeType/MimeType.cpp Response/Response.cpp \

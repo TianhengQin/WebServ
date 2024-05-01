@@ -25,9 +25,10 @@ void Connection::buildResponse() {
 
     std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
-    size_t pos = _quest.get().find("\r\n\r\n");
-    f2 << _quest.get().substr(pos + 4);
-
+    std::size_t pos = _quest.get().find("\r\n\r\n");
+    if (pos != std::string::npos)
+        f2 << _quest.get().substr(pos + 4);
+    f2.close();
     Log::print(INFO, _quest.get().substr(0,100), 0);
     Log::print(INFO, "size :", _quest.get().size());
 
