@@ -31,7 +31,7 @@
 // # include "Configuration.hpp"
 // # include "Location.hpp"
 
-# define SELECT_TIMEOUT 1
+# define SELECT_TIMEOUT 8
 
 # define RS_BF_SIZE 8192
 

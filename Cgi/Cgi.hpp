@@ -27,6 +27,9 @@ public:
 
 private:
 
+    void setEnv();
+    void exeCgi();
+
     int _connectFd;
     int _pipeIn[2];
     int _pipeOut[2];
@@ -35,7 +38,9 @@ private:
     std::string _sendBf;
     std::string _recvBf;
     std::string _program;
+    std::string _script;
 
+    std::vector<std::string> _env;
 };
 
 #endif

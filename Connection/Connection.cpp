@@ -107,4 +107,10 @@ std::string &Connection::getCgiProgram() {
     return _cgiProgram;
 }
 
-void Connection::buildCgiResponse() {}
+std::string &Connection::getCgiScript() {
+    return _cgiScript;
+}
+
+void Connection::buildCgiResponse(std::string const &bd) {
+    _sendBf = bd;
+}
