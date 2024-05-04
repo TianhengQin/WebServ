@@ -184,6 +184,9 @@ void WebServ::disconnect(int fd) {
         rmFd(fd, 'r');
     close(fd);
     Log::print(DEBUG, "Closed ", fd);
+    if (_connections[fd].cgiState() == CGI_ON) {
+        closeCgi(_cgis[fd].getPipeInFd(), CGI_ON);
+    }
     _connections.erase(fd);
     Log::print(DEBUG, "Remove connection ", fd);
 }
@@ -215,6 +218,7 @@ void WebServ::send(int fd) {
     if(_connections[fd].send() == 0) {
         if (_connections[fd].session() == true) {
             fdSwitch(fd, 's');
+            Log::print(DEBUG, "Keep alive on ", fd);
         } else {
             disconnect(fd);
         }
@@ -226,7 +230,7 @@ void WebServ::openCgi(int fd) {
     Cgi cgi(_connections[fd]);
 
     if (_connections[fd].cgiState() == CGI_FAILED) {
-        _connections[fd].buildCgiResponse();
+        _connections[fd].buildCgiResponse("fail");
         return;
     }
     addFd(cgi.getPipeInFd(), 's');
@@ -259,8 +263,9 @@ void WebServ::recvCgi(int fd) {
             closeCgi(fd, CGI_FAILED);
         }
         int conn = _cgis[_cgiFds[fd]].getConnectFd();
-        _connections[conn].setResponse(_cgis[_cgiFds[fd]].response());
+        _connections[conn].buildCgiResponse(_cgis[_cgiFds[fd]].response());
         rmFd(fd, 'r');
+        closeCgi(fd, CGI_SUCCEED);
     }
 }
 

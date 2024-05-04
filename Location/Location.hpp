@@ -31,6 +31,7 @@ public:
     void setRedir(std::string const rdr);
     void setMethods(int mtd);
     void setDirListing(bool dl);
+    void setCgi(std::string const ext, std::string const bin);
 
 private:
 
@@ -42,6 +43,8 @@ private:
     int _methods; // 1 GET 2 POST 4 DELETE 8 PUT 16 HEAD
 
     bool _dirListing;
+
+    std::map<std::string, std::string> _cgiMap;
 
 };
 

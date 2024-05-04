@@ -13,6 +13,9 @@ Configuration::Configuration() {
     l1.setPath("/");
     l1.setMethods(GET|PUT|DELETE);
     l1.setRoot("/");
+    l1.setCgi(".php", "/usr/bin/php");
+    l1.setCgi(".sh", "/bin/bash");
+    l1.setCgi(".py", "/usr/local/bin/python3");
     Location l2;
     l2.setPath("/test");
     l2.setMethods(GET|PUT|DELETE);

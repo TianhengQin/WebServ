@@ -5,6 +5,7 @@ Cgi::Cgi() {}
 Cgi::Cgi(Connection &conn) {
     _connectFd = conn.getFd();
     _program = conn.getCgiProgram();
+    _script = conn.getCgiScript();
 
     if (pipe(_pipeIn) == -1) {
         Log::print(ERROR, "Cgi pipe create failed on connection ", _connectFd);
@@ -24,6 +25,7 @@ Cgi::Cgi(Connection &conn) {
         close(_pipeOut[1]);
         conn.setCgiState(CGI_FAILED);
     }
+    setEnv();
 }
 
 int Cgi::run(Connection &conn) {
@@ -44,7 +46,7 @@ int Cgi::run(Connection &conn) {
         }
         close(_pipeOut[1]);
         close(_pipeIn[0]);
-        // execve();
+        exeCgi();
     }
     close(_pipeOut[1]);
     close(_pipeIn[0]);
@@ -53,7 +55,7 @@ int Cgi::run(Connection &conn) {
 
 int Cgi::end() {
     int exit;
-    waitpid(_pid, &exit, WNOHANG);
+    waitpid(_pid, &exit, 0);
     if (exit) {
         return 1;
     } else {
@@ -67,7 +69,7 @@ Cgi::~Cgi() {
     close(_pipeOut[0]);
     close(_pipeOut[1]);
     kill(_pid, SIGKILL);
-    waitpid(_pid, NULL, WNOHANG);
+    waitpid(_pid, NULL, 0);
 }
 
 int Cgi::getConnectFd() {
@@ -125,4 +127,42 @@ int Cgi::receive() {
 
 std::string &Cgi::response() {
     return _recvBf;
+}
+
+void Cgi::setRequestBody(std::string &rb) {
+    _sendBf = rb;
+}
+
+void Cgi::setEnv() {
+    _env.push_back("GATEWAY_INTERFACE=CGI/1.1");
+    _env.push_back("SERVER_SOFTWARE=python3");
+    _env.push_back("SERVER_PROTOCOL=HTTP/1.1");
+    _env.push_back("SCRIPT_FILENAME=index.py");
+    _env.push_back("REQUEST_URI=");
+    _env.push_back("HTTP_HOST=localhost");
+    _env.push_back("REQUEST_METHOD=GET");
+    _env.push_back("QUERY_STRING=/?");
+    _env.push_back("REDIRECT_STATUS=200");
+    _env.push_back("SCRIPT_NAME=index.py");
+    _env.push_back("CONTENT_LENGTH=0");
+    _env.push_back("CONTENT_TYPE=text/plain");
+    _env.push_back("SERVER_NAME=localhost");
+    _env.push_back("SERVER_PORT=8080");
+    _env.push_back("HTTP_COOKIE=");
+}
+
+void Cgi::exeCgi() {
+    std::vector<char *> arg;
+    std::vector<char *> env;
+    arg.push_back(const_cast<char *>(_program.c_str()));
+    arg.push_back(const_cast<char *>(_script.c_str()));
+    arg.push_back(NULL);
+    std::vector<std::string>::iterator it;
+    for (it = _env.begin(); it != _env.end(); ++it) {
+        env.push_back(const_cast<char *>(it->c_str()));
+    }
+    env.push_back(NULL);
+    execve(_program.c_str(), arg.data(), env.data());
+    Log::print(WARNING, "Cgi exe failed on connection ", _connectFd);
+    exit(1);
 }

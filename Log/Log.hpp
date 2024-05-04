@@ -8,7 +8,7 @@
 # define WARNING 2
 # define ERROR 3
 
-# define LEVEL INFO
+# define LEVEL DEBUG
 
 namespace Log {
 

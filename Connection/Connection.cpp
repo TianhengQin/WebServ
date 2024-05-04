@@ -25,10 +25,11 @@ void Connection::buildResponse() {
 
     std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
-    size_t pos = _quest.get().find("\r\n\r\n");
-    f2 << _quest.get().substr(pos + 4);
-
-    Log::print(INFO, _quest.get().substr(0,100), 0);
+    std::size_t pos = _quest.get().find("\r\n\r\n");
+    if (pos != std::string::npos)
+        f2 << _quest.get().substr(pos + 4);
+    f2.close();
+    std::cout << _quest.get().substr(0,500) << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
     std::string line;
@@ -106,4 +107,10 @@ std::string &Connection::getCgiProgram() {
     return _cgiProgram;
 }
 
-void Connection::buildCgiResponse() {}
+std::string &Connection::getCgiScript() {
+    return _cgiScript;
+}
+
+void Connection::buildCgiResponse(std::string const &bd) {
+    _sendBf = bd;
+}

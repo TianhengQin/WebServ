@@ -7,6 +7,7 @@
 # include "MimeType.hpp"
 # include "Request.hpp"
 
+# define CGI_SUCCEED 2
 # define CGI_ON 1
 # define CGI_OFF 0
 # define CGI_FAILED -1
@@ -34,8 +35,9 @@ public:
     bool session();
     int cgiState();
     void setCgiState(int s);
-    void buildCgiResponse();
+    void buildCgiResponse(std::string const &bd);
     std::string &getCgiProgram();
+    std::string &getCgiScript();
 
 private:
 
@@ -58,6 +60,7 @@ private:
     int _cgiState;
 
     std::string _cgiProgram;
+    std::string _cgiScript;
 };
 
 #endif
