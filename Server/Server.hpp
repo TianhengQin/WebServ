@@ -22,13 +22,13 @@ public:
 	unsigned int getHost();
 	unsigned short getPort();
 
-	void setServName(std::string &nam);
-	void setRoot(std::string &rt);
-	void setIndex(std::string &idx);
-	void setHost(std::string &hst);
+	void setServName(std::string nam);
+	void setRoot(std::string rt);
+	void setIndex(std::string idx);
+	void setHost(std::string hst);
 	void setPort(unsigned short pt);
 	void setCliMaxBody(unsigned int cmb);
-	void setErrPage(int code, std::string const &path);
+	void setErrPage(int code, std::string path);
 	void setLocation(Location &loc);
 
 private:
