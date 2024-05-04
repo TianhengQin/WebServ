@@ -4,7 +4,11 @@
 
 # include "ASTNode.hpp"
 
-// Directive node, represents a single directive
+/**
+ * @brief Directive
+ * Represents a directive in the nginx configuration file
+*/
+
 class Directive : public ASTNode {
 private:
 	std::string                 _name;

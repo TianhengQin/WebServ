@@ -7,9 +7,14 @@
 # include <memory>
 # include <iostream>
 
-#define INDENT_SIZE 4
+# define INDENT_SIZE 4
 
-// Base class for any node in the AST
+/**
+ * @brief Abstract Syntax Tree Node
+ Base class for any node in the abstract syntax tree
+*/
+
+
 class ASTNode {
 public:
 	virtual ~ASTNode() {}

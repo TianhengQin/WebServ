@@ -5,7 +5,11 @@
 # include "ASTNode.hpp"
 
 
-// Block node, represents a block that can contain directives or other blocks
+/**
+ * @brief Block
+ * Represents a block in the nginx configuration file
+*/
+
 class Block : public ASTNode {
 private:
 	std::string					_name;

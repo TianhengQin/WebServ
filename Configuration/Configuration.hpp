@@ -3,11 +3,14 @@
 # define CONFIGURATION_HPP
 
 // # include "../Head.hpp"
-# include "../AST/ASTNode.hpp"
-# include "../AST/Block.hpp"
-# include "../AST/Directive.hpp"
+# include "ASTNode.hpp"
+# include "Block.hpp"
+# include "Directive.hpp"
 # include "Parser/NginxParser.hpp"
 # include "Server.hpp"
+# include "Head.hpp"
+# include "Server.hpp"
+# include "Location.hpp"
 
 # include <string>
 # include <iostream>
@@ -37,7 +40,6 @@ private:
 public:
 	Configuration(void);
 	Configuration(std::string filename);
-
 	~Configuration();
 
 	std::vector<Server> &getServs(void);
