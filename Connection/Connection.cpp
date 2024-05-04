@@ -29,7 +29,7 @@ void Connection::buildResponse() {
     if (pos != std::string::npos)
         f2 << _quest.get().substr(pos + 4);
     f2.close();
-    Log::print(INFO, _quest.get().substr(0,100), 0);
+    std::cout << _quest.get().substr(0,500) << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
     std::string line;

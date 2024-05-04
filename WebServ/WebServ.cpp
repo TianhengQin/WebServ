@@ -184,6 +184,9 @@ void WebServ::disconnect(int fd) {
         rmFd(fd, 'r');
     close(fd);
     Log::print(DEBUG, "Closed ", fd);
+    if (_connections[fd].cgiState() == CGI_ON) {
+        closeCgi(_cgis[fd].getPipeInFd(), CGI_ON);
+    }
     _connections.erase(fd);
     Log::print(DEBUG, "Remove connection ", fd);
 }
