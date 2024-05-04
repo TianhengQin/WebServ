@@ -15,35 +15,44 @@ public:
 	Server &operator=(Server const &sv);
 	~Server();
 
-	void setup();
+	void			setup();
 
-	int getFd();
-	std::string &getName();
-	unsigned int getHost();
-	unsigned short getPort();
+	std::string		getName(void);
+	std::string		getRoot(void);
+	std::string		getIndex(void);
+	unsigned int	getHost(void);
 
-	void setServName(std::string nam);
-	void setRoot(std::string rt);
-	void setIndex(std::string idx);
-	void setHost(std::string hst);
-	void setPort(unsigned short pt);
-	void setCliMaxBody(unsigned int cmb);
-	void setErrPage(int code, std::string path);
-	void setLocation(Location &loc);
+	int				getFd(void);
+	unsigned int	getPort(void);
+	unsigned int	getCliMaxBody(void);
+
+	void	setServName(std::string name);
+	void	setRoot(std::string root);
+	void	setIndex(std::string index);
+	void	setHost(std::string host);
+	void	setPort(unsigned int port);
+	void	setCliMaxBody(unsigned int cmb);
+	void	setErrPage(int code, std::string path);
+	void	setLocation(Location &loc);
 
 private:
 
 	void initErrorPages();
 
+	std::vector<std::string>	_server_names;
+	std::vector<std::string>	_access_logs;
+	std::vector<std::string>	_error_pages;
+	std::vector<std::string>	_listen;
+	
 	std::string		_servName;
 	std::string		_root;
 	std::string		_index;
 
-	struct sockaddr_in _socketAddr;
-	unsigned int	_socketAddrLen;
-	unsigned int	_host;
-	unsigned short	_port;
-	unsigned int	_cliMaxBody;
+	struct sockaddr_in	_socketAddr;
+	unsigned int		_socketAddrLen;
+	unsigned int		_host;
+	unsigned int		_port;
+	unsigned int		_cliMaxBody;
 
 	int				_listenFd;
 

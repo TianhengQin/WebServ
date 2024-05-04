@@ -20,10 +20,10 @@
 
 class ASTNode;
 
-std::pair<std::string, std::vector<std::string> > parseNameAndArguments(const std::string& line);
-void ltrim(std::string &s);
-void rtrim(std::string &s);
-void trim(std::string &s);
-class Block * parseConfig(std::istream& input);
+void	ltrim(std::string &s);
+void	rtrim(std::string &s);
+void	trim(std::string &s);
+
+class Block *	parseConfig(std::istream& input);
 
 #endif // NGINXPARSER_HPP

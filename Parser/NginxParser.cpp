@@ -1,7 +1,7 @@
 
 #include "NginxParser.hpp"
 
-std::pair<std::string, std::vector<std::string> > parseNameAndArguments(const std::string& line) {
+static std::pair<std::string, std::vector<std::string> > parseNameAndArguments(const std::string& line) {
 	std::string					name;
 	std::vector<std::string>	arguments;
 	std::string::size_type		pos;

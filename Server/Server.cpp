@@ -53,22 +53,6 @@ void Server::initErrorPages() {
 	_errorPage[505] = "";
 }
 
-int Server::getFd() {
-	return _listenFd;
-}
-
-std::string &Server::getName() {
-	return _servName;
-}
-
-unsigned int Server::getHost() {
-	return _host;
-}
-
-unsigned short Server::getPort() {
-	return _port;
-}
-
 void Server::setup() {
 
 	_listenFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -93,24 +77,60 @@ void Server::setup() {
 	}
 }
 
-void Server::setServName(std::string nam) {
-	this->_servName = nam;
+/**
+ * Getters
+*/
+
+std::string Server::getName(void) {
+	return this->_servName;
 }
 
-void Server::setRoot(std::string rt) {
-	this->_root = rt;
+std::string Server::getRoot(void) {
+	return this->_root;
 }
 
-void Server::setIndex(std::string idx) {
-	this->_index = idx;
+std::string Server::getIndex(void) {
+	return this->_index;
 }
 
-void Server::setHost(std::string hst) {
-	this->_host = inet_addr(hst.c_str());
+unsigned int Server::getHost(void) {
+	return this->_host;
 }
 
-void Server::setPort(unsigned short pt) {
-	this->_port = pt;
+int Server::getFd(void) {
+	return this->_listenFd;
+}
+
+unsigned int Server::getPort(void) {
+	return this->_port;
+}
+
+unsigned int Server::getCliMaxBody(void) {
+	return this->_cliMaxBody;
+}
+
+/**
+ * Setters
+*/
+
+void Server::setServName(std::string name) {
+	this->_servName = name;
+}
+
+void Server::setRoot(std::string root) {
+	this->_root = root;
+}
+
+void Server::setIndex(std::string index) {
+	this->_index = index;
+}
+
+void Server::setHost(std::string host) {
+	this->_host = inet_addr(host.c_str());
+}
+
+void Server::setPort(unsigned int port) {
+	this->_port = port;
 }
 
 void Server::setCliMaxBody(unsigned int cmb) {
