@@ -24,6 +24,19 @@ void	ltrim(std::string &s);
 void	rtrim(std::string &s);
 void	trim(std::string &s);
 
-class Block *	parseConfig(std::istream& input);
+// class Block *	parseConfig(std::istream& input);
+
+class NginxParser {
+public:
+	NginxParser(std::istream& input);
+	~NginxParser();
+	Block *parse(void);
+	
+private:
+	std::istream&		_input;
+
+	std::pair<std::string, std::vector<std::string> >	parseNameAndArguments(const std::string &line);
+
+};
 
 #endif // NGINXPARSER_HPP

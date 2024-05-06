@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() {
+Server::Server(void) {
 	this->_port = 0;
 	this->_host = 0;
 	this->_servName = "";
