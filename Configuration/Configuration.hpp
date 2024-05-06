@@ -33,12 +33,15 @@ class Configuration {
 
 private:
 	std::string			_filename;
-	Block*				_root;
+	Block				*_root;
 	std::vector<Server> _servs;
-
+	Block				*parseConfig(std::ifstream &file);
+	void				setServerConfig(Block *block, Server &server);
 
 public:
 	Configuration(void);
+	Configuration(const Configuration &other);
+	Configuration &operator=(const Configuration &other);
 	Configuration(std::string filename);
 	~Configuration();
 
