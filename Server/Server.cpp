@@ -8,7 +8,7 @@ Server::Server() {
 	this->_cliMaxBody = UINT_MAX;
 	this->_index = "";
 	this->_listenFd = 0;
-	this->initErrorPages();
+	initDefaultErrorPages();
 	this->_socketAddrLen = sizeof(_socketAddr);
 	memset(&_socketAddr, 0, _socketAddrLen);
 }
@@ -28,7 +28,7 @@ Server &Server::operator=(const Server &sv) {
 		this->_host = sv._host;
 		this->_cliMaxBody = sv._cliMaxBody;
 		this->_index = sv._index;
-		this->_errorPage = sv._errorPage;
+		this->_error_page = sv._error_page;
 		this->_locations = sv._locations;
 		this->_listenFd = sv._listenFd;
 		this->_socketAddr = sv._socketAddr;
@@ -37,23 +37,23 @@ Server &Server::operator=(const Server &sv) {
 	return (*this);
 }
 
-void Server::initErrorPages() {
-	_errorPage[301] = "";
-	_errorPage[302] = "";
-	_errorPage[400] = "";
-	_errorPage[401] = "";
-	_errorPage[403] = "";
-	_errorPage[404] = "";
-	_errorPage[405] = "";
-	_errorPage[406] = "";
-	_errorPage[500] = "";
-	_errorPage[501] = "";
-	_errorPage[502] = "";
-	_errorPage[503] = "";
-	_errorPage[505] = "";
+void Server::initDefaultErrorPages(void) {
+	this->_error_page[301] = "config-files/default_error_pages/301.html";
+	this->_error_page[302] = "config-files/default_error_pages/302.html";
+	this->_error_page[400] = "config-files/default_error_pages/400.html";
+	this->_error_page[401] = "config-files/default_error_pages/401.html";
+	this->_error_page[403] = "config-files/default_error_pages/403.html";
+	this->_error_page[404] = "config-files/default_error_pages/404.html";
+	this->_error_page[405] = "config-files/default_error_pages/405.html";
+	this->_error_page[406] = "config-files/default_error_pages/406.html";
+	this->_error_page[500] = "config-files/default_error_pages/500.html";
+	this->_error_page[501] = "config-files/default_error_pages/501.html";
+	this->_error_page[502] = "config-files/default_error_pages/502.html";
+	this->_error_page[503] = "config-files/default_error_pages/503.html";
+	this->_error_page[505] = "config-files/default_error_pages/505.html";
 }
 
-void Server::setup() {
+void Server::setup(void) {
 
 	_listenFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_listenFd > FD_SETSIZE) {
@@ -138,7 +138,7 @@ void Server::setCliMaxBody(unsigned int cmb) {
 }
 
 void Server::setErrPage(int code, std::string path) {
-	this->_errorPage[code] = path;
+	this->_error_page[code] = path;
 }
 
 void Server::setLocation(Location &loc) {
