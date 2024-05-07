@@ -67,7 +67,7 @@ void WebServ::run() {
         Log::print(DEBUG, "Selecting ", 0);
         ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
         if (ready < 0) {
-            Log::print(ERROR, "Select failed ", 0);
+            Log::print(ERROR, "Select failed ", ready);
             throw std::runtime_error("Select Failed");
         } else if (ready == 0) {
             timeOut();
@@ -204,6 +204,7 @@ void WebServ::receive(int fd) {
         Log::print(DEBUG, "Switch to send ", fd);
         _connections[fd].buildResponse();
         if (_connections[fd].cgiState() == CGI_ON) {
+            Log::print(DEBUG, "open cgi ", fd);
             openCgi(fd);
         }
         Log::print(DEBUG, "build complete ", fd);
@@ -233,12 +234,16 @@ void WebServ::openCgi(int fd) {
         _connections[fd].buildCgiResponse("fail");
         return;
     }
+    Log::print(DEBUG, "cgi created ", fd);
     addFd(cgi.getPipeInFd(), 's');
+    Log::print(DEBUG, "cgi pipin ", cgi.getPipeInFd());
     addFd(cgi.getPipeOutFd(), 'r');
+    Log::print(DEBUG, "cgi pipout ", cgi.getPipeOutFd());
     _cgis.insert(std::make_pair(fd, cgi));
     _cgiFds[cgi.getPipeInFd()] = fd;
     _cgiFds[cgi.getPipeOutFd()] = fd;
     _cgis[fd].run(_connections[fd]);
+    Log::print(DEBUG, "cgi run ", fd);
 }
 
 void WebServ::closeCgi(int fd, int state) {

@@ -29,7 +29,7 @@
 
 
 int main() {
-	int watch_dog = 11;
+	int watch_dog = 2;
 	while (--watch_dog) {
 		try {
 			Log::print(INFO, "Server Restarting ...", 0);

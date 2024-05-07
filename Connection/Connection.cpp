@@ -23,27 +23,34 @@ int Connection::getFd() {
 
 void Connection::buildResponse() {
 
-    std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
+    // PUT test
+    // std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
-    std::size_t pos = _quest.get().find("\r\n\r\n");
-    if (pos != std::string::npos)
-        f2 << _quest.get().substr(pos + 4);
-    f2.close();
-    std::cout << _quest.get().substr(0,500) << std::endl;
-    Log::print(INFO, "size :", _quest.get().size());
+    // std::size_t pos = _quest.get().find("\r\n\r\n");
+    // if (pos != std::string::npos)
+    //     f2 << _quest.get().substr(pos + 4);
+    // f2.close();
+    // std::cout << _quest.get().substr(0,500) << std::endl;
+    // Log::print(INFO, "size :", _quest.get().size());
 
-    std::string line;
-    std::string html;
-    std::ifstream myfile("_test/website/test.html");
-    if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            html = html + line;
-        }
-        myfile.close();
-    }
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
-    _sendBf = ss.str();
+    // std::string line;
+    // std::string html;
+    // std::ifstream myfile("_test/website/test.html");
+    // if (myfile.is_open()) {
+    //     while (std::getline(myfile, line)) {
+    //         html = html + line;
+    //     }
+    //     myfile.close();
+    // }
+    // std::ostringstream ss;
+    // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    // _sendBf = ss.str();
+    // _keepAlive = false;
+
+    // CGI test
+    _cgiProgram = "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3";
+    _cgiScript = "_test/website/cgi_test.py";
+    _cgiState = CGI_ON;
     _keepAlive = false;
 }
 
@@ -113,4 +120,7 @@ std::string &Connection::getCgiScript() {
 
 void Connection::buildCgiResponse(std::string const &bd) {
     _sendBf = bd;
+    std::ostringstream ss;
+    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << _sendBf.size() << "\n\n" << _sendBf;
+    _sendBf = ss.str();
 }
