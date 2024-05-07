@@ -24,6 +24,7 @@ public:
 
     void setRequestBody(std::string &rb);
     std::string &response();
+    void kill();
 
 private:
 

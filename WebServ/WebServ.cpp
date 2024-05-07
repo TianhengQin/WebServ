@@ -31,6 +31,7 @@ WebServ::WebServ(Configuration &conf) {
             continue;
         }
         it->setup();
+        _servers.insert(std::make_pair(it->getFd(), *it));
         if (listen(it->getFd(), 1024) == -1) {
             Log::print(ERROR, "Listen socket failed on fd ", it->getFd());
             throw std::runtime_error("Listen Failed");
@@ -39,13 +40,25 @@ WebServ::WebServ(Configuration &conf) {
             Log::print(ERROR, "Set fd nonblocking failed on fd ", it->getFd());
             throw std::runtime_error("Set Nonblock Failed");
         }
-        _servers.insert(std::make_pair(it->getFd(), *it));
         FD_SET(it->getFd(), &_recvFds);
+        _fdMax = it->getFd();
     }
-    _fdMax = servs.back().getFd();
 }
 
-WebServ::~WebServ() {}
+WebServ::~WebServ() {
+    std::map<int, Connection>::iterator itcon;
+    for (itcon = _connections.begin(); itcon != _connections.end(); ++itcon) {
+        close(itcon->first);
+    }
+    std::map<int, Cgi>::iterator itcgi;
+    for (itcgi = _cgis.begin(); itcgi != _cgis.end(); ++itcgi) {
+        itcgi->second.kill();
+    }
+    std::map<int, Server>::iterator itsv;
+    for (itsv = _servers.begin(); itsv != _servers.end(); ++itsv) {
+        close(itsv->first);
+    }
+}
 
 void WebServ::run() {
 
@@ -77,13 +90,13 @@ void WebServ::run() {
             if (FD_ISSET(fd, &recv_dup)) {
                 if (_servers.count(fd)) {
                     connect(fd);
-                } else if (_connections.count(fd) && _connections[fd].cgiState() != CGI_ON) {
+                } else if (_connections.count(fd)) {
                     receive(fd);
                 } else if (_cgiFds.count(fd)) {
                     recvCgi(fd);
                 }
             } else if (FD_ISSET(fd, &send_dup)) {
-                if (_connections.count(fd)) {
+                if (_connections.count(fd) && _connections[fd].cgiState() != CGI_ON) {
                     send(fd);
                 } else if (_cgiFds.count(fd)) {
                     sendCgi(fd);
@@ -252,6 +265,9 @@ void WebServ::closeCgi(int fd, int state) {
     int conn = _cgis[_cgiFds[fd]].getConnectFd();
     rmFd(inFd, 's');
     rmFd(outFd, 'r');
+    if (state != CGI_SUCCEED) {
+        _cgis[_cgiFds[fd]].kill();
+    }
     _cgis.erase(_cgiFds[fd]);
     _cgiFds.erase(outFd);
     _cgiFds.erase(inFd);

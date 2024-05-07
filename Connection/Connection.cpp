@@ -121,6 +121,6 @@ std::string &Connection::getCgiScript() {
 void Connection::buildCgiResponse(std::string const &bd) {
     _sendBf = bd;
     std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << _sendBf.size() << "\n\n" << _sendBf;
+    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << _sendBf.size() << "\n" << _sendBf;
     _sendBf = ss.str();
 }

@@ -17,7 +17,8 @@ Cgi::Cgi(Connection &conn) {
         close(_pipeIn[1]);
         conn.setCgiState(CGI_FAILED);
     }
-    if (fcntl(_pipeOut[0], F_SETFL, O_NONBLOCK) == -1 || fcntl(_pipeIn[1], F_SETFL, O_NONBLOCK) == -1) {
+    // std::cout << "pipe: " << _pipeIn[0] << _pipeIn[1] << _pipeOut[0] << _pipeOut[1] << std::endl;
+    if (fcntl(_pipeOut[0], F_SETFL, O_NONBLOCK) == -1 || fcntl(_pipeIn[1], F_SETFL, 1 | O_NONBLOCK) == -1) {
         Log::print(ERROR, "Cgi pipe set non-block failed on connection ", _connectFd);
         close(_pipeIn[0]);
         close(_pipeIn[1]);
@@ -27,12 +28,13 @@ Cgi::Cgi(Connection &conn) {
     }
     setEnv();
     Log::print(DEBUG, "Cgi create succeed", 0);
+    _sendBf.erase();
 }
 
 int Cgi::run(Connection &conn) {
     Log::print(DEBUG, "Cgi before fork", 0);
     _pid = fork();
-    Log::print(WARNING, "Cgi after fork ", _pid);
+    std::cerr << _pid << std::endl;
     if (_pid < 0) {
         Log::print(ERROR, "Cgi fork failed on connection ", _connectFd);
         conn.setCgiState(CGI_FAILED);
@@ -41,15 +43,21 @@ int Cgi::run(Connection &conn) {
     if (_pid == 0) {
         close(_pipeOut[0]);
         close(_pipeIn[1]);
-        if (dup2(_pipeOut[1], 1) == -1 || dup2(_pipeIn[0], 0) == -1) {
-            Log::print(ERROR, "Cgi dup failed on connection ", _connectFd);
+        if (dup2(_pipeIn[0], 0) == -1) {
+            Log::print(ERROR, "Cgi dup failed on fd ", _pipeIn[0]);
+            close(_pipeOut[1]);
+            close(_pipeIn[0]);
+            exit(1);
+        }
+        if (dup2(_pipeOut[1], 1) == -1) {
+            Log::print(ERROR, "Cgi dup failed on fd ", _pipeOut[1]);
             close(_pipeOut[1]);
             close(_pipeIn[0]);
             exit(1);
         }
         close(_pipeOut[1]);
         close(_pipeIn[0]);
-        Log::print(DEBUG, "Cgi exe", 0);
+        Log::print(WARNING, "Cgi exe", 0);
         exeCgi();
     }
     close(_pipeOut[1]);
@@ -57,9 +65,21 @@ int Cgi::run(Connection &conn) {
     return 0;
 }
 
+void Cgi::kill() {
+    close(_pipeIn[0]);
+    close(_pipeIn[1]);
+    close(_pipeOut[0]);
+    close(_pipeOut[1]);
+    Log::print(DEBUG, "kill cgi", 0);
+    ::kill(_pid, SIGKILL);
+    waitpid(_pid, NULL, 0);
+}
+
 int Cgi::end() {
     int exit;
+    Log::print(DEBUG, "wait pid", 0);
     waitpid(_pid, &exit, 0);
+    Log::print(DEBUG, "cgi exit ", exit);
     if (exit) {
         return 1;
     } else {
@@ -67,14 +87,7 @@ int Cgi::end() {
     }
 }
 
-Cgi::~Cgi() {
-    close(_pipeIn[0]);
-    close(_pipeIn[1]);
-    close(_pipeOut[0]);
-    close(_pipeOut[1]);
-    kill(_pid, SIGKILL);
-    waitpid(_pid, NULL, 0);
-}
+Cgi::~Cgi() {}
 
 int Cgi::getConnectFd() {
     return _connectFd;
