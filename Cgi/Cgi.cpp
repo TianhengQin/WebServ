@@ -32,9 +32,9 @@ Cgi::Cgi(Connection &conn) {
 }
 
 int Cgi::run(Connection &conn) {
-    Log::print(DEBUG, "Cgi before fork", 0);
+    // Log::print(DEBUG, "Cgi before fork", 0);
     _pid = fork();
-    std::cerr << _pid << std::endl;
+    // std::cerr << _pid << std::endl;
     if (_pid < 0) {
         Log::print(ERROR, "Cgi fork failed on connection ", _connectFd);
         conn.setCgiState(CGI_FAILED);
@@ -57,7 +57,7 @@ int Cgi::run(Connection &conn) {
         }
         close(_pipeOut[1]);
         close(_pipeIn[0]);
-        Log::print(WARNING, "Cgi exe", 0);
+        // Log::print(DEBUG, "Cgi exe", 0);
         exeCgi();
     }
     close(_pipeOut[1]);

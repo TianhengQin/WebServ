@@ -77,7 +77,7 @@ void WebServ::run() {
         FD_COPY(&_recvFds, &recv_dup);
         FD_COPY(&_sendFds, &send_dup);
     
-        Log::print(DEBUG, "Selecting ", 0);
+        // Log::print(DEBUG, "Selecting ", 0);
         ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
         if (ready < 0) {
             Log::print(ERROR, "Select failed ", ready);
@@ -108,18 +108,18 @@ void WebServ::run() {
 }
 
 void WebServ::timeOut() {
-    Log::print(DEBUG, "==== Check time out ", 0);
+    // Log::print(DEBUG, "==== Check time out ", 0);
     std::vector<int> timeOutList;
     std::time_t currentTime = std::time(nullptr);
     std::map<int, Connection>::iterator it;
     for (it = _connections.begin(); it != _connections.end(); ++it) {
-        Log::print(DEBUG, "Checking ", 0);
+        // Log::print(DEBUG, "Checking ", 0);
         if(currentTime - it->second.getTimeStamp() > _timeOut) {
             timeOutList.push_back(it->first);
         }
     }
     if (timeOutList.empty()) {
-        Log::print(DEBUG, "==== No time out", 0);
+        // Log::print(DEBUG, "==== No time out", 0);
         return;
     }
     std::vector<int>::iterator itt;
