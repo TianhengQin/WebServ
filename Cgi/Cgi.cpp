@@ -28,7 +28,7 @@ Cgi::Cgi(Connection &conn) {
     }
     setEnv();
     Log::print(DEBUG, "Cgi create succeed", 0);
-    _sendBf.erase();
+    _sendBf = conn.getCgiSendBf();
 }
 
 int Cgi::run(Connection &conn) {

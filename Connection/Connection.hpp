@@ -38,6 +38,7 @@ public:
     void buildCgiResponse(std::string const &bd);
     std::string &getCgiProgram();
     std::string &getCgiScript();
+    std::string &getCgiSendBf();
 
 private:
 

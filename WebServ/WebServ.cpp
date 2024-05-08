@@ -292,6 +292,7 @@ void WebServ::recvCgi(int fd) {
 
 void WebServ::sendCgi(int fd) {
     if (_cgis[_cgiFds[fd]].send() == 0) {
+        close(fd);
         rmFd(fd, 's');
     }
 }
