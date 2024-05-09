@@ -25,36 +25,36 @@ int Connection::getFd() {
 void Connection::buildResponse() {
 
     // PUT test
-    std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
+    // std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
-    std::size_t pos = _quest.get().find("\r\n\r\n");
-    if (pos != std::string::npos)
-        f2 << _quest.get().substr(pos + 4);
-    f2.close();
-    std::cout << _quest.get().substr(0,500) << std::endl;
-    Log::print(INFO, "size :", _quest.get().size());
+    // std::size_t pos = _quest.get().find("\r\n\r\n");
+    // if (pos != std::string::npos)
+    //     f2 << _quest.get().substr(pos + 4);
+    // f2.close();
+    // std::cout << _quest.get().substr(0,500) << std::endl;
+    // Log::print(INFO, "size :", _quest.get().size());
 
-    std::string line;
-    std::string html;
-    std::ifstream myfile("_test/website/test.html");
-    if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            html = html + line;
-        }
-        myfile.close();
-    }
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
-    _sendBf = ss.str();
-    _keepAlive = false;
+    // std::string line;
+    // std::string html;
+    // std::ifstream myfile("_test/website/test.html");
+    // if (myfile.is_open()) {
+    //     while (std::getline(myfile, line)) {
+    //         html = html + line;
+    //     }
+    //     myfile.close();
+    // }
+    // std::ostringstream ss;
+    // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    // _sendBf = ss.str();
+    // _keepAlive = false;
 
     // CGI test
-    // std::cout << _quest.get().substr(0,500) << std::endl;
-    // _cgiProgram = "/usr/local/bin/python3";
-    // _cgiScript = "_test/website/cgi_test.py";
-    // _cgiSendBf = "[cgi request body]";
-    // _cgiState = CGI_ON;
-    // _keepAlive = false;
+    std::cout << _quest.get().substr(0,500) << std::endl;
+    _cgiProgram = "/usr/local/bin/python3";
+    _cgiScript = "_test/website/cgi_test.py";
+    _cgiSendBf = "[cgi request body]";
+    _cgiState = CGI_ON;
+    _keepAlive = false;
 }
 
 void Connection::setResponse(std::string &bf) {
