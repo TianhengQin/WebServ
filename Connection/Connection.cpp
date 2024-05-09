@@ -48,7 +48,7 @@ void Connection::buildResponse() {
     // _keepAlive = false;
 
     // CGI test
-    _cgiProgram = "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3";
+    _cgiProgram = "/usr/local/bin/python3";
     _cgiScript = "_test/website/cgi_test.py";
     _cgiSendBf = "[cgi request body]";
     _cgiState = CGI_ON;
