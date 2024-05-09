@@ -21,25 +21,46 @@ std::vector<ASTNode * > Block::getChildren(void) const {
 	return this->_children;
 }
 
+// void Block::print(int level) const {
+// 	std::string indentation(level * INDENT_SIZE, ' ');
+// 	std::cout << indentation << _name;
+// 	for (const auto& arg : _arguments) {
+// 		std::cout << " " << arg;
+// 	}
+// 	std::cout << " {" << std::endl;
+// 	for (const auto& child : _children) {
+// 		child->print(level + 1);
+// 	}
+// 	std::cout << indentation << "}" << std::endl;
+// }
+
+/* -std=c++98 */
 void Block::print(int level) const {
 	std::string indentation(level * INDENT_SIZE, ' ');
 	std::cout << indentation << _name;
-	for (const auto& arg : _arguments) {
-		std::cout << " " << arg;
+	for (std::vector<std::string>::const_iterator arg = _arguments.begin(); arg != _arguments.end(); ++arg) {
+		std::cout << " " << *arg;
 	}
 	std::cout << " {" << std::endl;
-	for (const auto& child : _children) {
-		child->print(level + 1);
+	for (std::vector<ASTNode *>::const_iterator child = _children.begin(); child != _children.end(); ++child) {
+		(*child)->print(level + 1);
 	}
 	std::cout << indentation << "}" << std::endl;
 }
 
+
+
 // Replaced in Configuration.cpp
 std::vector<ASTNode * > Block::getServers(void) {
 	std::vector<ASTNode *> servers;
-	for (const auto& child : this->_children) {
-		if (child->getName() == "server") {
-			servers.push_back(child);
+	// for (const auto& child : this->_children) {
+	// 	if (child->getName() == "server") {
+	// 		servers.push_back(child);
+	// 	}
+	// }
+	for (std::vector<ASTNode *>::iterator child = this->_children.begin(); child != this->_children.end(); ++child) {
+		if ((*child)->getName() == "server") {
+			servers.push_back(*child);
 		}
 	}
 	return servers;

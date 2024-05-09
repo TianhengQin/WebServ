@@ -50,22 +50,25 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 		throw std::runtime_error("Error opening file: " + this->_filename);
 	}
 
-	// _root = parseConfig(file);
 	this->_root = parseConfig(file);
 	
-	// std::vector<ASTNode *>	server_blocks = _root->getServers();
-	for (ASTNode *child : _root->getChildren()) {
-		if (child->getName() == "http") {
-			Block *block = dynamic_cast<Block*>(child);
+	// for (ASTNode *child : this->_root->getChildren()) {
+	std::vector<ASTNode *> rootChildren = this->_root->getChildren();
+	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
+		if ((*child)->getName() == "http") {
+			Block *block = dynamic_cast<Block*>(*child);
 			if (!block) {
 				throw std::runtime_error("Error casting block");
 			}
-			for (ASTNode *http_child : block->getChildren()) {
-				if (http_child->getName() == "server") {
-					http_child->print(); // debug
+			// for (ASTNode *http_child : block->getChildren()) {
+			std::vector<ASTNode *> blockChildren = block->getChildren();
+			for (std::vector<ASTNode *>::iterator http_child = blockChildren.begin(); http_child != blockChildren.end(); ++http_child) {
+				if ((*http_child)->getName() == "server") {
+					(*http_child)->print(); // debug
 					Server server;
 					this->_servs.push_back(server);
-					this->setServerConfig(dynamic_cast<Block*>(http_child), this->_servs.back());
+					// this->setServerConfig(dynamic_cast<Block*>(*http_child), this->_servs.back());
+					setServerConfig(dynamic_cast<Block*>(*http_child), this->_servs.back());
 				}
 			}
 		}
@@ -96,81 +99,87 @@ Block *Configuration::parseConfig(std::ifstream &file) {
 
 // setServerConfig
 void Configuration::setServerConfig(Block *block, Server &server) {
-	for (ASTNode *child : block->getChildren()) {
-		if (child->getName() == "listen") {
-			Directive *directive = dynamic_cast<Directive*>(child);
+	// for (ASTNode *child : block->getChildren()) {
+	std::vector<ASTNode *> blockChildren = block->getChildren();
+	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
+		if ((*child)->getName() == "listen") {
+			Directive *directive = dynamic_cast<Directive*>(*child);
 			if (!directive) {
 				throw std::runtime_error("Error casting directive");
 			}
 			server.setHost(directive->getArguments()[0]);
 			server.setPort(std::stoi(directive->getArguments()[1]));
-		} else if (child->getName() == "server_name") {
-			Directive *directive = dynamic_cast<Directive*>(child);
+		} else if ((*child)->getName() == "server_name") {
+			Directive *directive = dynamic_cast<Directive*>(*child);
 			if (!directive) {
 				throw std::runtime_error("Error casting directive");
 			}
 			server.setServName(directive->getArguments()[0]);
-		} else if (child->getName() == "root") {
-			Directive *directive = dynamic_cast<Directive*>(child);
+		} else if ((*child)->getName() == "root") {
+			Directive *directive = dynamic_cast<Directive*>(*child);
 			if (!directive) {
 				throw std::runtime_error("Error casting directive");
 			}
 			server.setRoot(directive->getArguments()[0]);
-		} else if (child->getName() == "error_page") {
-			Directive *directive = dynamic_cast<Directive*>(child);
+		} else if ((*child)->getName() == "error_page") {
+			Directive *directive = dynamic_cast<Directive*>(*child);
 			if (!directive) {
 				throw std::runtime_error("Error casting directive");
 			}
 			server.setErrPage(std::stoi(directive->getArguments()[0]), directive->getArguments()[1]);
-		} else if (child->getName() == "client_max_body_size") {
-			Directive *directive = dynamic_cast<Directive*>(child);
+		} else if ((*child)->getName() == "client_max_body_size") {
+			Directive *directive = dynamic_cast<Directive*>(*child);
 			if (!directive) {
 				throw std::runtime_error("Error casting directive");
 			}
 			server.setCliMaxBody(std::stoi(directive->getArguments()[0]));
-		} else if (child->getName() == "location") {
+		} else if ((*child)->getName() == "location") {
 			Location loc;
-			loc.setPath(child->getArguments()[0]);
-			Block *location_block = dynamic_cast<Block*>(child);
-			for (ASTNode *location_child : location_block->getChildren()) {
-				if (location_child->getName() == "root") {
-					Directive *directive = dynamic_cast<Directive*>(location_child);
+			loc.setPath((*child)->getArguments()[0]);
+			Block *location_block = dynamic_cast<Block*>(*child);
+			// for (ASTNode *location_child : location_block->getChildren()) {
+			std::vector<ASTNode *> locationChildren = location_block->getChildren();
+			for (std::vector<ASTNode *>::iterator location_child = locationChildren.begin(); location_child != locationChildren.end(); ++location_child) {
+				if ((*location_child)->getName() == "root") {
+					Directive *directive = dynamic_cast<Directive*>(*location_child);
 					if (!directive) {
 						throw std::runtime_error("Error casting directive");
 					}
 					loc.setRoot(directive->getArguments()[0]);
-				} else if (location_child->getName() == "index") {
-					Directive *directive = dynamic_cast<Directive*>(location_child);
+				} else if ((*location_child)->getName() == "index") {
+					Directive *directive = dynamic_cast<Directive*>(*location_child);
 					if (!directive) {
 						throw std::runtime_error("Error casting directive");
 					}
 					loc.setIndex(directive->getArguments()[0]);
-				} else if (location_child->getName() == "methods") {
-					Directive *directive = dynamic_cast<Directive*>(location_child);
+				} else if ((*location_child)->getName() == "methods") {
+					Directive *directive = dynamic_cast<Directive*>(*location_child);
 					if (!directive) {
 						throw std::runtime_error("Error casting directive");
 					}
 					unsigned int methods = 0;
-					for (std::string method : directive->getArguments()) {
-						if (method == "GET") {
+					// for (std::string method : directive->getArguments()) {
+					std::vector<std::string> directiveArguments = directive->getArguments();
+					for (std::vector<std::string>::iterator method = directiveArguments.begin(); method != directiveArguments.end(); ++method) {
+						if (*method == "GET") {
 							methods |= GET;
-						} else if (method == "POST") {
+						} else if (*method == "POST") {
 							methods |= POST;
-						} else if (method == "PUT") {
+						} else if (*method == "PUT") {
 							methods |= PUT;
-						} else if (method == "DELETE") {
+						} else if (*method == "DELETE") {
 							methods |= DELETE;
 						}
 					}
 					loc.setMethods(methods);
-				} else if (location_child->getName() == "cgi") {
-					Directive *directive = dynamic_cast<Directive*>(location_child);
+				} else if ((*location_child)->getName() == "cgi") {
+					Directive *directive = dynamic_cast<Directive*>(*location_child);
 					if (!directive) {
 						throw std::runtime_error("Error casting directive");
 					}
 					loc.setCgi(directive->getArguments()[0], directive->getArguments()[1]);
-				} else if (location_child->getName() == "autoindex") {
-					Directive *directive = dynamic_cast<Directive*>(location_child);
+				} else if ((*location_child)->getName() == "autoindex") {
+					Directive *directive = dynamic_cast<Directive*>(*location_child);
 					if (!directive) {
 						throw std::runtime_error("Error casting directive");
 					}

@@ -2,7 +2,7 @@
 NAME		= webserver
 
 CXX			= c++
-CXXFLAGS	= -std=c++11
+CXXFLAGS	= -std=c++98
 CXXFLAGS	+= -Wall -Wextra -Werror
 INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
 			-I./Log/ -I./MimeType/ -I./Parser/ -I./Request/ -I./Response/ -I./WebServ/ -I./
