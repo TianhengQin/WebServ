@@ -1,6 +1,8 @@
 #include "Request.hpp"
 
-Request::Request() {}
+Request::Request() {
+	_cookie = "abcde";
+}
 
 Request::Request(std::string str)
 {
@@ -165,4 +167,9 @@ std::string Request::get_host()
 std::string Request::get_port()
 {
 	return (_port);
+}
+
+std::string &Request::get_cookie()
+{
+	return (_cookie);
 }

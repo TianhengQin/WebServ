@@ -36,13 +36,17 @@ public:
     int cgiState();
     void setCgiState(int s);
     void buildCgiResponse(std::string const &bd);
+    std::string &getCookie();
     std::string &getCgiProgram();
     std::string &getCgiScript();
     std::string &getCgiSendBf();
+    // std::string &getUri();
+
 
 private:
 
-    std::map<std::string, Server> _server;
+    std::map<int, Server> _server;
+    int _servChoice;
 
     Request _quest;
     Response _sponse;

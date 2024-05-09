@@ -28,7 +28,7 @@ public:
 
 private:
 
-    void setEnv();
+    void setEnv(Connection &conn);
     void exeCgi();
 
     int _connectFd;
@@ -40,6 +40,7 @@ private:
     std::string _recvBf;
     std::string _program;
     std::string _script;
+    std::string _cookie;
 
     std::vector<std::string> _env;
 };

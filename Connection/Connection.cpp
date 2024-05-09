@@ -3,10 +3,11 @@
 Connection::Connection() {}
 
 Connection::Connection(std::map<int, Server> &svs, int fd) {
-    _server.insert(std::make_pair(svs[fd].getName(), svs[fd]));
+    _server.insert(std::make_pair(fd, svs[fd]));
+    _servChoice = fd;
     fd += 1024;
     while(svs.count(fd)) {
-        _server.insert(std::make_pair(svs[fd].getName(), svs[fd]));
+        _server.insert(std::make_pair(fd, svs[fd]));
         fd += 1024;
     }
 }
@@ -128,4 +129,8 @@ void Connection::buildCgiResponse(std::string const &bd) {
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << _sendBf.size() << "\n" << _sendBf;
     _sendBf = ss.str();
+}
+
+std::string &Connection::getCookie() {
+    return _quest.get_cookie();
 }
