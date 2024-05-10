@@ -132,8 +132,8 @@ int Cgi::receive() {
     if (received < 0) {
         Log::print(ERROR, "Read error on pip ", _pipeOut[0]);
         return -1;
-    } else if (received < RS_BF_SIZE) {
-        _recvBf.append(bf, received);
+    } else if (received == 0) {
+        // _recvBf.append(bf, received);
         Log::print(DEBUG, "Received cgi finish ", _pipeOut[0]);
         return 0;
     } else {
