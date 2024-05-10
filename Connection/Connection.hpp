@@ -45,8 +45,11 @@ public:
 
 private:
 
+    int saveFile(std::string const &file);
+
     std::map<int, Server> _server;
     int _servChoice;
+    int _locationChoice;
 
     Request _quest;
     Response _sponse;

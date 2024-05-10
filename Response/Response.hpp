@@ -14,6 +14,7 @@ public:
     void init();
     std::string &generate();
 
+    int setBody(std::string const &file);
     void setMimeType(std::string const &path);
 
 private:

@@ -5,6 +5,7 @@ Connection::Connection() {}
 Connection::Connection(std::map<int, Server> &svs, int fd) {
     _server.insert(std::make_pair(fd, svs[fd]));
     _servChoice = fd;
+    _locationChoice = 0;
     fd += 1024;
     while(svs.count(fd)) {
         _server.insert(std::make_pair(fd, svs[fd]));
@@ -132,10 +133,36 @@ void Connection::buildCgiResponse(std::string const &bd) {
     std::cout << _sendBf << std::endl;
     Log::print(DEBUG, "cgi received ", _sendBf.size());
     std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << _sendBf.size() << "\n" << _sendBf;
+    ss << "HTTP/1.1 200 OK\nContent-Length: " << _sendBf.size() << "\n" << _sendBf;
     _sendBf = ss.str();
 }
 
 std::string &Connection::getCookie() {
     return _quest.get_cookie();
+}
+
+int Connection::saveFile(std::string const &file) {
+
+    std::ofstream f2(file, std::fstream::trunc | std::fstream::binary);
+    if (f2.fail()) {
+        return 1;
+    }
+    std::size_t pos = _quest.get().find("\r\n\r\n");
+    if (pos == std::string::npos) {
+        f2.close();
+        return 1;
+    }
+    f2 << _quest.get().substr(pos + 4);
+    f2.close();
+    return 0;
+
+    std::string line;
+    std::string html;
+    std::ifstream myfile("_test/website/test.html");
+    if (myfile.is_open()) {
+        while (std::getline(myfile, line)) {
+            html = html + line;
+        }
+        myfile.close();
+    }
 }
