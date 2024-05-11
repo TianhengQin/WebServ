@@ -154,17 +154,17 @@ void Cgi::setEnv(Connection &conn) {
     _env.push_back("GATEWAY_INTERFACE=CGI/1.1");
     _env.push_back("SERVER_SOFTWARE="+std::string(basename(const_cast<char *>(_program.c_str()))));
     _env.push_back("SERVER_PROTOCOL=HTTP/1.1");
-    _env.push_back("SCRIPT_FILENAME="+std::string(basename(const_cast<char *>(_script.c_str()))));
-    // _env.push_back("REQUEST_URI="+conn.getUri());
-    // _env.push_back("HTTP_HOST="+conn.getHost());
-    // _env.push_back("REQUEST_METHOD="+conn.getMethod());
-    // _env.push_back("QUERY_STRING="+conn.getQuery());
+    _env.push_back("SCRIPT_FILENAME="+_script);
+    _env.push_back("REQUEST_URI="+conn.getUri());
+    _env.push_back("HTTP_HOST="+conn.getHost());
+    _env.push_back("REQUEST_METHOD="+conn.getMethod());
+    _env.push_back("QUERY_STRING="+conn.getQuery());
     _env.push_back("REDIRECT_STATUS=200");
-    _env.push_back("SCRIPT_NAME=index.py");
-    // _env.push_back("CONTENT_LENGTH="+conn.getBodyLen());
-    // _env.push_back("CONTENT_TYPE="+conn.getMimeType());
-    // _env.push_back("SERVER_NAME="+conn.getServName());
-    // _env.push_back("SERVER_PORT="+conn.getPort());
+    _env.push_back("SCRIPT_NAME="+_script);
+    _env.push_back("CONTENT_LENGTH="+std::to_string(conn.getBodyLen()));
+    _env.push_back("CONTENT_TYPE="+conn.getMimeType());
+    _env.push_back("SERVER_NAME="+conn.getServName());
+    _env.push_back("SERVER_PORT="+conn.getPort());
     _env.push_back("HTTP_COOKIE="+conn.getCookie());
 }
 

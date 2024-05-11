@@ -40,8 +40,14 @@ public:
     std::string &getCgiProgram();
     std::string &getCgiScript();
     std::string &getCgiSendBf();
-    // std::string &getUri();
-
+    std::string getUri();
+    std::string getHost();
+    std::string getMethod();
+    std::string getQuery();
+    std::size_t getBodyLen();
+    std::string getMimeType();
+    std::string getServName();
+    std::string getPort();
 
 private:
 

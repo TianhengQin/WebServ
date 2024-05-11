@@ -155,14 +155,45 @@ int Connection::saveFile(std::string const &file) {
     f2 << _quest.get().substr(pos + 4);
     f2.close();
     return 0;
+}
 
-    std::string line;
-    std::string html;
-    std::ifstream myfile("_test/website/test.html");
-    if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            html = html + line;
-        }
-        myfile.close();
+std::string Connection::getUri() {
+    return std::string("http://")+_quest.get_host()+":"+_quest.get_port()+_quest.get_dir();
+}
+
+std::string Connection::getHost() {
+    return _quest.get_host();
+}
+
+std::string Connection::getMethod() {
+    int method = _quest.get_method();
+    if (method == GET) {
+        return "GET";
+    } else if (method == POST) {
+        return "POST";
+    } else if (method == DELETE) {
+        return "DELETE";
     }
+    return "PUT";
+}
+
+std::string Connection::getQuery() {
+    // return _quest.get_query();
+    return "";
+}
+
+std::size_t Connection::getBodyLen() {
+    return _cgiSendBf.size();
+}
+
+std::string Connection::getMimeType() {
+    return "";
+}
+
+std::string Connection::getServName() {
+    return _server[_servChoice].getName();
+}
+
+std::string Connection::getPort() {
+    return _quest.get_port();
 }
