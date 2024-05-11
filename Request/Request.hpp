@@ -46,10 +46,10 @@ public:
     void setFinish();
 
     int         get_method();
-    std::string get_dir();
-    std::string get_protocol();
-    std::string get_host();
-    std::string get_port();
+    std::string &get_dir();
+    std::string &get_protocol();
+    std::string &get_host();
+    std::string &get_port();
     std::string &get_cookie();
 
 private:

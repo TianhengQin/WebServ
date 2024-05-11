@@ -149,22 +149,22 @@ int	Request::get_method()
 	return (_method);
 }
 
-std::string Request::get_dir()
+std::string &Request::get_dir()
 {
 	return (_dir);
 }
 
-std::string Request::get_protocol()
+std::string &Request::get_protocol()
 {
 	return (_protocol);
 }
 
-std::string Request::get_host()
+std::string &Request::get_host()
 {
 	return (_host);
 }
 
-std::string Request::get_port()
+std::string &Request::get_port()
 {
 	return (_port);
 }
