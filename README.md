@@ -7,6 +7,6 @@ web server based on c++
 $ make
 ```
 
-```bashasfafs
+```bash
 $ ./webserver config/sample.conf
 ```
