@@ -3,7 +3,7 @@ web server based on c++
 
 ## Usage
 
-```bashasfas
+```bash
 $ make
 ```
 
