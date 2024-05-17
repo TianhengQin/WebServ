@@ -197,3 +197,14 @@ std::string Connection::getServName() {
 std::string &Connection::getPort() {
     return _quest.get_port();
 }
+
+void Connection::chooseServer() {
+    int i = _servChoice;
+    while (_server.count(i)) {
+        if (_server[i].getName() == _quest.get_host()) {
+            _servChoice = i;
+            return;
+        }
+        i += 1024;
+    }
+}

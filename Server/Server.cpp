@@ -81,7 +81,7 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string Server::getName(void) {
+std::string &Server::getName(void) {
 	return this->_servName;
 }
 
@@ -127,6 +127,7 @@ void Server::setIndex(std::string index) {
 
 void Server::setHost(std::string host) {
 	this->_host = inet_addr(host.c_str());
+	this->_hostStr = host;
 }
 
 void Server::setPort(unsigned int port) {
@@ -143,4 +144,8 @@ void Server::setErrPage(int code, std::string path) {
 
 void Server::setLocation(Location &loc) {
 	this->_locations.push_back(loc);
+}
+
+std::string &Server::getHostStr(void) {
+	return this->_hostStr;
 }

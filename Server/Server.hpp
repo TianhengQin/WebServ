@@ -17,10 +17,11 @@ public:
 
 	void			setup(void);
 
-	std::string		getName(void);
+	std::string		&getName(void);
 	std::string		getRoot(void);
 	std::string		getIndex(void);
 	unsigned int	getHost(void);
+	std::string		&getHostStr(void);
 
 	int				getFd(void);
 	unsigned int	getPort(void);
@@ -63,6 +64,7 @@ private:
 	unsigned int		_host;				// listen
 	unsigned int		_port;				// listen
 	unsigned int		_cliMaxBody;		// client_max_body_size
+	std::string			_hostStr;
 
 	int					_listenFd;
 

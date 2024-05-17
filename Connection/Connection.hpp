@@ -51,6 +51,8 @@ public:
 
 private:
 
+    void chooseServer();
+
     int saveFile(std::string const &file);
 
     std::map<int, Server> _server;
