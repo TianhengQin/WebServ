@@ -16,6 +16,7 @@ public:
 
     int setBody(std::string const &file);
     void setMimeType(std::string const &path);
+    void setDirListing(std::string const &path);
 
 private:
 
@@ -27,6 +28,7 @@ private:
 
     std::string _mimeType;
 
+    std::size_t bodySize;
 };
 
 #endif
