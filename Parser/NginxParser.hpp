@@ -20,20 +20,26 @@
 
 class ASTNode;
 
-void	ltrim(std::string &s);
-void	rtrim(std::string &s);
-void	trim(std::string &s);
-
-// class Block *	parseConfig(std::istream& input);
-
 class NginxParser {
-public:
-	NginxParser(std::istream& input);
+public:	
+	NginxParser(void);
+	NginxParser(const NginxParser &other);
+	NginxParser &operator=(const NginxParser &other);
 	~NginxParser();
-	Block *parse(void);
-	
+
+	NginxParser(std::istream& input);
+
+	void	parse(void);
+	Block	*getRoot(void) const;
+
+
+	void	trim(std::string &s);
+	void	ltrim(std::string &s);
+	void	rtrim(std::string &s);
+
 private:
 	std::istream&		_input;
+	Block				*_root;
 
 	std::pair<std::string, std::vector<std::string> >	parseNameAndArguments(const std::string &line);
 

@@ -1,7 +1,7 @@
 
 #include "Configuration.hpp"
 
-Configuration::Configuration() {
+Configuration::Configuration(void) {
 	Server s1;
 	s1.setHost("127.0.0.1");
 	s1.setPort(8080);
@@ -52,7 +52,6 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 
 	this->_root = parseConfig(file);
 	
-	// for (ASTNode *child : this->_root->getChildren()) {
 	std::vector<ASTNode *> rootChildren = this->_root->getChildren();
 	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
 		if ((*child)->getName() == "http") {
@@ -60,14 +59,12 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 			if (!block) {
 				throw std::runtime_error("Error casting block");
 			}
-			// for (ASTNode *http_child : block->getChildren()) {
 			std::vector<ASTNode *> blockChildren = block->getChildren();
 			for (std::vector<ASTNode *>::iterator http_child = blockChildren.begin(); http_child != blockChildren.end(); ++http_child) {
 				if ((*http_child)->getName() == "server") {
-					(*http_child)->print(); // debug
+					// (*http_child)->print(); // debug
 					Server server;
 					this->_servs.push_back(server);
-					// this->setServerConfig(dynamic_cast<Block*>(*http_child), this->_servs.back());
 					setServerConfig(dynamic_cast<Block*>(*http_child), this->_servs.back());
 				}
 			}
@@ -89,17 +86,15 @@ Configuration &Configuration::operator=(const Configuration &other) {
 		this->_root = other._root;
 		this->_servs = other._servs;
 	}
-	return *this;
+	return (*this);
 }
 
 Block *Configuration::parseConfig(std::ifstream &file) {
 	NginxParser parser(file);
-	return parser.parse();
+	return parser.getRoot();
 }
 
-// setServerConfig
 void Configuration::setServerConfig(Block *block, Server &server) {
-	// for (ASTNode *child : block->getChildren()) {
 	std::vector<ASTNode *> blockChildren = block->getChildren();
 	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
 		if ((*child)->getName() == "listen") {
@@ -137,7 +132,6 @@ void Configuration::setServerConfig(Block *block, Server &server) {
 			Location loc;
 			loc.setPath((*child)->getArguments()[0]);
 			Block *location_block = dynamic_cast<Block*>(*child);
-			// for (ASTNode *location_child : location_block->getChildren()) {
 			std::vector<ASTNode *> locationChildren = location_block->getChildren();
 			for (std::vector<ASTNode *>::iterator location_child = locationChildren.begin(); location_child != locationChildren.end(); ++location_child) {
 				if ((*location_child)->getName() == "root") {
@@ -158,7 +152,6 @@ void Configuration::setServerConfig(Block *block, Server &server) {
 						throw std::runtime_error("Error casting directive");
 					}
 					unsigned int methods = 0;
-					// for (std::string method : directive->getArguments()) {
 					std::vector<std::string> directiveArguments = directive->getArguments();
 					for (std::vector<std::string>::iterator method = directiveArguments.begin(); method != directiveArguments.end(); ++method) {
 						if (*method == "GET") {
@@ -193,5 +186,5 @@ void Configuration::setServerConfig(Block *block, Server &server) {
 
 
 std::vector<Server> &Configuration::getServs(void) {
-	return this->_servs;
+	return (this->_servs);
 }

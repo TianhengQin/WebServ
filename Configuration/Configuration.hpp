@@ -42,8 +42,9 @@ public:
 	Configuration(void);
 	Configuration(const Configuration &other);
 	Configuration &operator=(const Configuration &other);
-	Configuration(std::string filename);
 	~Configuration();
+
+	Configuration(std::string filename);
 
 	std::vector<Server> &getServs(void);
 
