@@ -11,14 +11,15 @@
 
 class Directive : public ASTNode {
 private:
-	std::string                 _name;
-	std::vector<std::string>    _arguments;
+	std::string					_name;
+	std::vector<std::string>	_arguments;
 
 public:
 	Directive(const std::string& name, const std::vector<std::string>& arguments);
+	~Directive();
 
-	std::string					getName(void) const;
-	std::vector<std::string>	getArguments(void) const;
+	std::string					getName(void);
+	std::vector<std::string>	getArguments(void);
 
 	void print(int level = 0) const;
 };

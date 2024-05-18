@@ -31,12 +31,6 @@
 
 class Configuration {
 
-private:
-	std::string			_filename;
-	Block				*_root;
-	std::vector<Server> _servs;
-	Block				*parseConfig(std::ifstream &file);
-	void				setServerConfig(Block *block, Server &server);
 
 public:
 	Configuration(void);
@@ -45,8 +39,19 @@ public:
 	~Configuration();
 
 	Configuration(std::string filename);
-
 	std::vector<Server> &getServs(void);
+
+private:
+	std::string			_filename;
+	Block				*_root;
+	std::vector<Server> _servs;
+
+	Block			*parseConfig(std::ifstream &file);
+	void			setServerConfig(Block *block, Server &server);
+	void			processListenDirective(std::vector<std::string> &args, Server &server);
+	void			processLocationBlock(ASTNode *locationNode, Server &server);
+	unsigned int	parseMethods(std::vector<std::string> &methods);
+
 
 };
 

@@ -113,36 +113,44 @@ unsigned int Server::getCliMaxBody(void) {
  * Setters
 */
 
-void Server::setServName(std::string name) {
+void	Server::setServName(std::string name) {
 	this->_servName = name;
 }
 
-void Server::setRoot(std::string root) {
+void	Server::setRoot(std::string root) {
 	this->_root = root;
 }
 
-void Server::setIndex(std::string index) {
+void	Server::setIndex(std::string index) {
 	this->_index = index;
 }
 
-void Server::setHost(std::string host) {
+void	Server::setHost(std::string host) {
 	this->_host = inet_addr(host.c_str());
 	this->_hostStr = host;
 }
 
-void Server::setPort(unsigned int port) {
+void	Server::setPort(unsigned int port) {
 	this->_port = port;
 }
 
-void Server::setCliMaxBody(unsigned int cmb) {
+void	Server::setCliMaxBody(unsigned int cmb) {
 	this->_cliMaxBody = cmb;
 }
 
-void Server::setErrPage(int code, std::string path) {
+void	Server::setDefault(bool def) {
+	this->_default = def;
+}
+
+void	Server::setListenFd(int fd) {
+	this->_listenFd = fd;
+}
+
+void	Server::setErrPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
 
-void Server::setLocation(Location &loc) {
+void	Server::setLocation(Location &loc) {
 	this->_locations.push_back(loc);
 }
 

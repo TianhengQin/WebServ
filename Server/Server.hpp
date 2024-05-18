@@ -33,8 +33,12 @@ public:
 	void	setHost(std::string host);
 	void	setPort(unsigned int port);
 	void	setCliMaxBody(unsigned int cmb);
+	void	setDefault(bool def);
+	
+	void	setListenFd(int fd);
 	void	setErrPage(int code, std::string path);
 	void	setLocation(Location &loc);
+
 
 private:
 
@@ -65,6 +69,7 @@ private:
 	unsigned int		_port;				// listen
 	unsigned int		_cliMaxBody;		// client_max_body_size
 	std::string			_hostStr;
+	bool				_default;
 
 	int					_listenFd;
 
