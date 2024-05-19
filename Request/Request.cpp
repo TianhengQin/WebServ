@@ -17,11 +17,11 @@ void Request::setFinish() {
     _finish = true;
 }
 
-void Request::append(char const *bf, size_t n) {
+void Request::append(char const *bf, size_t n) { // ??
     _request.append(bf, n);
 }
 
-std::string &Request::get() {
+std::string Request::get() {
     return _request;
 }
 
@@ -34,12 +34,12 @@ void Request::init(std::string str)
 
 void Request::clear()
 {
+    _headers.clear();
 	_request = "";
-	// bool _finish; ???
+	_finish = false;
 	_body = "";
-
-	_bad = 0;
-	_method = 0;
+	_bad = 200;
+	_method = "";
 	_dir = "";
 	_protocol = "";
 	_host = "";
@@ -50,126 +50,166 @@ void Request::clear()
 
 void Request::parse()
 {
-	std::size_t pos;
+	std::istringstream request_stream(_request);
+	std::string line;
 
-	// parse _method
-	pos = 4;
-	if (_request.compare(0, pos, "GET ") == 0)
-		_method = GET;
-	else if (_request.compare(0, pos, "PUT ") == 0)
-		_method = PUT;
-	else if (_request.compare(0, ++pos, "POST ") == 0)
-		_method = POST;
-	else if (_request.compare(0, pos, "HEAD ") == 0)
-		_method = HEAD;
-	else if (_request.compare(0, 7, "DELETE ") == 0)
-	{
-		_method = DELETE;
-		pos = 7;
-	}
-	else
-	{
-		_bad = 400; // error ?
-		return ;
+	// Parse request line
+	if (std::getline(request_stream, line)) {
+		std::istringstream line_stream(line);
+		if (!(line_stream >> _method >> _dir >> _protocol)) {
+			_bad = 400;
+			return;
+		}
+	} else {
+		_bad = 400;
+		return;
 	}
 
-	// parse _dir
-	_dir = _request.substr(pos, _request.find("HTTP") - (pos + 1));
-	if (_dir.find_first_of('/', 0) != 0)
-	{
-		_bad = 400; // error ?
-		return ;
-	}
-
-	// parse _protocol
-	pos = _request.find("HTTP");
-	_protocol = _request.substr(pos, _request.find('\r') - pos);
-	if (_protocol.compare("HTTP/1.1") != 0)
-	{
-		_bad = 505; // error ?
-		return ;
-	}
-
-
-	// parse _host
-	pos = _request.find("Host: ") + 6;
-	if (pos == std::string::npos)
-	{
-		_bad = 400; // error ?
-		return ;
-	}
-	_host = _request.substr(pos, _request.find_first_of(':', pos) - pos);
-
-	// parse _port
-	pos = _request.find_first_of(':', pos) + 1;
-	_port = _request.substr(pos, _request.find_first_of('\r', pos) - pos);
-	for (size_t i = 0; _port[i] != '\0'; i++)
-	{
-		if (!isdigit(_port[i]))
-		{
-			_bad = 400; // error ?
-			return ;
+	// Parse headers
+	while (std::getline(request_stream, line) && line != "\r") {
+		size_t pos = line.find(':');
+		if (pos != std::string::npos) {
+			std::string header_name = line.substr(0, pos);
+			size_t val_len = line.find('\r') - (pos + 2);
+			if (pos != std::string::npos && line[pos + 1] == ' ') {
+				std::string header_value = line.substr(pos + 2, val_len);
+				_headers[header_name] = header_value;
+			}
 		}
 	}
 
-	// parse _cookie ???
-	pos = _request.find("Cookie: ");
-	if (pos != std::string::npos)
-	{
-		pos += 8;
-		_cookie = _request.substr(pos, _request.find_first_of('\r', pos) - pos);
+	// Parse body
+	if (request_stream.good()) {
+		std::ostringstream body_stream;
+		body_stream << request_stream.rdbuf();
+		_body = body_stream.str();
 	}
 
-	// pos = _request.find("/r/n/r/n");
-	// if (pos == std::string::npos)
-	// {
-	// 	_bad = 400; // error ?
-	// 	ft_test();
-	// 	return ;
-	// }
-	// _body = _request.substr(pos);
-	
+	// Parse _host && _port
+	std::map<std::string, std::string>::const_iterator it = _headers.find("Host");
+	if (it == _headers.end()) {
+		_bad  = 400; // no Host given
+		return;
+	} else {
+		size_t pos = it->second.find(':');
+		if (pos == std::string::npos) {
+			_bad  = 400; // no Host without port
+			return;
+		}
+		_host = it->second.substr(0, pos);
+		_port = it->second.substr(pos + 1);
+		// std::cout << "host: " << _host << std::endl;
+		// std::cout << "port: " << _port << std::endl;
+	}
+
+	// Parse _cookies
+	it = _headers.find("Cookie");
+	if (it != _headers.end()) {
+		_cookie = it->second;
+	}
 
 
-	// // test printing
-	// std::cout << _method << std::endl;
-	// std::cout << _dir << std::endl;
-	// std::cout << _protocol << std::endl;
-	// std::cout << _host << std::endl;
-	// std::cout << _port << std::endl;
-	// std::cout << _cookie << std::endl;
-	// std::cout << _bad << std::endl;
-	// std::cout << _body << std::endl;
-	// std::cout << std::endl;
+	_bad = validate_request();
+
+	if (_bad == 200) {
+		setFinish();
+	}
+
+	// // // test printing
+	// // std::cout << _method << std::endl;
+	// // std::cout << _dir << std::endl;
+	// // std::cout << _protocol << std::endl;
+	// // std::cout << _host << std::endl;
+	// // std::cout << _port << std::endl;
+	// // std::cout << _cookie << std::endl;
+	// // std::cout << _bad << std::endl;
+	// // std::cout << _body << std::endl;
+	// // std::cout << std::endl;
 }
+
+int Request::validate_request()
+{
+	// validate method
+	if (_method != "GET" && _method != "PUT" && _method != "POST" && _method != "HEAD" && _method != "DELETE") {
+		return (400);
+	}
+
+	// validate HTTP protocol
+	if (_protocol != "HTTP/1.1") {
+		return (505);
+	}
+
+	// validate Host
+	if (_host != "localhost" && _host != "127.0.0.1") {  // is that fine?
+		return (400);
+	}
+
+	// validate Port
+	for (size_t i = 0; _port[i] != '\0'; i++) { // or shoud i only allow 8080, 8081, 8082?
+		if (!isdigit(_port[i])) {
+			return (400);
+		}
+	}
+
+	return (200);
+}
+
 
 // getters
 int	Request::get_method()
 {
-	return (_method);
+	if (_method == "GET") {
+		return (GET);
+	} else if (_method == "POST") {
+		return (POST);
+	} else if (_method == "PUT") {
+		return (PUT);
+	} else if (_method == "HEAD") {
+		return (HEAD);
+	} else if (_method == "DELETE") {
+		return (DELETE);
+	}
+	return (-1);
 }
 
-std::string &Request::get_dir()
+std::string Request::get_dir()
 {
+	std::cout << _dir.length() << std::endl;
 	return (_dir);
 }
 
-std::string &Request::get_protocol()
+std::string Request::get_protocol()
 {
 	return (_protocol);
 }
 
-std::string &Request::get_host()
+std::string Request::get_host()
 {
 	return (_host);
 }
 
-std::string &Request::get_port()
+std::string Request::get_port()
 {
 	return (_port);
 }
 
-std::string &Request::get_cookie()
+std::string Request::get_cookie()
 {
 	return (_cookie);
+}
+
+std::string Request::get_body()
+{
+	return (_body);
+}
+
+int         Request::get_bad()
+{
+	return (_bad);
+}
+
+
+std::map<std::string, std::string> Request::get_headers()
+{
+	return (_headers);
 }

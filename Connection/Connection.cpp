@@ -137,7 +137,7 @@ void Connection::buildCgiResponse(std::string const &bd) {
     _sendBf = ss.str();
 }
 
-std::string &Connection::getCookie() {
+std::string Connection::getCookie() {
     return _quest.get_cookie();
 }
 
@@ -161,7 +161,7 @@ std::string Connection::getUri() {
     return std::string("http://")+_quest.get_host()+":"+_quest.get_port()+_quest.get_dir();
 }
 
-std::string &Connection::getHost() {
+std::string Connection::getHost() {
     return _quest.get_host();
 }
 
@@ -194,7 +194,7 @@ std::string Connection::getServName() {
     return _server[_servChoice].getName();
 }
 
-std::string &Connection::getPort() {
+std::string Connection::getPort() {
     return _quest.get_port();
 }
 

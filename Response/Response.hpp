@@ -3,6 +3,7 @@
 
 # include "Head.hpp"
 # include "MimeType.hpp"
+# include "../Request/Request.hpp"
 
 class Response {
 
@@ -11,8 +12,19 @@ public:
     Response();
     ~Response();
 
-    void init();
-    std::string &generate();
+    void init(Request &request, bool dirListing);
+    void initResponsePhrase();
+    std::string getResponsePhrase(int const &sufix);
+
+
+    std::string generate();
+
+    // bool  isDirectory(const std::string &path);
+    // bool  isFile(const std::string &path);
+
+    void    getMethod(Request &request, bool dirListing);
+    // void    postMethod(Request &request);
+    void    deleteMethod();
 
     int setBody(std::string const &file);
     void setMimeType(std::string const &path);
@@ -28,7 +40,10 @@ private:
 
     std::string _mimeType;
 
-    std::size_t bodySize;
+    // std::size_t bodySize;
+
+    std::map<int, std::string> _responsePhrase;
+
 };
 
 #endif

@@ -4,8 +4,147 @@ Response::Response() {}
 
 Response::~Response() {}
 
-void Response::init() {
+void Response::init(Request &request, bool dirListing) {
 
+
+    // clear();
+
+    if (request.get_method() == GET) {
+        getMethod(request, dirListing);
+
+        // setBody(request.get_dir());
+
+        // if (_code == 200)
+
+
+
+
+
+        // Handle GET request
+        // Send response with requested data
+
+        // send_response("HTTP/1.1 200 OK\r\n\r\n<html><body><h1>Hello, World!</h1></body></html>");
+    // } else if (request.get_method() == POST) {
+    //     postMethod(request);
+        // Handle POST request
+        // Process received data and send response
+    } else if (request.get_method() == DELETE) {
+        deleteMethod();
+        // Handle DELETE request
+        // Delete requested resource and send confirmation
+    } else {
+        _code = 405; // Method Not Allowed
+
+        // Send error response
+    }
+
+
+}
+
+// bool  Response::isDirectory(const std::string &path) {
+//     struct stat statbuf;
+//     if (stat(path.c_str(), &statbuf) != 0) {
+//         // the path doesn't exist
+//         return false;
+//     }
+//     return S_ISDIR(statbuf.st_mode);
+// }
+
+// bool  Response::isFile(const std::string &path) {
+//     struct stat statbuf;
+//     if (stat(path.c_str(), &statbuf) != 0) {
+//         // the path doesn't exist
+//         return false;
+//     }
+//     return S_ISREG(statbuf.st_mode);
+// }
+
+void    Response::getMethod(Request &request, bool dirListing) {
+    std::string path = "." + request.get_dir(); // ?? ./...
+
+    struct stat path_stat;
+    if (stat(path.c_str(), &path_stat) != 0) {
+        _code = 404;
+        return;
+    } else if (S_ISREG(path_stat.st_mode)) { // check if it is a file
+        setBody(request.get_dir());
+    } else if (S_ISDIR(path_stat.st_mode)) {
+        if (path.back() != '/') {
+            _code = 301;
+            return;
+        }
+        if (dirListing) {
+            setDirListing(path); // path = dir listing file setDirListing(path);
+        } else {
+            path += "index.html"; // Default file
+            if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
+                setBody(request.get_dir());
+            } else {
+                _code = 403;
+            }
+        }
+        // if (dir listing is on?) {
+        //      path = dir listing file
+        // } else {
+        //    _code = 403;
+        // }
+
+    } else {
+        _code = 404;
+    }
+
+            
+    setMimeType(path);
+}
+
+// void    Response::postMethod(Request &request) {
+
+// }
+
+void    Response::deleteMethod() {
+
+}
+
+void Response::initResponsePhrase() {
+
+    _responsePhrase[200] = "OK";
+    _responsePhrase[201] = "Created";
+    _responsePhrase[204] = "No Content";
+    _responsePhrase[400] = "Bad Request";
+    _responsePhrase[401] = "Unauthorized";
+    _responsePhrase[403] = "Directory listing is forbidden";
+    _responsePhrase[404] = "Not Found";
+    _responsePhrase[405] = "Method Not Allowed";
+    _responsePhrase[500] = "Internal Server Error";
+    _responsePhrase[501] = "Not Implemented";
+    _responsePhrase[503] = "Service Unavailable";
+
+}
+
+std::string Response::getResponsePhrase(int const &sufix) {
+    if (_responsePhrase.count(sufix)) {
+        return _responsePhrase[sufix];
+    }
+    return _responsePhrase[400];
+}
+
+
+std::string Response::generate() {
+    std::stringstream response_stream;
+    
+
+    response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
+    if (_code == 200) {
+        response_stream << "Content-Type: " << _mimeType << "\r\n";
+    }
+    response_stream << "Content-Length: " << _body.size() << "\r\n";
+    response_stream << "\r\n";
+    if (_code == 200) {
+        response_stream << _body;
+    }
+
+    std::string response = response_stream.str();
+    return (response);
 }
 
 void Response::setMimeType(std::string const &path) {
@@ -27,6 +166,7 @@ int Response::setBody(std::string const &file) {
         myfile.close();
         return 0;
     }
+    _code = 404;
     return 1;
 }
 
