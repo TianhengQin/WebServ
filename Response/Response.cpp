@@ -74,7 +74,7 @@ void    Response::getMethod(Request &request, bool dirListing) {
             return;
         }
         if (dirListing) {
-            setDirListing(path); // path = dir listing file setDirListing(path);
+            setAutoindex(path); // path = dir listing file setDirListing(path);
         } else {
             path += "index.html"; // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
