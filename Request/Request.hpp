@@ -6,26 +6,26 @@
 /*   By: tkilling <tkilling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:42:58 by tkilling          #+#    #+#             */
-/*   Updated: 2024/05/19 16:04:02 by tkilling         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:30:56 by tkilling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-// # include "Head.hpp"
-// # include "Location.hpp"
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <map>
-#include <vector>
-#include <algorithm>
-# define GET 1
-# define POST 2
-# define DELETE 4
-# define PUT 8
-# define HEAD 16
+# include "Head.hpp"
+# include "Location.hpp"
+// #include <iostream>
+// #include <string>
+// #include <sstream>
+// #include <map>
+// #include <vector>
+// #include <algorithm>
+// # define GET 1
+// # define POST 2
+// # define DELETE 4
+// # define PUT 8
+// # define HEAD 16
 
 class Request {
 

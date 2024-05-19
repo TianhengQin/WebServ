@@ -1,29 +1,20 @@
 #include "Response.hpp"
 
-Response::Response() {}
+Response::Response() {
+    initResponsePhrase();
+}
 
 Response::~Response() {}
 
 void Response::init(Request &request, bool dirListing) {
 
 
-    // clear();
+    clear();
 
     if (request.get_method() == GET) {
         getMethod(request, dirListing);
 
-        // setBody(request.get_dir());
 
-        // if (_code == 200)
-
-
-
-
-
-        // Handle GET request
-        // Send response with requested data
-
-        // send_response("HTTP/1.1 200 OK\r\n\r\n<html><body><h1>Hello, World!</h1></body></html>");
     // } else if (request.get_method() == POST) {
     //     postMethod(request);
         // Handle POST request
@@ -41,23 +32,17 @@ void Response::init(Request &request, bool dirListing) {
 
 }
 
-// bool  Response::isDirectory(const std::string &path) {
-//     struct stat statbuf;
-//     if (stat(path.c_str(), &statbuf) != 0) {
-//         // the path doesn't exist
-//         return false;
-//     }
-//     return S_ISDIR(statbuf.st_mode);
-// }
+void    Response::clear() {
+    _code = 200;
+    // std::string _phrase;
+    _body = "";
 
-// bool  Response::isFile(const std::string &path) {
-//     struct stat statbuf;
-//     if (stat(path.c_str(), &statbuf) != 0) {
-//         // the path doesn't exist
-//         return false;
-//     }
-//     return S_ISREG(statbuf.st_mode);
-// }
+
+    _mimeType = "text/html";
+
+    // std::size_t bodySize;
+
+}
 
 void    Response::getMethod(Request &request, bool dirListing) {
     std::string path = "." + request.get_dir(); // ?? ./...
@@ -67,7 +52,7 @@ void    Response::getMethod(Request &request, bool dirListing) {
         _code = 404;
         return;
     } else if (S_ISREG(path_stat.st_mode)) { // check if it is a file
-        setBody(request.get_dir());
+        setBody(path);
     } else if (S_ISDIR(path_stat.st_mode)) {
         if (path.back() != '/') {
             _code = 301;
@@ -78,17 +63,11 @@ void    Response::getMethod(Request &request, bool dirListing) {
         } else {
             path += "index.html"; // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
-                setBody(request.get_dir());
+                setBody(path);
             } else {
                 _code = 403;
             }
         }
-        // if (dir listing is on?) {
-        //      path = dir listing file
-        // } else {
-        //    _code = 403;
-        // }
-
     } else {
         _code = 404;
     }
@@ -134,14 +113,10 @@ std::string Response::generate() {
     
 
     response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
-    if (_code == 200) {
-        response_stream << "Content-Type: " << _mimeType << "\r\n";
-    }
+    response_stream << "Content-Type: " << _mimeType << "\r\n";
     response_stream << "Content-Length: " << _body.size() << "\r\n";
     response_stream << "\r\n";
-    if (_code == 200) {
-        response_stream << _body;
-    }
+    response_stream << _body;
 
     std::string response = response_stream.str();
     return (response);
@@ -164,6 +139,7 @@ int Response::setBody(std::string const &file) {
             _body = _body + line;
         }
         myfile.close();
+        setMimeType(file);
         return 0;
     }
     _code = 404;

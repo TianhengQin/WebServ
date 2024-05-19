@@ -15,12 +15,9 @@ public:
     void init(Request &request, bool dirListing);
     void initResponsePhrase();
     std::string getResponsePhrase(int const &sufix);
-
+    void clear();
 
     std::string generate();
-
-    // bool  isDirectory(const std::string &path);
-    // bool  isFile(const std::string &path);
 
     void    getMethod(Request &request, bool dirListing);
     // void    postMethod(Request &request);

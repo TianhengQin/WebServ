@@ -35,20 +35,31 @@ void Connection::buildResponse() {
     std::cout << _quest.get().substr(0,500) << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
-    std::string line;
-    std::string html;
-    std::ifstream myfile("_test/website/test.html");
-    if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            html = html + line;
-        }
-        myfile.close();
-    }
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    // std::string line;
+    // std::string html;
+    // // std::ifstream myfile("_test/website/test.html");
+    // std::ifstream myfile("./index.html");
+    // if (myfile.is_open()) {
+    //     while (std::getline(myfile, line)) {
+    //         html = html + line;
+    //     }
+    //     myfile.close();
+    // }
+
+
+    //test timo
+    // _quest.init("");
+    _quest.parse();
+    _sponse.init(_quest, false);
+    std::cout << _sponse.generate() << std::endl;
+    
+
+
+    std::ostringstream ss(_sponse.generate());
+    // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     _sendBf = ss.str();
     _keepAlive = false;
-
+    _quest.clear();
     // CGI test
     // std::cout << _quest.get().substr(0,500) << std::endl;
     // // _cgiProgram = "/usr/local/bin/python3";

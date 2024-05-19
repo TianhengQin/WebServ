@@ -60,6 +60,7 @@ void Request::parse()
 			_bad = 400;
 			return;
 		}
+		std::cout << _method << "|" << _dir << "|" << _protocol << std::endl;
 	} else {
 		_bad = 400;
 		return;
@@ -169,6 +170,7 @@ int	Request::get_method()
 	} else if (_method == "DELETE") {
 		return (DELETE);
 	}
+	std::cout << "lel |" << _method << "|" << std::endl;
 	return (-1);
 }
 
