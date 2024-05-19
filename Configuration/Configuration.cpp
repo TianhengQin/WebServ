@@ -21,7 +21,7 @@ Configuration::Configuration(void) {
 	l2.setPath("/test");
 	l2.setMethods(GET|PUT|DELETE);
 	l2.setRoot("/test_page");
-	l2.setDirListing(true);
+	l2.setAutoindex(true);
 	l2.setIndex("index.html");
 	s1.setLocation(l1);
 	s1.setLocation(l2);
@@ -177,9 +177,9 @@ void Configuration::processLocationBlock(ASTNode *locationNode, Server &server) 
 			loc.setMethods((int)parseMethods(args));
 		} else if (name == "autoindex") {
 			if (args[0] == "on") {
-				loc.setDirListing(true);
+				loc.setAutoindex(true);
 			} else {
-				loc.setDirListing(false);
+				loc.setAutoindex(false);
 			}
 		} 
 		/*

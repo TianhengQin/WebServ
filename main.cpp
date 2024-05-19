@@ -11,19 +11,19 @@
 # include "Location.hpp"
 
 // int main(int argc, char **argv) {
-//     try {
-//         if (argc != 2) {
-//             throw std::runtime_error("Usage: " + std::string(argv[0]) + " <config_file>");//throw invalid_argument
-//         }
-//         Configuration config(argv[1]);
-//         // std::cout << "Configuration file: " << std::endl;
-//         // WebServ web_serv(config);
-//         // web_serv.run();
-//     } catch (std::exception &e) {
-//         std::cerr << "Error: " << e.what() << std::endl;//Log::print
-//         return 1;
-//     }
-//     return 0;
+//	try {
+//		if (argc != 2) {
+//		    throw std::runtime_error("Usage: " + std::string(argv[0]) + " <config_file>");//throw invalid_argument
+//		}
+//		Configuration config(argv[1]);
+//		// std::cout << "Configuration file: " << std::endl;
+//		// WebServ web_serv(config);
+//		// web_serv.run();
+//	} catch (std::exception &e) {
+//		std::cerr << "Error: " << e.what() << std::endl;//Log::print
+//		return 1;
+//	}
+//	return 0;
 // }
 
 
@@ -39,10 +39,14 @@ int main(int argc, char **argv) {
 			} else {
 				config = Configuration();
 			}
-			std::vector<Server> servs = config.getServs();
-			for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
-				std::cout << *serv << std::endl;
+			if (DEBUG) {
+				// std::cout << config << std::endl;
+				std::vector<Server> servs = config.getServs();
+				for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
+					std::cout << *serv << std::endl;
+				}
 			}
+			
 			WebServ web_serv(config);
 			web_serv.run();
 		} catch (std::exception &e) {

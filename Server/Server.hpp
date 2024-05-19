@@ -5,11 +5,10 @@
 # include "Location.hpp"
 // # include "../Log/Log.hpp"
 
-// class Location;
-
 class Server {
 
 public:
+
 	Server(void);
 	Server(Server const &sv);
 	Server &operator=(Server const &sv);
@@ -27,6 +26,7 @@ public:
 	unsigned int	getCliMaxBody(void);
 	bool			getDefault(void);
 	int				getFd(void);
+	bool			getAutoindex(void);
 
 	std::vector<Location>		&getLocations(void);
 	std::map<int, std::string>	&get_error_pages(void);
@@ -43,8 +43,8 @@ public:
 	void	setPort(unsigned int port);
 	void	setCliMaxBody(unsigned int cmb);
 	void	setDefault(bool def);
-	
 	void	setListenFd(int fd);
+	void	setAutoindex(bool ai);
 	void	setErrPage(int code, std::string path);
 	void	setLocation(Location &loc);
 
@@ -53,12 +53,7 @@ private:
 
 	void initDefaultErrorPages(void);
 
-	// std::vector<std::string>	_access_logs;
-
-	// std::map<std::string, std::string>	_cgi_param;
-	// std::string							_cgi_pass;
 	// std::map<std::string, ConfigServer>	_location;
-	// std::set<std::string>				_allowed_methods;
 	// bool								_autoindex;
 	// std::string							_alias;
 	// bool								_aliasSet;
@@ -75,6 +70,7 @@ private:
 	unsigned int		_cliMaxBody;		// client_max_body_size
 	bool				_default;
 	int					_listenFd;
+	bool				_autoindex;
 
 	std::map<int, std::string>	_error_page;
 	std::vector<Location>		_locations;

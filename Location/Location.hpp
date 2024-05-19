@@ -9,6 +9,8 @@
 # define PUT 8
 # define HEAD 16
 
+// class Server;
+
 class Location {
 
 public:
@@ -18,22 +20,24 @@ public:
 	Location &operator=(Location const &loc);
 	~Location();
 
+	// Location(Server &context);
+
 	std::string	getPath(void);
 	std::string	getRoot(void);
 	std::string	getIndex(void);
 	std::string	getRedir(void);
-	int			getMethods(void);
-	bool		getDirListing(void);
-
+	unsigned int	getMethods(void);
+	bool			getAutoindex(void);
 	std::map<std::string, std::string>	getCgi(void);
 
 
-	void	setPath(std::string pth);
-	void	setRoot(std::string rt);
-	void	setIndex(std::string idx);
-	void	setRedir(std::string rdr);
-	void	setMethods(int mtd);
-	void	setDirListing(bool dl);
+	void	setPath(std::string path);
+	void	setRoot(std::string root);
+	void	setIndex(std::string index);
+	void	setRedir(std::string redir);
+
+	void	setMethods(unsigned int methods);
+	void	setAutoindex(bool autoindex);
 
 	void	setCgi(std::string ext, std::string bin);
 
@@ -44,8 +48,8 @@ private:
 	std::string	_index;
 	std::string	_redir;
 
-	int		_methods; // 1 GET 2 POST 4 DELETE 8 PUT 16 HEAD
-	bool	_dirListing;
+	unsigned int	_methods; // 1 GET 2 POST 4 DELETE 8 PUT 16 HEAD
+	bool			_autoindex;
 
 	std::map<std::string, std::string>	_cgiMap;
 

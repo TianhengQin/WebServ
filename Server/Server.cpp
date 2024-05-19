@@ -1,16 +1,19 @@
 #include "Server.hpp"
 
 Server::Server(void) {
-	this->_port = 0;
-	this->_host = 0;
 	this->_servName = "";
 	this->_root = "";
-	this->_cliMaxBody = UINT_MAX;
 	this->_index = "";
-	this->_listenFd = 0;
-	initDefaultErrorPages();
 	this->_socketAddrLen = sizeof(_socketAddr);
 	memset(&_socketAddr, 0, _socketAddrLen);
+	this->_host = 0;
+	this->_port = 0;
+	this->_cliMaxBody = UINT_MAX;
+	this->_default = false;
+	this->_listenFd = 0;
+	this->_autoindex = false;
+	initDefaultErrorPages();
+
 }
 
 Server::~Server() {}
@@ -117,6 +120,10 @@ int Server::getFd(void) {
 	return this->_listenFd;
 }
 
+bool Server::getAutoindex(void) {
+	return this->_autoindex;
+}
+
 
 std::vector<Location> &Server::getLocations(void) {
 	return this->_locations;
@@ -176,6 +183,10 @@ void	Server::setListenFd(int fd) {
 	this->_listenFd = fd;
 }
 
+void	Server::setAutoindex(bool ai) {
+	this->_autoindex = ai;
+}
+
 void	Server::setErrPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
@@ -185,18 +196,17 @@ void	Server::setLocation(Location &loc) {
 }
 
 std::ostream &operator<<(std::ostream &os, Server &sv) {
-	os << "Server: " << sv.getServerName() << std::endl;
-	os << "  Host: " << sv.getHostStr() << std::endl;
-	os << "  Port: " << sv.getPort() << std::endl;
-	os << "  Root: " << sv.getRoot() << std::endl;
-	os << "  Index: " << sv.getIndex() << std::endl;
-	os << "  Client Max Body: " << sv.getCliMaxBody() << std::endl;
-	os << "  Default: " << sv.getDefault() << std::endl;
-	os << "  Listen Fd: " << sv.getFd() << std::endl;
-	os << "  Locations: " << std::endl;
+	os << "  Server: " << sv.getServerName() << std::endl;
+	os << "    Host: " << sv.getHostStr() << std::endl;
+	os << "    Port: " << sv.getPort() << std::endl;
+	os << "    Root: " << sv.getRoot() << std::endl;
+	os << "    Index: " << sv.getIndex() << std::endl;
+	os << "    Client Max Body: " << sv.getCliMaxBody() << std::endl;
+	os << "    Default: " << sv.getDefault() << std::endl;
+	os << "    Listen Fd: " << sv.getFd() << std::endl;
 	std::vector<Location> locs = sv.getLocations();
 	for (std::vector<Location>::iterator loc = locs.begin(); loc != locs.end(); ++loc) {
-		os << "    " << *loc << std::endl;
+		os << *loc << std::endl;
 	}
 	return os;
 }

@@ -1,12 +1,12 @@
 #include "Location.hpp"
 
-Location::Location() {
+Location::Location(void) {
 	_path = "/";
 	_root = "/";
 	_index = "index.html";
 	_redir = "";
 	_methods = GET | POST | DELETE | PUT | HEAD;
-	_dirListing = false;
+	_autoindex = false;
 }
 
 Location::Location(Location const &loc) {
@@ -19,7 +19,7 @@ Location &Location::operator=(Location const &loc) {
 	_index = loc._index;
 	_redir = loc._redir;
 	_methods = loc._methods;
-	_dirListing = loc._dirListing;
+	_autoindex = loc._autoindex;
 	return (*this);
 }
 
@@ -45,12 +45,12 @@ std::string Location::getRedir(void) {
 	return (this->_redir);
 }
 
-int Location::getMethods(void) {
+unsigned int Location::getMethods(void) {
 	return (this->_methods);
 }
 
-bool Location::getDirListing(void) {
-	return (this->_dirListing);
+bool Location::getAutoindex(void) {
+	return (this->_autoindex);
 }
 
 std::map<std::string, std::string> Location::getCgi(void) {
@@ -61,28 +61,28 @@ std::map<std::string, std::string> Location::getCgi(void) {
  * Setters
 */
 
-void Location::setPath(std::string pth) {
-	this->_path = pth;
+void Location::setPath(std::string path) {
+	this->_path = path;
 }
 
-void Location::setRoot(std::string rt) {
-	this->_root = rt;
+void Location::setRoot(std::string root) {
+	this->_root = root;
 }
 
-void Location::setIndex(std::string idx) {
-	this->_index = idx;
+void Location::setIndex(std::string index) {
+	this->_index = index;
 }
 
-void Location::setRedir(std::string rdr) {
-	this->_redir = rdr;
+void Location::setRedir(std::string redir) {
+	this->_redir = redir;
 }
 
-void Location::setMethods(int mtd) {
-	this->_methods = mtd;
+void Location::setMethods(unsigned int methods) {
+	this->_methods = methods;
 }
 
-void Location::setDirListing(bool dl) {
-	this->_dirListing = dl;
+void Location::setAutoindex(bool autoindex) {
+	this->_autoindex = autoindex;
 }
 
 void Location::setCgi(std::string ext, std::string bin) {
@@ -90,12 +90,12 @@ void Location::setCgi(std::string ext, std::string bin) {
 }
 
 std::ostream &operator<<(std::ostream &out, Location &loc) {
-	out << "Location: " << loc.getPath() << std::endl;
-	out << "  Root: " << loc.getRoot() << std::endl;
-	out << "  Index: " << loc.getIndex() << std::endl;
-	out << "  Redir: " << loc.getRedir() << std::endl;
-	out << "  Methods: " << loc.getMethods() << std::endl;
-	out << "  DirListing: " << loc.getDirListing() << std::endl;
+	out << "    Location: " << loc.getPath() << std::endl;
+	out << "      Root: " << loc.getRoot() << std::endl;
+	out << "      Index: " << loc.getIndex() << std::endl;
+	out << "      Redir: " << loc.getRedir() << std::endl;
+	out << "      Methods: " << loc.getMethods() << std::endl;
+	out << "      DirListing: " << loc.getAutoindex() << std::endl;
 	// for (std::map<std::string, std::string>::const_iterator it = loc._cgiMap.begin(); it != loc._cgiMap.end(); ++it) {
 	// 	out << "  CGI: " << it->first << " -> " << it->second << std::endl;
 	// }

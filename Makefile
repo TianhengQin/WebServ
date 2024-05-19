@@ -25,6 +25,8 @@ $(NAME): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
+# debug: CXXFLAGS += -g
+
 clean:
 	rm -f $(OBJS)
 
