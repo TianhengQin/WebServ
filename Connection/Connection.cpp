@@ -191,7 +191,7 @@ std::string Connection::getMimeType() {
 }
 
 std::string Connection::getServName() {
-    return _server[_servChoice].getName();
+    return _server[_servChoice].getServerName();
 }
 
 std::string Connection::getPort() {
@@ -201,7 +201,7 @@ std::string Connection::getPort() {
 void Connection::chooseServer() {
     int i = _servChoice;
     while (_server.count(i)) {
-        if (_server[i].getName() == _quest.get_host()) {
+        if (_server[i].getServerName() == _quest.get_host()) {
             _servChoice = i;
             return;
         }

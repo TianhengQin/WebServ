@@ -1,16 +1,19 @@
 #include "Server.hpp"
 
 Server::Server(void) {
-	this->_port = 0;
-	this->_host = 0;
 	this->_servName = "";
 	this->_root = "";
-	this->_cliMaxBody = UINT_MAX;
 	this->_index = "";
-	this->_listenFd = 0;
-	initDefaultErrorPages();
 	this->_socketAddrLen = sizeof(_socketAddr);
 	memset(&_socketAddr, 0, _socketAddrLen);
+	this->_host = 0;
+	this->_port = 0;
+	this->_cliMaxBody = UINT_MAX;
+	this->_default = false;
+	this->_listenFd = 0;
+	this->_autoindex = false;
+	initDefaultErrorPages();
+
 }
 
 Server::~Server() {}
@@ -81,7 +84,7 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string &Server::getName(void) {
+std::string &Server::getServerName(void) {
 	return this->_servName;
 }
 
@@ -93,12 +96,12 @@ std::string Server::getIndex(void) {
 	return this->_index;
 }
 
-unsigned int Server::getHost(void) {
-	return this->_host;
+std::string Server::getHostStr(void) {
+	return this->_hostStr;
 }
 
-int Server::getFd(void) {
-	return this->_listenFd;
+unsigned int Server::getHost(void) {
+	return this->_host;
 }
 
 unsigned int Server::getPort(void) {
@@ -109,43 +112,101 @@ unsigned int Server::getCliMaxBody(void) {
 	return this->_cliMaxBody;
 }
 
+bool Server::getDefault(void) {
+	return this->_default;
+}
+
+int Server::getFd(void) {
+	return this->_listenFd;
+}
+
+bool Server::getAutoindex(void) {
+	return this->_autoindex;
+}
+
+
+std::vector<Location> &Server::getLocations(void) {
+	return this->_locations;
+}
+
+std::map<int, std::string> &Server::get_error_pages(void) {
+	return this->_error_page;
+}
+
+
+std::vector<std::string> &Server::get_all_server_names(void) {
+	return this->_server_names;
+}
+
+std::vector<std::string> &Server::get_all_indexes(void) {
+	return this->_indexes;
+}
+
 /**
  * Setters
 */
 
-void Server::setServName(std::string name) {
-	this->_servName = name;
+void	Server::setServerName(std::string name) {
+	if (_servName.empty())
+		_servName = name;
+	this->_server_names.push_back(name);
 }
 
-void Server::setRoot(std::string root) {
+void	Server::setRoot(std::string root) {
 	this->_root = root;
 }
 
-void Server::setIndex(std::string index) {
-	this->_index = index;
+void	Server::setIndex(std::string index) {
+	if (_index.empty())
+		_index = index;
+	this->_indexes.push_back(index);
 }
 
-void Server::setHost(std::string host) {
-	this->_host = inet_addr(host.c_str());
+void	Server::setHost(std::string host) {
 	this->_hostStr = host;
+	this->_host = inet_addr(host.c_str());
 }
 
-void Server::setPort(unsigned int port) {
+void	Server::setPort(unsigned int port) {
 	this->_port = port;
 }
 
-void Server::setCliMaxBody(unsigned int cmb) {
+void	Server::setCliMaxBody(unsigned int cmb) {
 	this->_cliMaxBody = cmb;
 }
 
-void Server::setErrPage(int code, std::string path) {
+void	Server::setDefault(bool def) {
+	this->_default = def;
+}
+
+void	Server::setListenFd(int fd) {
+	this->_listenFd = fd;
+}
+
+void	Server::setAutoindex(bool ai) {
+	this->_autoindex = ai;
+}
+
+void	Server::setErrPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
 
-void Server::setLocation(Location &loc) {
+void	Server::setLocation(Location &loc) {
 	this->_locations.push_back(loc);
 }
 
-std::string &Server::getHostStr(void) {
-	return this->_hostStr;
+std::ostream &operator<<(std::ostream &os, Server &sv) {
+	os << "  Server: " << sv.getServerName() << std::endl;
+	os << "    Host: " << sv.getHostStr() << std::endl;
+	os << "    Port: " << sv.getPort() << std::endl;
+	os << "    Root: " << sv.getRoot() << std::endl;
+	os << "    Index: " << sv.getIndex() << std::endl;
+	os << "    Client Max Body: " << sv.getCliMaxBody() << std::endl;
+	os << "    Default: " << sv.getDefault() << std::endl;
+	os << "    Listen Fd: " << sv.getFd() << std::endl;
+	std::vector<Location> locs = sv.getLocations();
+	for (std::vector<Location>::iterator loc = locs.begin(); loc != locs.end(); ++loc) {
+		os << *loc << std::endl;
+	}
+	return os;
 }

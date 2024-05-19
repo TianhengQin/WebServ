@@ -28,7 +28,7 @@ public:
 
     int setBody(std::string const &file);
     void setMimeType(std::string const &path);
-    void setDirListing(std::string const &path);
+    void setAutoindex(std::string const &path);
 
 private:
 

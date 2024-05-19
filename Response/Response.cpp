@@ -178,7 +178,7 @@ std::string toString(const T val)
     return stream.str();
 }
 
-void Response::setDirListing(std::string const &path) {
+void Response::setAutoindex(std::string const &path) {
 
     struct dirent *dirStruct;
     DIR *dir;

@@ -18,12 +18,13 @@ private:
 
 public:
 	Block(const std::string& name, const std::vector<std::string>& arguments);
+	~Block();
 
 	void addChild(ASTNode * child);
 
-	std::string					getName(void) const;
-	std::vector<std::string>	getArguments(void) const;
-	std::vector<ASTNode * >		getChildren(void) const;
+	std::string					getName(void);
+	std::vector<std::string>	getArguments(void);
+	std::vector<ASTNode * >		getChildren(void);
 	std::vector<ASTNode * >		getServers(void);
 
 	void print(int level = 0) const;

@@ -39,4 +39,8 @@
 
 # define RS_BF_SIZE 8192
 
+# ifndef DEBUG
+#  define DEBUG 0
+# endif
+
 #endif
