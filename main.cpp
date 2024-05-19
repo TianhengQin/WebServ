@@ -7,7 +7,6 @@
 # include "Cgi.hpp"
 # include "Log.hpp"
 # include "Server.hpp"
-// # include "./Configuration/Configuration.hpp"
 # include "Configuration.hpp"
 # include "Location.hpp"
 
@@ -36,6 +35,10 @@ int main(int argc, char **argv) {
 			Log::print(INFO, "Server Restarting ...", 0);
 			// Configuration config(argv[1]);
 			Configuration config;
+			std::vector<Server> servs = config.getServs();
+			for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
+				std::cout << *serv << std::endl;
+			}
 			WebServ web_serv(config);
 			web_serv.run();
 		} catch (std::exception &e) {

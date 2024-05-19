@@ -39,20 +39,26 @@ public:
 	~Configuration();
 
 	Configuration(std::string filename);
-	std::vector<Server> &getServs(void);
+
+	std::string			getFilename(void);
+	Block				*getASTRoot(void);
+	std::vector<Server>	getServs(void);
 
 private:
 	std::string			_filename;
-	Block				*_root;
+	Block				*_ast_root;
 	std::vector<Server> _servs;
 
-	Block			*parseConfig(std::ifstream &file);
+	void			parseConfig(std::ifstream &file);
 	void			setServerConfig(Block *block, Server &server);
 	void			processListenDirective(std::vector<std::string> &args, Server &server);
 	void			processLocationBlock(ASTNode *locationNode, Server &server);
+	int				parseSize(std::string sizeStr);
 	unsigned int	parseMethods(std::vector<std::string> &methods);
 
 
 };
+
+std::ostream &operator<<(std::ostream &out, Configuration &config);
 
 #endif

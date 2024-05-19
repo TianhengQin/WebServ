@@ -93,12 +93,12 @@ std::string Server::getIndex(void) {
 	return this->_index;
 }
 
-unsigned int Server::getHost(void) {
-	return this->_host;
+std::string Server::getHostStr(void) {
+	return this->_hostStr;
 }
 
-int Server::getFd(void) {
-	return this->_listenFd;
+unsigned int Server::getHost(void) {
+	return this->_host;
 }
 
 unsigned int Server::getPort(void) {
@@ -107,6 +107,19 @@ unsigned int Server::getPort(void) {
 
 unsigned int Server::getCliMaxBody(void) {
 	return this->_cliMaxBody;
+}
+
+bool Server::getDefault(void) {
+	return this->_default;
+}
+
+int Server::getFd(void) {
+	return this->_listenFd;
+}
+
+
+std::vector<Location> &Server::getLocations(void) {
+	return this->_locations;
 }
 
 /**
@@ -126,8 +139,8 @@ void	Server::setIndex(std::string index) {
 }
 
 void	Server::setHost(std::string host) {
-	this->_host = inet_addr(host.c_str());
 	this->_hostStr = host;
+	this->_host = inet_addr(host.c_str());
 }
 
 void	Server::setPort(unsigned int port) {
@@ -154,6 +167,19 @@ void	Server::setLocation(Location &loc) {
 	this->_locations.push_back(loc);
 }
 
-std::string &Server::getHostStr(void) {
-	return this->_hostStr;
+std::ostream &operator<<(std::ostream &os, Server &sv) {
+	os << "Server: " << sv.getName() << std::endl;
+	os << "  Host: " << sv.getHostStr() << std::endl;
+	os << "  Port: " << sv.getPort() << std::endl;
+	os << "  Root: " << sv.getRoot() << std::endl;
+	os << "  Index: " << sv.getIndex() << std::endl;
+	os << "  Client Max Body: " << sv.getCliMaxBody() << std::endl;
+	os << "  Default: " << sv.getDefault() << std::endl;
+	os << "  Listen Fd: " << sv.getFd() << std::endl;
+	os << "  Locations: " << std::endl;
+	std::vector<Location> locs = sv.getLocations();
+	for (std::vector<Location>::iterator loc = locs.begin(); loc != locs.end(); ++loc) {
+		os << "    " << *loc << std::endl;
+	}
+	return os;
 }
