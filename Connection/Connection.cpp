@@ -50,7 +50,7 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
-    _sponse.init(_quest, false);
+    _sponse.init(_quest, true);
     // std::cout << _sponse.generate() << std::endl;
     
 

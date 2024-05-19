@@ -15,12 +15,12 @@ void Response::init(Request &request, bool dirListing) {
         getMethod(request, dirListing);
 
 
-    // } else if (request.get_method() == POST) {
-    //     postMethod(request);
+    } else if (request.get_method() == POST) {
+        postMethod(request);
         // Handle POST request
         // Process received data and send response
     } else if (request.get_method() == DELETE) {
-        deleteMethod();
+        deleteMethod(request);
         // Handle DELETE request
         // Delete requested resource and send confirmation
     } else {
@@ -76,12 +76,57 @@ void    Response::getMethod(Request &request, bool dirListing) {
     setMimeType(path);
 }
 
-// void    Response::postMethod(Request &request) {
+void    Response::postMethod(Request &request) {
+    std::string postData = request.get_body();
+    std::string newFileName = "" + request.get_dir();
+    newFileName = newFileName.substr(1);
 
-// }
+    
+    std::ofstream file(newFileName.c_str());
+    if (file.is_open()) {
+        // if (!postData.empty()) {
+            file.write(postData.c_str(), postData.size());
+            file.close();
+        // } else {
+        //     _code = 400;
+        // }
+        _code = 201;
+    } else {
+        _code = 500;
+    }
+}
 
-void    Response::deleteMethod() {
 
+
+void    Response::deleteMethod(Request &request) {
+    std::string newFileName = "" + request.get_dir();
+    newFileName = newFileName.substr(1);
+
+
+    struct stat path_stat;
+    if (stat(newFileName.c_str(), &path_stat) != 0) {
+        _code = 404;
+        return;
+    } else if (S_ISREG(path_stat.st_mode)) {
+        if (std::remove(newFileName.c_str()) == 0) {
+            _code = 204;
+        } else {
+            _code = 500;
+        }
+    } else if (S_ISDIR(path_stat.st_mode)) {
+        if (access(newFileName.c_str(), W_OK) != 0) {
+            _code = 403;
+            return ;
+        } else {
+            std::string	command = "rm -rf " + newFileName;
+            if (std::system(command.c_str()) == 0) {
+                _code = 204;
+            } else {
+                _code = 500;
+            }
+        }
+
+    }
 }
 
 void Response::initResponsePhrase() {
@@ -91,7 +136,7 @@ void Response::initResponsePhrase() {
     _responsePhrase[204] = "No Content";
     _responsePhrase[400] = "Bad Request";
     _responsePhrase[401] = "Unauthorized";
-    _responsePhrase[403] = "Directory listing is forbidden";
+    _responsePhrase[403] = "Forbidden";
     _responsePhrase[404] = "Not Found";
     _responsePhrase[405] = "Method Not Allowed";
     _responsePhrase[500] = "Internal Server Error";
@@ -140,7 +185,7 @@ int Response::setBody(std::string const &file) {
         std::streampos fileSize = myfile.tellg();
         myfile.seekg(0, std::ios::beg);
 
-        // Allocate string to the correct size and read the file into it
+        // string to the correct size and read the file into it
         _body.resize(fileSize);
         myfile.read(&_body[0], fileSize);
         myfile.close();

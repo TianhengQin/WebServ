@@ -20,8 +20,8 @@ public:
     std::string generate();
 
     void    getMethod(Request &request, bool dirListing);
-    // void    postMethod(Request &request);
-    void    deleteMethod();
+    void    postMethod(Request &request);
+    void    deleteMethod(Request &request);
 
     int setBody(std::string const &file);
     void setMimeType(std::string const &path);
