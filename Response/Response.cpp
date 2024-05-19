@@ -132,12 +132,17 @@ void Response::setMimeType(std::string const &path) {
 }
 
 int Response::setBody(std::string const &file) {
-    std::string line;
-    std::ifstream myfile(file);
+
+    std::ifstream myfile(file.c_str(), std::ios::in | std::ios::binary);
     if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            _body = _body + line;
-        }
+        // Determine the file size
+        myfile.seekg(0, std::ios::end);
+        std::streampos fileSize = myfile.tellg();
+        myfile.seekg(0, std::ios::beg);
+
+        // Allocate string to the correct size and read the file into it
+        _body.resize(fileSize);
+        myfile.read(&_body[0], fileSize);
         myfile.close();
         setMimeType(file);
         return 0;

@@ -51,7 +51,7 @@ void Connection::buildResponse() {
     // _quest.init("");
     _quest.parse();
     _sponse.init(_quest, false);
-    std::cout << _sponse.generate() << std::endl;
+    // std::cout << _sponse.generate() << std::endl;
     
 
 
