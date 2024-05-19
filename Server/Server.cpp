@@ -81,7 +81,7 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string &Server::getName(void) {
+std::string &Server::getServerName(void) {
 	return this->_servName;
 }
 
@@ -122,12 +122,27 @@ std::vector<Location> &Server::getLocations(void) {
 	return this->_locations;
 }
 
+std::map<int, std::string> &Server::get_error_pages(void) {
+	return this->_error_page;
+}
+
+
+std::vector<std::string> &Server::get_all_server_names(void) {
+	return this->_server_names;
+}
+
+std::vector<std::string> &Server::get_all_indexes(void) {
+	return this->_indexes;
+}
+
 /**
  * Setters
 */
 
-void	Server::setServName(std::string name) {
-	this->_servName = name;
+void	Server::setServerName(std::string name) {
+	if (_servName.empty())
+		_servName = name;
+	this->_server_names.push_back(name);
 }
 
 void	Server::setRoot(std::string root) {
@@ -135,7 +150,9 @@ void	Server::setRoot(std::string root) {
 }
 
 void	Server::setIndex(std::string index) {
-	this->_index = index;
+	if (_index.empty())
+		_index = index;
+	this->_indexes.push_back(index);
 }
 
 void	Server::setHost(std::string host) {
@@ -168,7 +185,7 @@ void	Server::setLocation(Location &loc) {
 }
 
 std::ostream &operator<<(std::ostream &os, Server &sv) {
-	os << "Server: " << sv.getName() << std::endl;
+	os << "Server: " << sv.getServerName() << std::endl;
 	os << "  Host: " << sv.getHostStr() << std::endl;
 	os << "  Port: " << sv.getPort() << std::endl;
 	os << "  Root: " << sv.getRoot() << std::endl;

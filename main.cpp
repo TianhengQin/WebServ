@@ -33,8 +33,12 @@ int main(int argc, char **argv) {
 	while (--watch_dog) {
 		try {
 			Log::print(INFO, "Server Restarting ...", 0);
-			// Configuration config(argv[1]);
 			Configuration config;
+			if (argc == 2) {
+				config = Configuration(argv[1]);
+			} else {
+				config = Configuration();
+			}
 			std::vector<Server> servs = config.getServs();
 			for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
 				std::cout << *serv << std::endl;

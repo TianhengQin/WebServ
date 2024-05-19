@@ -17,7 +17,8 @@ public:
 
 	void			setup(void);
 
-	std::string		&getName(void);
+	/* Getters */
+	std::string		&getServerName(void);
 	std::string		getRoot(void);
 	std::string		getIndex(void);
 	std::string		getHostStr(void);
@@ -27,10 +28,15 @@ public:
 	bool			getDefault(void);
 	int				getFd(void);
 
-	std::vector<Location>	&getLocations(void);
+	std::vector<Location>		&getLocations(void);
+	std::map<int, std::string>	&get_error_pages(void);
+
+	std::vector<std::string>	&get_all_server_names(void);
+	std::vector<std::string>	&get_all_indexes(void);
 
 
-	void	setServName(std::string name);
+	/* Setters */
+	void	setServerName(std::string name);
 	void	setRoot(std::string root);
 	void	setIndex(std::string index);
 	void	setHost(std::string host);
@@ -48,7 +54,6 @@ private:
 	void initDefaultErrorPages(void);
 
 	// std::vector<std::string>	_access_logs;
-	// // std::vector<std::string>	_listen; _host, _port
 
 	// std::map<std::string, std::string>	_cgi_param;
 	// std::string							_cgi_pass;
@@ -57,15 +62,11 @@ private:
 	// bool								_autoindex;
 	// std::string							_alias;
 	// bool								_aliasSet;
-	// // static  ConfigServer				_defaultServer;
 	
-	std::string					_servName;
-	// std::vector<std::string>	_server_names;
-	std::string					_root;
-	std::string					_index;
-	// std::vector<std::string>	_indexes;
-
-
+	/* Server */
+	std::string			_servName;
+	std::string			_root;
+	std::string			_index;
 	struct sockaddr_in	_socketAddr;
 	unsigned int		_socketAddrLen;
 	std::string			_hostStr;
@@ -73,12 +74,13 @@ private:
 	unsigned int		_port;				// listen
 	unsigned int		_cliMaxBody;		// client_max_body_size
 	bool				_default;
-
 	int					_listenFd;
 
-	std::map<int, std::string> _error_page;
+	std::map<int, std::string>	_error_page;
+	std::vector<Location>		_locations;
 
-	std::vector<Location> _locations;
+	std::vector<std::string>	_server_names;
+	std::vector<std::string>	_indexes;
 
 };
 

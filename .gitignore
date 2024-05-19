@@ -4,4 +4,4 @@ a.out
 _test*.*
 *.o
 webserver
-.debug
+*.debug
