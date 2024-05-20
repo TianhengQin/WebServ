@@ -12,7 +12,7 @@ Configuration::Configuration(void) {
 	s1.setRoot("./websites");
 	Location l1;
 	l1.setPath("/");
-	l1.setMethods(GET|PUT|DELETE);
+	l1.setMethods(GET|POST|DELETE);
 	l1.setRoot("/");
 	l1.setCgi(".php", "/usr/bin/php");
 	l1.setCgi(".sh", "/bin/bash");

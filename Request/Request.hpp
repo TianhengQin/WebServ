@@ -6,7 +6,7 @@
 /*   By: tkilling <tkilling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:42:58 by tkilling          #+#    #+#             */
-/*   Updated: 2024/05/19 18:30:56 by tkilling         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:16:24 by tkilling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 // # define DELETE 4
 // # define PUT 8
 // # define HEAD 16
+
 
 class Request {
 

@@ -6,27 +6,31 @@ Response::Response() {
 
 Response::~Response() {}
 
-void Response::init(Request &request, bool dirListing) {
+void Response::init(Request &request, Server server, Location location) {
+
+    // config setup
+    _server = server;
+    _location = location;
 
 
     clear();
     _method = request.get_method();
+    unsigned int allowed_methods = location.getMethods();
+
+    if ((allowed_methods & GET) && _method == GET) {
+        getMethod(request);
 
 
-    if (_method == GET) {
-        getMethod(request, dirListing);
-
-
-    } else if (_method == POST) {
+    } else if ((allowed_methods & POST) && _method == POST) {
         postMethod(request);
         // Handle POST request
         // Process received data and send response
-    } else if (_method == DELETE) {
+    } else if ((allowed_methods & DELETE) && _method == DELETE) {
         deleteMethod(request);
         // Handle DELETE request
         // Delete requested resource and send confirmation
-    }else if (_method == HEAD) {
-        getMethod(request, dirListing);
+    }else if ((allowed_methods & HEAD) && _method == HEAD) {
+        getMethod(request);
     } else {
         _code = 405; // Method Not Allowed
 
@@ -48,7 +52,7 @@ void    Response::clear() {
 
 }
 
-void    Response::getMethod(Request &request, bool dirListing) {
+void    Response::getMethod(Request &request) {
     std::string path = "." + request.get_dir(); // ?? ./...
 
     struct stat path_stat;
@@ -62,8 +66,9 @@ void    Response::getMethod(Request &request, bool dirListing) {
             _code = 301;
             return;
         }
-        if (dirListing) {
+        if (_location.getAutoindex()) {
             setAutoindex(path); // path = dir listing file setDirListing(path);
+            return ;
         } else {
             path += "index.html"; // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
@@ -76,16 +81,25 @@ void    Response::getMethod(Request &request, bool dirListing) {
         _code = 404;
     }
 
-            
     setMimeType(path);
 }
 
 void    Response::postMethod(Request &request) {
     std::string postData = request.get_body();
     std::string newFileName = "" + request.get_dir();
+
     newFileName = newFileName.substr(1);
 
-    
+    // check if file exists 409 otherwise
+    struct stat buffer;
+    if (stat(newFileName.c_str(), &buffer) == 0) {
+        _code = 409;
+        return ;
+    } else if (S_ISDIR(buffer.st_mode)) {
+
+    }
+
+    // create file
     std::ofstream file(newFileName.c_str());
     if (file.is_open()) {
         // if (!postData.empty()) {

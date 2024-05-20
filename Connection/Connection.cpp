@@ -37,22 +37,27 @@ void Connection::buildResponse() {
     std::cout << _quest.get() << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
-    std::string line;
-    std::string html;
-    std::ifstream myfile("_test/website/test.html");
+    // std::string line;
+    // std::string html;
+    // std::ifstream myfile("_test/website/test.html");
     // std::ifstream myfile("./index.html");
-    if (myfile.is_open()) {
-        while (std::getline(myfile, line)) {
-            html = html + line;
-        }
-        myfile.close();
-    }
+    // if (myfile.is_open()) {
+    //     while (std::getline(myfile, line)) {
+    //         html = html + line;
+    //     }
+    //     myfile.close();
+    // }
+
+
+
+    // server map config...
+    // std::cout << _server[_servChoice];
 
 
     //test timo
     // _quest.init("");
-    // _quest.parse();
-    // _sponse.init(_quest, false);
+    _quest.parse();
+    _sponse.init(_quest, _server[_servChoice], _server[_servChoice].getLocations()[0]);
     // std::cout << _sponse.generate() << std::endl;
     
 
