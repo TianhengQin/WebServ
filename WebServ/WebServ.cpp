@@ -217,6 +217,11 @@ void WebServ::receive(int fd) {
 		disconnect(fd);
 	} else if (received < RS_BF_SIZE) {
 		_connections[fd].receive(bf, received);
+		received = read(fd, bf, RS_BF_SIZE);
+		if (received > 0) {
+			_connections[fd].receive(bf, received);
+			return;
+		}
 		Log::print(DEBUG, "Received finish ", fd);
 		fdSwitch(fd, 'r');
 		Log::print(DEBUG, "Switch to send ", fd);
