@@ -29,6 +29,8 @@ public:
 
 private:
 
+    int _method;
+
     int _code;
     std::string _phrase;
     std::string _body;

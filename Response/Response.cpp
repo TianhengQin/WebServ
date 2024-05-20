@@ -10,19 +10,23 @@ void Response::init(Request &request, bool dirListing) {
 
 
     clear();
+    _method = request.get_method();
 
-    if (request.get_method() == GET) {
+
+    if (_method == GET) {
         getMethod(request, dirListing);
 
 
-    } else if (request.get_method() == POST) {
+    } else if (_method == POST) {
         postMethod(request);
         // Handle POST request
         // Process received data and send response
-    } else if (request.get_method() == DELETE) {
+    } else if (_method == DELETE) {
         deleteMethod(request);
         // Handle DELETE request
         // Delete requested resource and send confirmation
+    }else if (_method == HEAD) {
+        getMethod(request, dirListing);
     } else {
         _code = 405; // Method Not Allowed
 
@@ -161,7 +165,9 @@ std::string Response::generate() {
     response_stream << "Content-Type: " << _mimeType << "\r\n";
     response_stream << "Content-Length: " << _body.size() << "\r\n";
     response_stream << "\r\n";
-    response_stream << _body;
+    if (_method != HEAD) {
+        response_stream << _body;
+    }
 
     std::string response = response_stream.str();
     return (response);
