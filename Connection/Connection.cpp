@@ -62,9 +62,9 @@ void Connection::buildResponse() {
     
 
 
-    // std::ostringstream ss(_sponse.generate());
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
+    std::ostringstream ss(_sponse.generate());
+    // std::ostringstream ss;
+    // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     _sendBf = ss.str();
     _keepAlive = false;
     // _quest.clear();
