@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 			} else {
 				config = Configuration();
 			}
-			if (DEBUG) {
+			if (INFO ) {
 				// std::cout << config << std::endl;
 				std::vector<Server> servs = config.getServs();
 				for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {

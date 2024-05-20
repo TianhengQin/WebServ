@@ -53,11 +53,6 @@ private:
 
 	void initDefaultErrorPages(void);
 
-	// std::map<std::string, ConfigServer>	_location;
-	// bool								_autoindex;
-	// std::string							_alias;
-	// bool								_aliasSet;
-	
 	/* Server */
 	std::string			_server_name;
 	std::string			_root;

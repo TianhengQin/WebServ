@@ -2,7 +2,6 @@
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
-// # include "../Head.hpp"
 # include "ASTNode.hpp"
 # include "Block.hpp"
 # include "Directive.hpp"

@@ -61,7 +61,7 @@ http {
 
 #### Directives related to HTTP requests
 
-- `listen` - The port that the server will listen on
+- `listen` - Sets the root directory for requests.
 - `server_name` - The server name of the server
 - `allow_methods` - Specify the allowed methods
 
@@ -69,20 +69,14 @@ http {
 
 Generating a response from a requested file:
 
-- `root` - The root directory of the server.
+- `root` - Sets the root directory for requests.
 - `index` - The index files of the server. If autonindex is off, a HTTP request that ends with a '/' will try to return the first found index file instead.
-- `types` - Map response file name extensions to MIME types
-- `error_page` - The error page of the server
+- `error_page` - overrides defualt error page of the server
 
 Generating a response by other means:
 
 - `client_max_body_size` - The maximum body size of the client. If the size in a request exceeds the configured value, the 413 (Request Entity Too Large) error is returned to the client.
 - `return` - returns a response with the specified status code. Redirections are handled by this directive: temporily (307) or permanantly (301) redirection. If the status code is not a redirection, it can also return a string that will be sent in the HTTP response body. Return has the highest priority than the `cgi` directive.
-- `autoindex` - Specify whether to show directory listings
-- `cgi` - Specify a cgi script
+- `autoindex` - Specify whether to show directory listings. 
+- `cgi` - Map response file name extensions to a CGI script.
 
-#### Misc directives
-
-For logging information:
-
-- `worker_connections` - Maximum amount of connections that the server will handle at any given point of time 
