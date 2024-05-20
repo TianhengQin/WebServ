@@ -1,14 +1,14 @@
 #include "Server.hpp"
 
 Server::Server(void) {
-	this->_servName = "";
+	this->_server_name = "";
 	this->_root = "";
 	this->_index = "";
-	this->_socketAddrLen = sizeof(_socketAddr);
-	memset(&_socketAddr, 0, _socketAddrLen);
+	this->_socket_address_length = sizeof(_socket_address);
+	memset(&_socket_address, 0, _socket_address_length);
 	this->_host = 0;
 	this->_port = 0;
-	this->_cliMaxBody = UINT_MAX;
+	this->_client_max_body_size = UINT_MAX;
 	this->_default = false;
 	this->_listenFd = 0;
 	this->_autoindex = false;
@@ -25,17 +25,17 @@ Server::Server(const Server &sv) {
 Server &Server::operator=(const Server &sv) {
 
 	if (this != &sv) {
-		this->_servName = sv._servName;
+		this->_server_name = sv._server_name;
 		this->_root = sv._root;
 		this->_port = sv._port;
 		this->_host = sv._host;
-		this->_cliMaxBody = sv._cliMaxBody;
+		this->_client_max_body_size = sv._client_max_body_size;
 		this->_index = sv._index;
 		this->_error_page = sv._error_page;
 		this->_locations = sv._locations;
 		this->_listenFd = sv._listenFd;
-		this->_socketAddr = sv._socketAddr;
-		this->_socketAddrLen = sv._socketAddrLen;
+		this->_socket_address = sv._socket_address;
+		this->_socket_address_length = sv._socket_address_length;
 	}
 	return (*this);
 }
@@ -69,12 +69,12 @@ void Server::setup(void) {
 		Log::print(ERROR, "Set socket address reuse failed ", 0);
 		throw std::runtime_error("Set Address Reuse Failed");
 	}
-	_socketAddr.sin_family = AF_INET;
-	_socketAddr.sin_addr.s_addr = _host;
-	_socketAddr.sin_port = htons(_port);
+	_socket_address.sin_family = AF_INET;
+	_socket_address.sin_addr.s_addr = _host;
+	_socket_address.sin_port = htons(_port);
 	Log::print(INFO, "  Socket ", _host);
 	Log::print(INFO, "  port ", _port);
-	if (bind(_listenFd, (sockaddr *)&_socketAddr, _socketAddrLen) < 0) {
+	if (bind(_listenFd, (sockaddr *)&_socket_address, _socket_address_length) < 0) {
 		Log::print(ERROR, "Socket bind failed on ", _listenFd);
 		throw std::runtime_error("Socket Bind Failed");
 	}
@@ -84,8 +84,8 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string &Server::getServerName(void) {
-	return this->_servName;
+std::string Server::getServerName(void) {
+	return this->_server_name;
 }
 
 std::string Server::getRoot(void) {
@@ -97,7 +97,7 @@ std::string Server::getIndex(void) {
 }
 
 std::string Server::getHostStr(void) {
-	return this->_hostStr;
+	return this->_listen;
 }
 
 unsigned int Server::getHost(void) {
@@ -108,8 +108,8 @@ unsigned int Server::getPort(void) {
 	return this->_port;
 }
 
-unsigned int Server::getCliMaxBody(void) {
-	return this->_cliMaxBody;
+unsigned int Server::getClientMaxBodySize(void) {
+	return this->_client_max_body_size;
 }
 
 bool Server::getDefault(void) {
@@ -125,21 +125,21 @@ bool Server::getAutoindex(void) {
 }
 
 
-std::vector<Location> &Server::getLocations(void) {
+std::vector<Location> Server::getLocations(void) {
 	return this->_locations;
 }
 
-std::map<int, std::string> &Server::get_error_pages(void) {
+std::map<int, std::string> Server::getErrorPages(void) {
 	return this->_error_page;
 }
 
 
-std::vector<std::string> &Server::get_all_server_names(void) {
-	return this->_server_names;
+std::vector<std::string> Server::get_allServerNames(void) {
+	return this->_all_server_names;
 }
 
-std::vector<std::string> &Server::get_all_indexes(void) {
-	return this->_indexes;
+std::vector<std::string> Server::get_allIndexes(void) {
+	return this->_all_index;
 }
 
 /**
@@ -147,9 +147,9 @@ std::vector<std::string> &Server::get_all_indexes(void) {
 */
 
 void	Server::setServerName(std::string name) {
-	if (_servName.empty())
-		_servName = name;
-	this->_server_names.push_back(name);
+	if (_server_name.empty())
+		_server_name = name;
+	this->_all_server_names.push_back(name);
 }
 
 void	Server::setRoot(std::string root) {
@@ -159,11 +159,11 @@ void	Server::setRoot(std::string root) {
 void	Server::setIndex(std::string index) {
 	if (_index.empty())
 		_index = index;
-	this->_indexes.push_back(index);
+	this->_all_index.push_back(index);
 }
 
 void	Server::setHost(std::string host) {
-	this->_hostStr = host;
+	this->_listen = host;
 	this->_host = inet_addr(host.c_str());
 }
 
@@ -171,8 +171,8 @@ void	Server::setPort(unsigned int port) {
 	this->_port = port;
 }
 
-void	Server::setCliMaxBody(unsigned int cmb) {
-	this->_cliMaxBody = cmb;
+void	Server::setClientMaxBodySize(unsigned int cmb) {
+	this->_client_max_body_size = cmb;
 }
 
 void	Server::setDefault(bool def) {
@@ -187,7 +187,7 @@ void	Server::setAutoindex(bool ai) {
 	this->_autoindex = ai;
 }
 
-void	Server::setErrPage(int code, std::string path) {
+void	Server::setErrorPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
 
@@ -201,7 +201,7 @@ std::ostream &operator<<(std::ostream &os, Server &sv) {
 	os << "    Port: " << sv.getPort() << std::endl;
 	os << "    Root: " << sv.getRoot() << std::endl;
 	os << "    Index: " << sv.getIndex() << std::endl;
-	os << "    Client Max Body: " << sv.getCliMaxBody() << std::endl;
+	os << "    Client Max Body: " << sv.getClientMaxBodySize() << std::endl;
 	os << "    Default: " << sv.getDefault() << std::endl;
 	os << "    Listen Fd: " << sv.getFd() << std::endl;
 	std::vector<Location> locs = sv.getLocations();

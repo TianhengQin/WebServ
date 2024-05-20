@@ -12,7 +12,7 @@ void Response::init(Request &request, Server server, Location location) {
     _server = server;
     _location = location;
 
-    if (location.getCliMaxBody() < request.get_body().size()) {
+    if (location.getClientMaxBodySize() < request.get_body().size()) {
         _code = 413;
         return ;
     }
@@ -182,7 +182,7 @@ std::string Response::generate() {
     std::stringstream response_stream;
     
     if (_code > 399) { // ?? 
-        std::map<int, std::string> error_pages = _location.get_error_pages();
+        std::map<int, std::string> error_pages = _location.getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
             _body = error_pages[_code];
             _mimeType = "text/html";

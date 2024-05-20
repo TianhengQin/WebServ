@@ -17,22 +17,22 @@ public:
 	void			setup(void);
 
 	/* Getters */
-	std::string		&getServerName(void);
+	std::string		getServerName(void);
 	std::string		getRoot(void);
 	std::string		getIndex(void);
 	std::string		getHostStr(void);
 	unsigned int	getHost(void);
 	unsigned int	getPort(void);
-	unsigned int	getCliMaxBody(void);
+	unsigned int	getClientMaxBodySize(void);
 	bool			getDefault(void);
 	int				getFd(void);
 	bool			getAutoindex(void);
 
-	std::vector<Location>		&getLocations(void);
-	std::map<int, std::string>	&get_error_pages(void);
+	std::map<int, std::string>	getErrorPages(void);
+	std::vector<std::string>	get_allServerNames(void);
+	std::vector<std::string>	get_allIndexes(void);
+	std::vector<Location>		getLocations(void);
 
-	std::vector<std::string>	&get_all_server_names(void);
-	std::vector<std::string>	&get_all_indexes(void);
 
 
 	/* Setters */
@@ -41,11 +41,11 @@ public:
 	void	setIndex(std::string index);
 	void	setHost(std::string host);
 	void	setPort(unsigned int port);
-	void	setCliMaxBody(unsigned int cmb);
+	void	setClientMaxBodySize(unsigned int cmb);
 	void	setDefault(bool def);
 	void	setListenFd(int fd);
 	void	setAutoindex(bool ai);
-	void	setErrPage(int code, std::string path);
+	void	setErrorPage(int code, std::string path);
 	void	setLocation(Location &loc);
 
 
@@ -59,15 +59,15 @@ private:
 	// bool								_aliasSet;
 	
 	/* Server */
-	std::string			_servName;
+	std::string			_server_name;
 	std::string			_root;
 	std::string			_index;
-	struct sockaddr_in	_socketAddr;
-	unsigned int		_socketAddrLen;
-	std::string			_hostStr;
-	unsigned int		_host;				// listen
-	unsigned int		_port;				// listen
-	unsigned int		_cliMaxBody;		// client_max_body_size
+	struct sockaddr_in	_socket_address;
+	unsigned int		_socket_address_length;
+	std::string			_listen;
+	unsigned int		_host;
+	unsigned int		_port;
+	unsigned int		_client_max_body_size;
 	bool				_default;
 	int					_listenFd;
 	bool				_autoindex;
@@ -75,8 +75,8 @@ private:
 	std::map<int, std::string>	_error_page;
 	std::vector<Location>		_locations;
 
-	std::vector<std::string>	_server_names;
-	std::vector<std::string>	_indexes;
+	std::vector<std::string>	_all_server_names;
+	std::vector<std::string>	_all_index;
 
 };
 

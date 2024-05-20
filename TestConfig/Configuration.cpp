@@ -5,9 +5,9 @@ Configuration::Configuration() {
     s1.setHost("127.0.0.1");
     s1.setPort(8080);
     s1.setServerName("127.0.0.1");
-    s1.setErrPage(301, "./websites/err_page/301.html");
-    s1.setErrPage(404, "./websites/err_page/404.html");
-    s1.setCliMaxBody(1024*1024);
+    s1.setErrorPage(301, "./websites/err_page/301.html");
+    s1.setErrorPage(404, "./websites/err_page/404.html");
+    s1.setClientMaxBodySize(1024*1024);
     s1.setRoot("./websites");
     Location l1;
     l1.setPath("/");

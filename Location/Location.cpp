@@ -7,6 +7,7 @@ Location::Location(void) {
 	_redir = "";
 	_methods = GET | POST | DELETE | PUT | HEAD;
 	_autoindex = false;
+	_client_max_body_size = 1024 * 1024;
 }
 
 Location::Location(Location const &loc) {
@@ -53,6 +54,14 @@ bool Location::getAutoindex(void) {
 	return (this->_autoindex);
 }
 
+unsigned int Location::getClientMaxBodySize(void) {
+	return (this->_client_max_body_size);
+}
+
+std::map<int, std::string> Location::getErrorPages(void) {
+	return (this->_error_page);
+}
+
 std::map<std::string, std::string> Location::getCgi(void) {
 	return (this->_cgiMap);
 }
@@ -83,6 +92,10 @@ void Location::setMethods(unsigned int methods) {
 
 void Location::setAutoindex(bool autoindex) {
 	this->_autoindex = autoindex;
+}
+
+void Location::setClientMaxBodySize(unsigned int cmb) {
+	this->_client_max_body_size = cmb;
 }
 
 void Location::setCgi(std::string ext, std::string bin) {
