@@ -12,6 +12,12 @@ void Response::init(Request &request, Server server, Location location) {
     _server = server;
     _location = location;
 
+    if (location.getCliMaxBody() < request.get_body().size()) {
+        _code = 413;
+        return ;
+    }
+
+    // if () // cgi??
 
     clear();
     _method = request.get_method();
@@ -53,7 +59,7 @@ void    Response::clear() {
 }
 
 void    Response::getMethod(Request &request) {
-    std::string path = "." + request.get_dir(); // ?? ./...
+    std::string path = "." + _location.getRoot() + request.get_dir(); // ?? ./...
 
     struct stat path_stat;
     if (stat(path.c_str(), &path_stat) != 0) {
@@ -70,7 +76,7 @@ void    Response::getMethod(Request &request) {
             setAutoindex(path); // path = dir listing file setDirListing(path);
             return ;
         } else {
-            path += "index.html"; // Default file
+            path += _location.getIndex(); // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
                 setBody(path);
             } else {
@@ -86,7 +92,7 @@ void    Response::getMethod(Request &request) {
 
 void    Response::postMethod(Request &request) {
     std::string postData = request.get_body();
-    std::string newFileName = "" + request.get_dir();
+    std::string newFileName = _location.getRoot() + request.get_dir();
 
     newFileName = newFileName.substr(1);
 
@@ -117,7 +123,7 @@ void    Response::postMethod(Request &request) {
 
 
 void    Response::deleteMethod(Request &request) {
-    std::string newFileName = "" + request.get_dir();
+    std::string newFileName = _location.getRoot() + request.get_dir();
     newFileName = newFileName.substr(1);
 
 
@@ -157,6 +163,7 @@ void Response::initResponsePhrase() {
     _responsePhrase[403] = "Forbidden";
     _responsePhrase[404] = "Not Found";
     _responsePhrase[405] = "Method Not Allowed";
+    _responsePhrase[413] = "Request Entity Too Long";
     _responsePhrase[500] = "Internal Server Error";
     _responsePhrase[501] = "Not Implemented";
     _responsePhrase[503] = "Service Unavailable";
@@ -174,7 +181,13 @@ std::string Response::getResponsePhrase(int const &sufix) {
 std::string Response::generate() {
     std::stringstream response_stream;
     
-
+    if (_code > 399) { // ?? 
+        std::map<int, std::string> error_pages = _location.get_error_pages();
+        if (error_pages.find(_code) != error_pages.end()) {
+            _body = error_pages[_code];
+            _mimeType = "text/html";
+        }
+    }
     response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     response_stream << "Content-Type: " << _mimeType << "\r\n";
     response_stream << "Content-Length: " << _body.size() << "\r\n";
