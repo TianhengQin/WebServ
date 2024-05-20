@@ -17,7 +17,7 @@ void Request::setFinish() {
     _finish = true;
 }
 
-void Request::append(char const *bf, size_t n) { // ??
+void Request::append(char const *bf, size_t n) {
     _request.append(bf, n);
 }
 
@@ -50,6 +50,7 @@ void Request::clear()
 
 void Request::parse()
 {
+	// std::vec
 	std::istringstream request_stream(_request);
 	std::string line;
 
@@ -150,9 +151,9 @@ int Request::validate_request()
 	}
 
 	// validate Host
-	if (_host != "localhost" && _host != "127.0.0.1") {  // is that fine?
-		return (400);
-	}
+	// if (_host != "localhost" && _host != "127.0.0.1") {  // is that fine?
+	// 	return (400);
+	// }
 
 	// validate Port
 	for (size_t i = 0; _port[i] != '\0'; i++) { // or shoud i only allow 8080, 8081, 8082?

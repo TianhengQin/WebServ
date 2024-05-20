@@ -4,7 +4,9 @@
 # include "Head.hpp"
 # include "MimeType.hpp"
 # include "../Request/Request.hpp"
+#include "Server.hpp"
 
+class Server;
 class Response {
 
 public:
@@ -12,14 +14,14 @@ public:
     Response();
     ~Response();
 
-    void init(Request &request, bool dirListing);
+    void init(Request &request, Server server, Location location);
     void initResponsePhrase();
     std::string getResponsePhrase(int const &sufix);
     void clear();
 
     std::string generate();
 
-    void    getMethod(Request &request, bool dirListing);
+    void    getMethod(Request &request);
     void    postMethod(Request &request);
     void    deleteMethod(Request &request);
 
@@ -42,6 +44,10 @@ private:
     // std::size_t bodySize;
 
     std::map<int, std::string> _responsePhrase;
+
+
+    Server      _server;
+    Location    _location;
 
 };
 

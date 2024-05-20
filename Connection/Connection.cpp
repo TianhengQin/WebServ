@@ -49,10 +49,15 @@ void Connection::buildResponse() {
     // }
 
 
+
+    // server map config...
+    std::cout << _server[_servChoice];
+
+
     //test timo
     // _quest.init("");
     _quest.parse();
-    _sponse.init(_quest, false);
+    _sponse.init(_quest, _server[_servChoice], _server[_servChoice].getLocations()[0]);
     // std::cout << _sponse.generate() << std::endl;
     
 
