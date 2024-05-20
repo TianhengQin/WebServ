@@ -60,7 +60,6 @@ void Request::parse()
 			_bad = 400;
 			return;
 		}
-		std::cout << _method << "|" << _dir << "|" << _protocol << std::endl;
 	} else {
 		_bad = 400;
 		return;
@@ -79,12 +78,22 @@ void Request::parse()
 		}
 	}
 
+	
+	// request_stream.clear(); // Clear error flags
+	// request_stream.seekg(0);
 	// Parse body
+	// size_t pos = _request.find("\r\n\r\n");
+	// if (pos != std::string::npos) {
+	// 	std::cout << "testtest:: " << _request.substr(0, pos + 4) << "|" << std::endl;
+	// }
+
 	if (request_stream.good()) {
 		std::ostringstream body_stream;
 		body_stream << request_stream.rdbuf();
 		_body = body_stream.str();
 	}
+	// std::cout << "1body: "<< _body << "|" << _body.size() << std:: endl;
+
 
 	// Parse _host && _port
 	std::map<std::string, std::string>::const_iterator it = _headers.find("Host");
@@ -202,6 +211,7 @@ std::string Request::get_cookie()
 
 std::string Request::get_body()
 {
+	// std::cout << "body: "<< _request << "|" << _body.size() << std:: endl;
 	return (_body);
 }
 

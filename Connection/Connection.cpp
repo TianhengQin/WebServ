@@ -29,10 +29,12 @@ void Connection::buildResponse() {
     std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
     std::size_t pos = _quest.get().find("\r\n\r\n");
-    if (pos != std::string::npos)
+    if (pos != std::string::npos) {
+        std::cerr << "no body" << std::endl;
         f2 << _quest.get().substr(pos + 4);
+    }
     f2.close();
-    std::cout << _quest.get().substr(0,500) << std::endl;
+    std::cout << _quest.get() << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
     std::string line;
@@ -60,7 +62,7 @@ void Connection::buildResponse() {
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     _sendBf = ss.str();
     _keepAlive = false;
-    _quest.clear();
+    // _quest.clear();
     // CGI test
     // std::cout << _quest.get().substr(0,500) << std::endl;
     // // _cgiProgram = "/usr/local/bin/python3";
