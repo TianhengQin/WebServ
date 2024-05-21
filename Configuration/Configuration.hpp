@@ -75,7 +75,7 @@ private:
 	void			process_server_block(Block *serverBlock, Server &server);
 	void			process_location_block(Block *locationBlock, Location &location);
 	void			process_listen_directive(std::vector<std::string> &args, Server &server);
-	int				parseSize(std::string sizeStr);
+	unsigned int	parseSize(std::string sizeStr);
 	unsigned int	parseMethods(std::vector<std::string> &methods);
 
 

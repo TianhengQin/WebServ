@@ -18,13 +18,13 @@ Configuration::Configuration(void) {
 	Location l1;
 	l1.setPath("/");
 	l1.setRoot("/");
-	l1.setAllowedMethods(GET|POST|DELETE);
+	l1.setAllowedMethods((unsigned int) (GET|POST|DELETE));
 	l1.setCgi(".php", "/usr/bin/php");
 	l1.setCgi(".sh", "/bin/bash");
 	l1.setCgi(".py", "/usr/local/bin/python3");
 	Location l2;
 	l2.setPath("/test");
-	l2.setAllowedMethods(GET|PUT|DELETE);
+	l2.setAllowedMethods((unsigned int) (GET|PUT|DELETE));
 	l2.setRoot("/test_page");
 	l2.setAutoindex(true);
 	l2.addIndex("index.html");
@@ -71,7 +71,7 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 	this->_index = "";
 	this->_error_page = std::map<int, std::string>();
 	this->_client_max_body_size = 1024 * 1024;
-	this->_allow_methods = GET | POST | PUT | DELETE;
+	this->_allow_methods = GET | POST | DELETE | PUT | HEAD;
 	this->_autoindex = false;
 	// this->_parser = NginxParser(filename);
 
@@ -133,7 +133,20 @@ void Configuration::process_http_block(Block *httpBlock) {
 	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
 		serverBlock = dynamic_cast<Block*>(*child);
 		if (serverBlock && serverBlock->getName() == "server") {
-			this->_servers.push_back(Server());
+			Server serv;
+			serv.setRoot(this->_root);
+			serv.addIndex(this->_index);
+			serv.setAllowedMethods(this->_allow_methods);
+			for (std::map<int, std::string>::iterator it = this->_error_page.begin(); it != this->_error_page.end(); ++it) {
+				serv.setErrorPage(it->first, it->second);
+			}
+			serv.setClientMaxBodySize(this->_client_max_body_size);
+			serv.setAutoindex(this->_autoindex);
+			for (std::map<std::string, std::string>::iterator it = this->_cgi.begin(); it != this->_cgi.end(); ++it) {
+				serv.setCgi(it->first, it->second);
+			}
+
+			this->_servers.push_back(serv);
 			process_server_block(serverBlock, this->_servers.back());
 		}
 	}
@@ -178,7 +191,7 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 			} else if (directive->getName() == "autoindex") {
 				if (args[0] == "on") {
 					server.setAutoindex(true);
-				} else {
+				} else if (args[0] == "off") {
 					server.setAutoindex(false);
 				}
 			} else if (directive->getName() == "cgi") {
@@ -193,7 +206,22 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
 		locationBlock = dynamic_cast<Block*>(*child);
 		if (locationBlock && locationBlock->getName() == "location") {
-			server.addLocation(Location());
+			Location loc;
+			loc.setPath(locationBlock->getArguments()[0]);
+			loc.setRoot(server.getRoot());
+			loc.addIndex(server.getIndex());
+			loc.setAllowedMethods(server.getAllowedMethods());
+			loc.setAutoindex(server.getAutoindex());
+			loc.setClientMaxBodySize(server.getClientMaxBodySize());
+			std::map<int, std::string> errorPages = server.getErrorPages();
+			for (std::map<int, std::string>::iterator it = errorPages.begin(); it != errorPages.end(); ++it) {
+				loc.setErrorPage(it->first, it->second);
+			}
+			std::map<std::string, std::string> cgi = server.getCgi();
+			for (std::map<std::string, std::string>::iterator it = cgi.begin(); it != cgi.end(); ++it) {
+				loc.setCgi(it->first, it->second);
+			}
+			server.addLocation(loc);
 			process_location_block(locationBlock, server.getLocations().back());
 		}
 	}
@@ -243,60 +271,8 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 			}
 		}
 	}
-
 }
-// void Configuration::process_location_block(Block *locationBlock, Server &server) {
-// 	std::vector<std::string> pathArgs = locationBlock->getArguments();
-// 	std::vector<ASTNode *> locationChildren = locationBlock->getChildren();
 
-// 	Location loc;
-// 	loc.setPath(pathArgs[0]);
-
-// 	for (std::vector<ASTNode *>::iterator locChild = locationChildren.begin(); locChild != locationChildren.end(); ++locChild) {
-// 		Directive *directive = dynamic_cast<Directive*>(*locChild);
-// 		if (!directive) {
-// 			continue;
-// 			// throw std::runtime_error("Error casting directive");
-// 		}
-
-// 		std::string name = directive->getName();
-// 		std::vector<std::string> args = directive->getArguments();
-
-// 		if (name == "cgi") {
-// 			loc.setCgi(args[0], args[1]);
-// 		} else if (name == "root") {
-// 			loc.setRoot(args[0]);
-// 		} else if (name == "index") {
-// 			loc.addIndex(args[0]);
-// 		} else if (name == "limit_except") {
-// 			loc.setAllowedMethods((int)parseMethods(args));
-// 		} else if (name == "autoindex") {
-// 			if (args[0] == "on") {
-// 				loc.setAutoindex(true);
-// 			} else {
-// 				loc.setAutoindex(false);
-// 			}
-// 		} 
-// 		/*
-// 		// TODO: cgi
-// 			# CGI configurations
-// 			fastcgi_pass 127.0.0.1:9000;
-// 			fastcgi_index index.php;
-// 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-// 			include fastcgi_params;
-// 		*/
-// 		// else if 
-// 		// 	try {
-// 		// 		loc.setCgi(args[0], args[1]);
-// 		// 	} catch (std::exception &e) {
-// 		// 		continue;
-// 		// 		// throw std::runtime_error("Insufficient arguments for cgi directive");
-// 		// 	}
-// 		// } 
-// 	}
-
-// 	server.addLocation(loc);
-// }
 
 
 void Configuration::process_listen_directive(std::vector<std::string> &args, Server &server) {
@@ -320,7 +296,9 @@ void Configuration::process_listen_directive(std::vector<std::string> &args, Ser
 	server.setPort(port);
 }
 
-int Configuration::parseSize(std::string sizeStr) {
+
+
+unsigned int Configuration::parseSize(std::string sizeStr) {
 	size_t numEnd = 0;
 	while (numEnd < sizeStr.size() && std::isdigit(sizeStr[numEnd])) {
 		numEnd++;
@@ -365,10 +343,12 @@ unsigned int Configuration::parseMethods(std::vector<std::string> &methods) {
 			methodFlags |= GET;
 		} else if (*method == "POST") {
 			methodFlags |= POST;
-		} else if (*method == "PUT") {
-			methodFlags |= PUT;
 		} else if (*method == "DELETE") {
 			methodFlags |= DELETE;
+		} else if (*method == "PUT") {
+			methodFlags |= PUT;
+		} else if (*method == "HEAD") {
+			methodFlags |= HEAD;
 		}
 	}
 	return (methodFlags);

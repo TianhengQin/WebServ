@@ -1,17 +1,33 @@
 #include "Server.hpp"
 
 Server::Server(void) {
-	this->_server_name = "";
-	this->_root = "";
-	this->_index = "";
-	this->_socket_address_length = sizeof(_socket_address);
-	memset(&_socket_address, 0, _socket_address_length);
-	this->_host = 0;
-	this->_port = 0;
-	this->_client_max_body_size = UINT_MAX;
-	this->_listenFd = 0;
-	this->_autoindex = false;
+	_listen = "";
+	_host = 0;
+	_port = 0;
+	_server_name = "";
+	_root = "";
+	_index = "";
+	_allow_methods = GET | POST | DELETE | PUT | HEAD;
 	initDefaultErrorPages();
+	_client_max_body_size = 1024 * 1024;
+	_autoindex = false;
+	_listenFd = 0;
+	_socket_address_length = sizeof(_socket_address);
+	memset(&_socket_address, 0, _socket_address_length);
+
+	// Old code
+	// this->_server_name = "";
+	// this->_root = "";
+	// this->_index = "";
+	// this->_socket_address_length = sizeof(_socket_address);
+	// memset(&_socket_address, 0, _socket_address_length);
+	// this->_host = 0;
+	// this->_port = 0;
+	// this->_client_max_body_size = 1024 * 1024;
+	// this->_listenFd = 0;
+	// this->_autoindex = false;
+
+
 
 }
 
