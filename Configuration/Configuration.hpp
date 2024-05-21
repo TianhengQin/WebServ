@@ -55,7 +55,8 @@ public:
 
 private:
 	std::string			_filename;
-	Block				*_ast;
+	// Block				*_ast; // to remove
+	NginxParser			_parser;
 	std::string			_root;
 	std::string			_index;
 	std::map<int, std::string>	_error_page;
@@ -68,7 +69,8 @@ private:
 
 
 
-	void			parse_configuration_file(std::ifstream &file);
+	void			parse_configuration_file(void);
+	// void			parse_configuration_file(std::ifstream &file);
 	void			process_http_block(Block *httpBlock);
 	void			process_server_block(Block *block, Server &server);
 	void			process_location_block(ASTNode *locationNode, Server &server);

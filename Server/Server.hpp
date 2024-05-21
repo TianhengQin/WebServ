@@ -44,6 +44,7 @@ public:
 	void	setErrorPage(int code, std::string path);
 	void	setClientMaxBodySize(unsigned int client_max_body_size);
 	void	setAutoindex(bool autoindex);
+	void	setCgi(std::string extension, std::string path);
 	void	setListenFd(int fd);
 	void	setLocation(Location &location);
 

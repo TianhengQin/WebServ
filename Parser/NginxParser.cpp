@@ -1,7 +1,13 @@
 
 #include "NginxParser.hpp"
 
-NginxParser::NginxParser(void) : _input(std::cin) { }
+NginxParser::NginxParser(void) : _input(std::cin) {
+	this->ast_root = new Block("root", std::vector<std::string>());
+}
+
+// NginxParser::NginxParser(void) {
+// 	std::cerr << "Error: no filename provided" << std::endl;
+// }
 
 NginxParser::NginxParser(const NginxParser &other) : _input(other._input)
 {
@@ -11,21 +17,59 @@ NginxParser::NginxParser(const NginxParser &other) : _input(other._input)
 NginxParser &NginxParser::operator=(const NginxParser &other)
 {
 	if (this != &other) {
-		// this->_input = other._input;
-		this->_root = other._root;
+		// TODO: copy
 	}
 	return (*this);
+}
+
+
+// NginxParser::NginxParser(std::string filename) : _filename(filename), _input(std::ifstream(filename.c_str())) {
+// 	this->ast_root = new Block("root", std::vector<std::string>());
+
+// 	// this->_input = std::ifstream(filename.c_str());
+// 	// if (!this->_input.is_open()) {
+// 	// 	throw std::runtime_error("Error: could not open file " + filename);
+// 	// }
+// 	// this->parse(this->_file);
+
+// 	// std::ifstream file(this->_filename.c_str());
+// 	// if (!file.is_open()) {
+// 	// 	throw std::runtime_error("Error opening file: " + this->_filename);
+// 	// }
+// 	// _input = file;
+// 	// this->parse();
+
+// 	// if (!file.is_open()) {
+// 	// 	std::cerr << "Error: could not open file " << filename << std::endl;
+// 	// 	exit(1);
+// 	// }
+// 	// this->_input = file;
+// 	// this->parse();
+// }
+
+NginxParser::NginxParser(std::istream& input) : _input(input) {
+	this->ast_root = new Block("root", std::vector<std::string>());
+	this->parse();
 }
 
 NginxParser::~NginxParser() { }
 
 
-NginxParser::NginxParser(std::istream& input) : _input(input) {
-	this->parse();
-}
+void	NginxParser::parse_configuration_file(void) {
+	std::vector<ASTNode *> rootChildren;
 
-Block *NginxParser::getRoot(void) const {
-	return this->_root;
+	// if (!this->_input.is_open()) {
+	// 	throw std::runtime_error("Error: could not open file " + this->_filename);
+	// }
+	// this->ast_root = getRoot();
+	// rootChildren = this->ast_root->getChildren();
+
+	// for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
+	// 	Block *block = dynamic_cast<Block*>(*child);
+	// 	if (block && block->getName() == "http") {
+	// 		return ;
+	// 	}
+	// }
 }
 
 
@@ -74,8 +118,8 @@ void	NginxParser::parse(void) {
 	std::stack< Block * >	blockStack;
 	std::string				line;
 
-	this->_root = new Block("root", std::vector<std::string>());
-	blockStack.push(this->_root);
+	
+	blockStack.push(this->ast_root);
 	while (getline(_input, line)) {
 		trim(line);
 		if (line.empty() || line[0] == '#') continue;
@@ -92,7 +136,7 @@ void	NginxParser::parse(void) {
 				std::cerr << "Unmatched '}'" << std::endl;
 				continue;
 			} else if (blockStack.size() == 1) {
-				this->_root->addChild(blockStack.top());
+				this->ast_root->addChild(blockStack.top());
 			}
 			blockStack.pop();
 		} else {
@@ -103,4 +147,29 @@ void	NginxParser::parse(void) {
 			}
 		}
 	}
+}
+
+
+
+
+
+
+
+Block *NginxParser::getRoot(void) const {
+	return this->ast_root;
+}
+
+Block *NginxParser::getHttpBlock(void) const {
+	std::vector<ASTNode *>				children;
+	std::vector<ASTNode *>::iterator	child;
+	
+	children = this->ast_root->getChildren();
+	for (child = children.begin(); child != children.end(); ++child) {
+		Block *block = dynamic_cast<Block*>(*child);
+		if (block && block->getName() == "http") {
+			return block;
+		}
+	}
+	throw std::runtime_error("Error: no http block found");
+	return NULL;
 }

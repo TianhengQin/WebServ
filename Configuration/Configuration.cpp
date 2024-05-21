@@ -1,6 +1,11 @@
 
 #include "Configuration.hpp"
 
+/**
+ * @brief Construct a new Configuration:: Configuration object
+ * 
+ */
+
 Configuration::Configuration(void) {
 	Server s1;
 	s1.setHost("127.0.0.1");
@@ -44,17 +49,6 @@ Configuration::Configuration(void) {
 	_servers.push_back(s3);
 }
 
-Configuration::Configuration(std::string filename) : _filename(filename) {
-	std::ifstream file(this->_filename.c_str());
-	if (!file.is_open()) {
-		throw std::runtime_error("Error opening file: " + this->_filename);
-	}
-	parse_configuration_file(file);
-}
-
-Configuration::~Configuration() {
-	// delete _root;
-}
 
 Configuration::Configuration(const Configuration &other) {
 	*this = other;
@@ -62,32 +56,62 @@ Configuration::Configuration(const Configuration &other) {
 
 Configuration &Configuration::operator=(const Configuration &other) {
 	if (this != &other) {
-		this->_filename = other._filename;
-		this->_ast = other._ast;
-		this->_servers = other._servers;
+		// Todo: deep copy
 	}
 	return (*this);
 }
 
-void	Configuration::parse_configuration_file(std::ifstream &file) {
-	NginxParser		parser(file);
-	
-	this->_ast = parser.getRoot();
-	std::vector<ASTNode *> rootChildren = this->_ast->getChildren();
+Configuration::~Configuration() {
+	// delete _root;
+}
 
-	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
-		Block *block = dynamic_cast<Block*>(*child);
-		if (block && block->getName() == "http") {
-			process_http_block(block);
-		}
+
+Configuration::Configuration(std::string filename) : _filename(filename) {
+	this->_root = "";
+	this->_index = "";
+	this->_error_page = std::map<int, std::string>();
+	this->_client_max_body_size = 1024 * 1024;
+	this->_allow_methods = GET | POST | PUT | DELETE;
+	this->_autoindex = false;
+	// this->_parser = NginxParser(filename);
+
+	// this->_parser.parse_configuration_file();
+	parse_configuration_file();
+	// process_http_block(this->_parser.getHttpBlock());
+}
+
+// void	Configuration::parse_configuration_file(std::ifstream &file) {
+void	Configuration::parse_configuration_file(void) {
+	std::ifstream file(this->_filename.c_str());
+	if (!file.is_open()) {
+		throw std::runtime_error("Error opening file: " + this->_filename);
 	}
+
+	this->_parser = NginxParser(file);
+	Block *httpBlock = this->_parser.getHttpBlock();
+	process_http_block(httpBlock);
+
+// 	// NginxParser		parser(file);
+// 	parser.parse();
+// 	this->_ast = parser.getRoot();
+// 	std::vector<ASTNode *> rootChildren = this->_ast->getChildren();
+
+// 	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
+// 		Block *block = dynamic_cast<Block*>(*child);
+// 		if (block && block->getName() == "http") {
+// 			process_http_block(block);
+// 		}
+// 	}
 }
 
 void Configuration::process_http_block(Block *httpBlock) {
-	std::vector<ASTNode *> blockChildren = httpBlock->getChildren();
-	
-	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
-		Block *serverBlock = dynamic_cast<Block*>(*child);
+	std::vector<ASTNode *>				blockChildren;
+	std::vector<ASTNode *>::iterator	child;
+	Block 								*serverBlock;
+
+	blockChildren = httpBlock->getChildren();
+	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
+		serverBlock = dynamic_cast<Block*>(*child);
 		if (serverBlock && serverBlock->getName() == "server") {
 			this->_servers.push_back(Server());
 			process_server_block(serverBlock, this->_servers.back());
@@ -96,37 +120,87 @@ void Configuration::process_http_block(Block *httpBlock) {
 }
 
 void Configuration::process_server_block(Block *block, Server &server) {
-	std::vector<ASTNode *> blockChildren = block->getChildren();
-	
-	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
-		Directive *directive = dynamic_cast<Directive*>(*child);
-		if (directive) {
-			std::string name = directive->getName();
-			std::vector<std::string> args = directive->getArguments();
+	std::vector<ASTNode *>				blockChildren;
+	std::vector<ASTNode *>::iterator	child;
+	Directive							*directive;
+	std::vector<std::string>			args;
 
-			if (name == "listen") {
+	blockChildren = block->getChildren();
+	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
+		directive = dynamic_cast<Directive*>(*child);
+		if (directive) {
+			args = directive->getArguments();
+			if (directive->getName() == "listen") {
 				process_listen_directive(args, server);
-			} else if (name == "server_name") {
-				server.setServerName(args[0]);
-			} else if (name == "root") {
+			} else if (directive->getName() == "server_name") {
+				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+					server.setServerName(*it);
+				}
+				// server.setServerName(args[0]);
+			} else if (directive->getName() == "root") {
 				server.setRoot(args[0]);
-			} else if (name == "error_page") {
+			} else if (directive->getName() == "index") {
+				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+					server.setIndex(*it);
+				}
+				// server.setIndex(args[0]);
+			} else if (directive->getName() == "error_page") {
 				if (args.size() == 2) {
 					server.setErrorPage(std::stoi(args[0]), args[1]);
 				} else if (args.size() == 1) {
 					server.setErrorPage(std::stoi(args[0]), "");
 				}
-			} else if (name == "client_max_body_size") {
+			} else if (directive->getName() == "client_max_body_size") {
 				server.setClientMaxBodySize(parseSize(args[0]));
-			}
-		} else {
-			Block *childBlock = dynamic_cast<Block*>(*child);
-			if (childBlock && childBlock->getName() == "location") {
-				process_location_block(*child, server);
+			} else if (directive->getName() == "autoindex") {
+				if (args[0] == "on") {
+					server.setAutoindex(true);
+				} else {
+					server.setAutoindex(false);
+				}
+			} else if (directive->getName() == "cgi") {
+				try {
+					server.setCgi(args[0], args[1]);
+				} catch (std::exception &e) {
+					throw std::runtime_error("Insufficient arguments for cgi directive");
+				}
 			}
 		}
 	}
 }
+
+// void Configuration::process_server_block(Block *block, Server &server) {
+// 	std::vector<ASTNode *> blockChildren = block->getChildren();
+	
+// 	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
+// 		Directive *directive = dynamic_cast<Directive*>(*child);
+// 		if (directive) {
+// 			std::string name = directive->getName();
+// 			std::vector<std::string> args = directive->getArguments();
+
+// 			if (name == "listen") {
+// 				process_listen_directive(args, server);
+// 			} else if (name == "server_name") {
+// 				server.setServerName(args[0]);
+// 			} else if (name == "root") {
+// 				server.setRoot(args[0]);
+// 			} else if (name == "error_page") {
+// 				if (args.size() == 2) {
+// 					server.setErrorPage(std::stoi(args[0]), args[1]);
+// 				} else if (args.size() == 1) {
+// 					server.setErrorPage(std::stoi(args[0]), "");
+// 				}
+// 			} else if (name == "client_max_body_size") {
+// 				server.setClientMaxBodySize(parseSize(args[0]));
+// 			}
+// 		} else {
+// 			Block *childBlock = dynamic_cast<Block*>(*child);
+// 			if (childBlock && childBlock->getName() == "location") {
+// 				process_location_block(*child, server);
+// 			}
+// 		}
+// 	}
+// }
 
 
 void Configuration::process_location_block(ASTNode *locationNode, Server &server) {
@@ -270,9 +344,9 @@ std::string Configuration::getFilename(void) {
 	return (this->_filename);
 }
 
-Block *Configuration::getASTRoot(void) {
-	return (this->_ast);
-}
+// Block *Configuration::getASTRoot(void) {
+// 	return (this->_ast);
+// }
 
 std::vector<Server> Configuration::getServers(void) {
 	return (this->_servers);

@@ -178,6 +178,10 @@ void	Server::setAutoindex(bool autoindex) {
 	this->_autoindex = autoindex;
 }
 
+void	Server::setCgi(std::string extension, std::string path) {
+	this->_cgi[extension] = path;
+}
+
 void	Server::setErrorPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
