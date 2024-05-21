@@ -1,5 +1,6 @@
 
 #include "Block.hpp"
+#include "Directive.hpp"
 
 Block::Block(void) {}
 
@@ -54,3 +55,32 @@ void Block::print(int level) const {
 	std::cout << indentation << "}" << std::endl;
 }
 
+
+std::ostream &operator<<(std::ostream &out, Block &block) {
+	std::string inden(INDENT_SIZE, ' ');
+	out << inden << "<" << block.getName() << "> -> {";
+	std::vector<std::string> args = block.getArguments();
+	for (std::vector<std::string>::iterator arg = args.begin(); arg != args.end(); ++arg) {
+		out << *arg;
+		// if (arg + 1 != args.end()) {
+			out << ", ";
+		// }
+	}
+	
+	std::vector<ASTNode *> children = block.getChildren();
+	for (std::vector<ASTNode *>::iterator child = children.begin(); child != children.end(); ++child) {
+		Block *block = dynamic_cast<Block*>(*child);
+		if (block) {
+			out << *block;
+		} else {
+			Directive *directive = dynamic_cast<Directive*>(*child);
+			if (directive) {
+				out << *directive;
+			}
+		}
+		// out << (*child);
+	}
+	
+	out << "}" << std::endl;
+	return out;
+}

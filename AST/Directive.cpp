@@ -38,3 +38,16 @@ void Directive::print(int level) const {
 	std::cout << ";" << std::endl;
 }
 
+std::ostream &operator<<(std::ostream &out, Directive &directive) {
+	std::string inden(2 * INDENT_SIZE, ' ');
+	out << inden <<  "(" << directive.getName() << ") -> [";
+	std::vector<std::string> args = directive.getArguments();
+	for (std::vector<std::string>::iterator arg = args.begin(); arg != args.end(); ++arg) {
+		out << *arg;
+		if (arg + 1 != args.end()) {
+			out << ", ";
+		}
+	}
+	out << "]" << std::endl;
+	return out;
+}

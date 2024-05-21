@@ -28,4 +28,6 @@ private:
 
 };
 
+std::ostream &operator<<(std::ostream &out, Directive &directive);
+
 #endif // DIRECTIVE_HPP

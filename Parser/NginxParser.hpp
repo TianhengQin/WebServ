@@ -31,7 +31,6 @@ public:
 	NginxParser &operator=(const NginxParser &other);
 	~NginxParser();
 
-	// NginxParser(std::string filename);
 	NginxParser(std::istream& input);
 
 	void	parse(void);
@@ -58,5 +57,7 @@ private:
 	std::pair<std::string, std::vector<std::string> >	parseNameAndArguments(const std::string &line);
 
 };
+
+std::ostream &operator<<(std::ostream &out, NginxParser &parser);
 
 #endif // NGINXPARSER_HPP

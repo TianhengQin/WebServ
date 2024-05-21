@@ -34,4 +34,6 @@ private:
 
 };
 
+std::ostream &operator<<(std::ostream &out, Block &block);
+
 #endif // BLOCK_HPP

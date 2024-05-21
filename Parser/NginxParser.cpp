@@ -55,24 +55,6 @@ NginxParser::NginxParser(std::istream& input) : _input(input) {
 NginxParser::~NginxParser() { }
 
 
-void	NginxParser::parse_configuration_file(void) {
-	std::vector<ASTNode *> rootChildren;
-
-	// if (!this->_input.is_open()) {
-	// 	throw std::runtime_error("Error: could not open file " + this->_filename);
-	// }
-	// this->ast_root = getRoot();
-	// rootChildren = this->ast_root->getChildren();
-
-	// for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
-	// 	Block *block = dynamic_cast<Block*>(*child);
-	// 	if (block && block->getName() == "http") {
-	// 		return ;
-	// 	}
-	// }
-}
-
-
 void	NginxParser::ltrim(std::string &s) {
 	std::string::iterator it = std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace)));
 	s.erase(s.begin(), it);
@@ -172,4 +154,36 @@ Block *NginxParser::getHttpBlock(void) const {
 	}
 	throw std::runtime_error("Error: no http block found");
 	return NULL;
+}
+
+void	NginxParser::parse_configuration_file(void) {
+	std::string line;
+	std::string name;
+	std::string value;
+	std::string::size_type pos;
+
+	while (getline(_input, line)) {
+		trim(line);
+		if (line.empty() || line[0] == '#') continue;
+		pos = line.find_first_of(" \t");
+		if (pos == std::string::npos) {
+			name = line;
+			value = "";
+		} else {
+			name = line.substr(0, pos);
+			value = line.substr(pos + 1);
+		}
+		trim(name);
+		trim(value);
+		if (name == "root") {
+			this->ast_root->addChild(new Directive(name, std::vector<std::string>(1, value)));
+		}
+	}
+}
+
+std::ostream &operator<<(std::ostream &out, NginxParser &parser) {
+	ASTNode *node = parser.getRoot();
+	node->print();
+	// out << *(parser.getRoot());
+	return out;
 }

@@ -40,7 +40,7 @@ public:
 
 	/* Getters */
 	std::string					getFilename(void);
-	NginxParser					getParser(void);
+	NginxParser					*getParser(void);
 	// Block					*getASTRoot(void);
 	std::string					getRoot(void);
 	std::string					getIndex(void);
@@ -54,7 +54,7 @@ public:
 
 private:
 	std::string	_filename;
-	NginxParser	_parser;
+	NginxParser	*_parser;
 
 	/* Default values */
 	std::string							_root;

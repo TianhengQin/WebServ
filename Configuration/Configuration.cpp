@@ -87,21 +87,11 @@ void	Configuration::parse_configuration_file(void) {
 		throw std::runtime_error("Error opening file: " + this->_filename);
 	}
 
-	this->_parser = NginxParser(file);
-	Block *httpBlock = this->_parser.getHttpBlock();
+	this->_parser = new NginxParser(file);
+	Block *httpBlock = this->_parser->getHttpBlock();
+	std::cout << *httpBlock << std::endl;
 	process_http_block(httpBlock);
 
-// 	// NginxParser		parser(file);
-// 	parser.parse();
-// 	this->_ast = parser.getRoot();
-// 	std::vector<ASTNode *> rootChildren = this->_ast->getChildren();
-
-// 	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
-// 		Block *block = dynamic_cast<Block*>(*child);
-// 		if (block && block->getName() == "http") {
-// 			process_http_block(block);
-// 		}
-// 	}
 }
 
 void Configuration::process_http_block(Block *httpBlock) {
@@ -389,7 +379,7 @@ unsigned int Configuration::parseMethods(std::vector<std::string> &methods) {
 
 std::string Configuration::getFilename(void) { return (this->_filename); }
 
-NginxParser Configuration::getParser(void) { return (this->_parser); }
+NginxParser *Configuration::getParser(void) { return (this->_parser); }
 
 std::string Configuration::getRoot(void) { return (this->_root); }
 
