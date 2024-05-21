@@ -40,13 +40,13 @@ http {
 
 - `client_max_body_size` - Sets the maximum allowed size of the client request body.  
 
-- `allow_methods` - S the allowed methods
-
-- `return` - Sends an HTTP response with a specified status code and optional URL. 
+- `allow_methods` - Sets the HTTP methods to be passed along a request.
 
 - `autoindex` - Enables or disables the directory listing output.  
 
 - `cgi` - Maps a response file extension to a CGI script.   
+
+- `return` - Sends an HTTP response with a specified status code and optional URL. 
 
 
 # Documentation
@@ -98,26 +98,37 @@ Simple directives are used to specify a single configuration parameter. The simp
 
 ```nginx
 http {
+    # http directives used as default values
+    root                    path;
+    index                   file;
+    error_page              code uri;
+    client_max_body_size    size;
+    allow_methods           methods;
+    autoindex               [on | off];
+
     server {
-        listen address[:port];
-        server_name name;
-        root path;
-        index file;
-        allow_methods methods;
-        error_page code uri;
-        client_max_body_size size;
-        return code URL;
-        autoindex [on | off];
-        cgi extension script;
+        # server directives
+        listen                  address[:port];
+        server_name             name;
+
+        root                    path;
+        index                   file;
+        allow_methods           methods;
+        error_page              code uri;
+        client_max_body_size    size;
+        autoindex               [on | off];
+        cgi                     extension script;
+
         location [ uri ] {
             # directives defined here override the server directives
             index file;
             allow_methods methods;
             error_page code uri;
             client_max_body_size size;
-            return code URL;
+
             autoindex [on | off];
             cgi extension script;
+            return code URL;
         }
     }
 }
@@ -181,13 +192,6 @@ http {
 - The method can be specified as a single method or a list of methods separated by spaces.  
 - GET POST DELETE PUT HEAD
 
-#### `return`
-> Syntax: return code URL;  
-> Default: —  
-> Context: location  
-
-- Sends an HTTP response with a specified status code and optional URL.  
-
 #### `autoindex`
 > Syntax: autoindex [on | off];  
 > Default: autoindex off;  
@@ -200,3 +204,26 @@ http {
 > Default: —  
 > Context: location  
 - Maps a response file extension to a CGI script.
+
+#### `return`
+> Syntax: return code URL;  
+> Default: —  
+> Context: location  
+
+- Sends an HTTP response with a specified status code and optional URL.  
+
+
+## **Directive Contexts**
+
+>   | **Directive**              |    **http**    |    **server**    |    **location**    |
+>   |----------------------------|----------------|------------------|--------------------|
+>   | **listen**                 |                |       ✓          |                    |
+>   | **server_name**            |                |       ✓          |                    |
+>   | **root**                   |       ✓        |       ✓          |       ✓            |
+>   | **index**                  |       ✓        |       ✓          |       ✓            |
+>   | **error_page**             |       ✓        |       ✓          |       ✓            |
+>   | **client_max_body_size**   |       ✓        |       ✓          |       ✓            |
+>   | **allow_methods**          |       ✓        |       ✓          |       ✓            |
+>   | **autoindex**              |       ✓        |       ✓          |       ✓            |
+>   | **cgi**                    |                |                  |       ✓            |
+>   | **return**                 |                |                  |       ✓            |
