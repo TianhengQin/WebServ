@@ -34,44 +34,27 @@ http {
 
 - `root` - Sets the root directory for requests.
 
-- `allow_methods` - Specify the allowed methods
-
 - `index` - Defines files that will be used as an index.
 
 - `error_page` - Defines the URI that will be shown for the specified errors.
 
-Generating a response by other means:
+- `client_max_body_size` - Sets the maximum allowed size of the client request body.  
 
-- `client_max_body_size` - The maximum body size of the client. If the size in a request exceeds the configured value, the 413 (Request Entity Too Large) error is returned to the client.
-- `return` - returns a response with the specified status code. Redirections are handled by this directive: temporily (307) or permanantly (301) redirection. If the status code is not a redirection, it can also return a string that will be sent in the HTTP response body. Return has the highest priority than the `cgi` directive.
-- `autoindex` - Specify whether to show directory listings. 
-- `cgi` - Map response file name extensions to a CGI script.
+- `allow_methods` - S the allowed methods
+
+- `return` - Sends an HTTP response with a specified status code and optional URL. 
+
+- `autoindex` - Enables or disables the directory listing output.  
+
+- `cgi` - Maps a response file extension to a CGI script.   
+
 
 # Documentation
 
-### `http`
+## **Block Directives**
 
-> Syntax: **http** { ... }  
-> Default: —  
-> Context: main   
+Block directives are used to group multiple directives together. The block directives are: `http`, `server`, and `location`.
 
-Provides the configuration file context in which the servers are specified.   
-
-### `server`
-
-> Syntax: **server** { ... }  
-> Default: —  
-> Context: http   
-
-Sets configuration for a virtual server.   
-
-### `location`
-
-> Syntax: **location** uri { ... }  
-> Default: —  
-> Context: 	server   
-
-Sets configuration depending on a request URI.   
 
 ```nginx
 http {
@@ -80,59 +63,139 @@ http {
             [ directives ]
         }
     }
+}  
+```  
+
+#### `http`
+
+> Syntax: **http** { ... }  
+> Default: —  
+> Context: main   
+
+Provides the configuration file context in which the servers are specified.   
+
+#### `server`
+
+> Syntax: **server** { ... }  
+> Default: —  
+> Context: http   
+
+Sets configuration for a virtual server.   
+
+#### `location`
+
+> Syntax: **location** uri { ... }  
+> Default: —  
+> Context: 	server   
+
+Sets configuration depending on a request URI.   
+
+
+  
+## **Simple Directives**  
+
+Simple directives are used to specify a single configuration parameter. The simple directives are: `listen`, `server_name`, `root`, `allow_methods`, `index`, `error_page`, `client_max_body_size`, `return`, `autoindex`, and `cgi`.
+
+```nginx
+http {
+    server {
+        listen address[:port];
+        server_name name;
+        root path;
+        allow_methods pattern;
+        index file;
+        error_page code uri;
+        client_max_body_size size;
+        return code URL;
+        autoindex [on | off];
+        cgi extension script;
+        location [ uri ] {
+            # directives defined here override the server directives
+            index file;
+            error_page code uri;
+            client_max_body_size size;
+            return code URL;
+            autoindex [on | off];
+            cgi extension script;
+        }
+    }
 }
 ```
 
-### `listen`
+#### `listen`
 > Syntax: **listen** address[:port];  
 > Default: listen *:80;  
 > Context: server  
 
-Sets the address and port. If the port is not specified, the default port is 80.  
+- Sets the address and port.
+- If the port is not specified, the default port is 80.  
 
-### `server_name`
-> Syntax: server_name name ...;  
+#### `server_name`
+> Syntax: server_name name;  
 > Default: server_name "";  
 > Context: server  
  
- Sets the names of a virtual server.
+-  Sets the names of a virtual server.
 
-### `root`
+#### `root`
 > Syntax: **root** path;  
 > Default: root html;  
 > Context: http, server, location, if in location
 
- Sets the root directory for requests.
+-  Sets the root directory for requests.
 
 
-### `index`
+#### `index`
 > Syntax: index file;  
 > Default: index index.html;  
 > Context: http, server, location  
 
-Defines files that will be used as an index. If autonindex is off, a HTTP request that ends with a '/' will try to return the first found index file instead.
+- Defines files that will be used as an index.  
 
-### `error_page`
+#### `error_page`
 > Syntax: error_page code uri;  
 > Default: —  
 > Context: http, server, location, if in location  
 
-Defines the URI that will be shown for the specified errors. Overrides the default error page of the server.
+- Defines the URI that will be shown for the specified errors.
+- Overrides the default error page of the server.
 
 
-### `client_max_body_size`
+#### `client_max_body_size`
+> Syntax:  client_max_body_size size;  
+> Default:  client_max_body_size 1m;  
+> Context:  http, server, location  
+
+- Sets the maximum allowed size of the client request body.  
+- If the size in a request exceeds the configured value, the 413 (Request Entity Too Large) error is returned to the client.  
+- Sizes can be specified in bytes (e.g., “1024”) kilobytes (e.g., “8k”), or megabytes (e.g., “1m”).
+
+#### `allow_methods`
+> Syntax: allow_methods method ...;  
+> Default: —  
+> Context: http, server, location, if in location
 
 
-The maximum body size of the client. If the size in a request exceeds the configured value, the 413 (Request Entity Too Large) error is returned to the client.
-### `return`
+- Describes HTTP methods be passed along a request.  
+- The method can be specified as a single method or a list of methods separated by spaces.  
+- GET POST PUT DELETE  
 
+#### `return`
+> Syntax: return code URL;  
+> Default: —  
+> Context: server, location, if  
 
-returns a response with the specified status code. Redirections are handled by this directive: temporily (307) or permanantly (301) redirection. If the status code is not a redirection, it can also return a string that will be sent in the HTTP response body. Return has the highest priority than the `cgi` directive.
-### `autoindex`
+- Sends an HTTP response with a specified status code and optional URL.  
 
+#### `autoindex`
+> Syntax: autoindex [on | off];  
+> Default: autoindex off;  
+> Context: http, server, location  
 
-Specify whether to show directory listings. 
-### `cgi`
+- Enables or disables the directory listing output.
 
-
-Map response file name extensions to a CGI script.
+#### `cgi`
+> Syntax: cgi extension script;  
+> Default: —  
+> Context: location  
+- Maps a response file extension to a CGI script.
