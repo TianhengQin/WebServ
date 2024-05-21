@@ -21,7 +21,7 @@ void Response::init(Request &request, Server server, Location location) {
 
     clear();
     _method = request.get_method();
-    unsigned int allowed_methods = location.getMethods();
+    unsigned int allowed_methods = location.getAllowedMethods();
 
     if ((allowed_methods & GET) && _method == GET) {
         getMethod(request);

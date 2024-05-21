@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 			}
 			if (INFO ) {
 				// std::cout << config << std::endl;
-				std::vector<Server> servs = config.getServs();
+				std::vector<Server> servs = config.getServers();
 				for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
 					std::cout << *serv << std::endl;
 				}

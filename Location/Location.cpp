@@ -4,7 +4,7 @@ Location::Location(void) {
 	_path = "/";
 	_root = "/";
 	_index = "index.html";
-	_redir = "";
+	_return = "";
 	_methods = GET | POST | DELETE | PUT | HEAD;
 	_autoindex = false;
 	_client_max_body_size = 1024 * 1024;
@@ -18,7 +18,7 @@ Location &Location::operator=(Location const &loc) {
 	_path = loc._path;
 	_root = loc._root;
 	_index = loc._index;
-	_redir = loc._redir;
+	_return = loc._return;
 	_methods = loc._methods;
 	_autoindex = loc._autoindex;
 	return (*this);
@@ -43,10 +43,10 @@ std::string Location::getIndex(void) {
 }
 
 std::string Location::getRedir(void) {
-	return (this->_redir);
+	return (this->_return);
 }
 
-unsigned int Location::getMethods(void) {
+unsigned int Location::getAllowedMethods(void) {
 	return (this->_methods);
 }
 
@@ -63,7 +63,7 @@ std::map<int, std::string> Location::getErrorPages(void) {
 }
 
 std::map<std::string, std::string> Location::getCgi(void) {
-	return (this->_cgiMap);
+	return (this->_cgi);
 }
 
 /**
@@ -83,10 +83,10 @@ void Location::setIndex(std::string index) {
 }
 
 void Location::setRedir(std::string redir) {
-	this->_redir = redir;
+	this->_return = redir;
 }
 
-void Location::setMethods(unsigned int methods) {
+void Location::setAllowedMethods(unsigned int methods) {
 	this->_methods = methods;
 }
 
@@ -98,8 +98,8 @@ void Location::setClientMaxBodySize(unsigned int cmb) {
 	this->_client_max_body_size = cmb;
 }
 
-void Location::setCgi(std::string ext, std::string bin) {
-	this->_cgiMap[ext] = bin;
+void Location::setCgi(std::string extension, std::string script) {
+	this->_cgi[extension] = script;
 }
 
 std::ostream &operator<<(std::ostream &out, Location &loc) {
@@ -107,9 +107,9 @@ std::ostream &operator<<(std::ostream &out, Location &loc) {
 	out << "      Root: " << loc.getRoot() << std::endl;
 	out << "      Index: " << loc.getIndex() << std::endl;
 	out << "      Redir: " << loc.getRedir() << std::endl;
-	out << "      Methods: " << loc.getMethods() << std::endl;
+	out << "      Methods: " << loc.getAllowedMethods() << std::endl;
 	out << "      DirListing: " << loc.getAutoindex() << std::endl;
-	// for (std::map<std::string, std::string>::const_iterator it = loc._cgiMap.begin(); it != loc._cgiMap.end(); ++it) {
+	// for (std::map<std::string, std::string>::const_iterator it = loc._cgi.begin(); it != loc._cgi.end(); ++it) {
 	// 	out << "  CGI: " << it->first << " -> " << it->second << std::endl;
 	// }
 	return (out);

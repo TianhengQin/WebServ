@@ -24,7 +24,6 @@ public:
 	unsigned int	getHost(void);
 	unsigned int	getPort(void);
 	unsigned int	getClientMaxBodySize(void);
-	bool			getDefault(void);
 	int				getFd(void);
 	bool			getAutoindex(void);
 
@@ -36,17 +35,17 @@ public:
 
 
 	/* Setters */
+	void	setHost(std::string host);
+	void	setPort(unsigned int port);
 	void	setServerName(std::string name);
 	void	setRoot(std::string root);
 	void	setIndex(std::string index);
-	void	setHost(std::string host);
-	void	setPort(unsigned int port);
-	void	setClientMaxBodySize(unsigned int cmb);
-	void	setDefault(bool def);
-	void	setListenFd(int fd);
-	void	setAutoindex(bool ai);
+	void	setAllowedMethods(unsigned int methods);
 	void	setErrorPage(int code, std::string path);
-	void	setLocation(Location &loc);
+	void	setClientMaxBodySize(unsigned int client_max_body_size);
+	void	setAutoindex(bool autoindex);
+	void	setListenFd(int fd);
+	void	setLocation(Location &location);
 
 
 private:
@@ -54,20 +53,21 @@ private:
 	void initDefaultErrorPages(void);
 
 	/* Server */
-	std::string			_server_name;
-	std::string			_root;
-	std::string			_index;
-	struct sockaddr_in	_socket_address;
-	unsigned int		_socket_address_length;
 	std::string			_listen;
 	unsigned int		_host;
 	unsigned int		_port;
-	unsigned int		_client_max_body_size;
-	bool				_default;
-	int					_listenFd;
-	bool				_autoindex;
-
+	std::string			_server_name;
+	std::string			_root;
+	std::string			_index;
+	unsigned int		_allow_methods;
 	std::map<int, std::string>	_error_page;
+	unsigned int		_client_max_body_size;
+	bool				_autoindex;
+	std::map<std::string, std::string>	_cgi;
+
+	struct sockaddr_in	_socket_address;
+	unsigned int		_socket_address_length;
+	int					_listenFd;
 	std::vector<Location>		_locations;
 
 	std::vector<std::string>	_all_server_names;

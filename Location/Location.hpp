@@ -26,7 +26,7 @@ public:
 	std::string	getRoot(void);
 	std::string	getIndex(void);
 	std::string	getRedir(void);
-	unsigned int	getMethods(void);
+	unsigned int	getAllowedMethods(void);
 	bool			getAutoindex(void);
 	unsigned int	getClientMaxBodySize(void);
 
@@ -39,7 +39,7 @@ public:
 	void	setIndex(std::string index);
 	void	setRedir(std::string redir);
 
-	void	setMethods(unsigned int methods);
+	void	setAllowedMethods(unsigned int methods);
 	void	setAutoindex(bool autoindex);
 	void	setClientMaxBodySize(unsigned int cmb);
 	void	setErrorPage(int code, std::string path);
@@ -48,17 +48,15 @@ public:
 
 private:
 
-	std::string	_path;
-	std::string	_root;
-	std::string	_index;
-	std::string	_redir;
-
-	unsigned int	_methods; // 1 GET 2 POST 4 DELETE 8 PUT 16 HEAD
-	bool			_autoindex;
-	unsigned int	_client_max_body_size;		// client_max_body_size
+	std::string		_path; // URI
+	std::string		_root;
+	std::string		_index;
 	std::map<int, std::string>	_error_page;
-
-	std::map<std::string, std::string>	_cgiMap;
+	unsigned int	_methods;
+	unsigned int	_client_max_body_size;
+	std::string		_return;
+	bool			_autoindex;
+	std::map<std::string, std::string>	_cgi;
 
 };
 

@@ -7,7 +7,7 @@ WebServ::WebServ(Configuration &conf) {
 	FD_ZERO(&_recvFds);
 	FD_ZERO(&_sendFds);
 
-	std::vector<Server> servs = conf.getServs();
+	std::vector<Server> servs = conf.getServers();
 
 	std::vector<Server>::iterator it;
 	std::vector<Server>::iterator itr;
