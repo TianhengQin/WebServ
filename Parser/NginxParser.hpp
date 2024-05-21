@@ -43,8 +43,6 @@ public:
 	Block	*getRoot(void) const;
 	Block	*getHttpBlock(void) const;
 
-
-
 	void	trim(std::string &s);
 	void	ltrim(std::string &s);
 	void	rtrim(std::string &s);

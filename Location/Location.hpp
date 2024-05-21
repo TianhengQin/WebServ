@@ -22,10 +22,10 @@ public:
 
 	// Location(Server &context);
 
-	std::string	getPath(void);
-	std::string	getRoot(void);
-	std::string	getIndex(void);
-	std::string	getRedir(void);
+	std::string		getPath(void);
+	std::string		getRoot(void);
+	std::string		getIndex(void);
+	std::string		getRedir(void);
 	unsigned int	getAllowedMethods(void);
 	bool			getAutoindex(void);
 	unsigned int	getClientMaxBodySize(void);
@@ -36,7 +36,7 @@ public:
 
 	void	setPath(std::string path);
 	void	setRoot(std::string root);
-	void	setIndex(std::string index);
+	void	addIndex(std::string index);
 	void	setRedir(std::string redir);
 
 	void	setAllowedMethods(unsigned int methods);

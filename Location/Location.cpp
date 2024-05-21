@@ -78,7 +78,7 @@ void Location::setRoot(std::string root) {
 	this->_root = root;
 }
 
-void Location::setIndex(std::string index) {
+void Location::addIndex(std::string index) {
 	this->_index = index;
 }
 
@@ -96,6 +96,10 @@ void Location::setAutoindex(bool autoindex) {
 
 void Location::setClientMaxBodySize(unsigned int cmb) {
 	this->_client_max_body_size = cmb;
+}
+
+void Location::setErrorPage(int code, std::string path) {
+	this->_error_page[code] = path;
 }
 
 void Location::setCgi(std::string extension, std::string script) {

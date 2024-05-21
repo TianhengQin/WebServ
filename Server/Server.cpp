@@ -83,65 +83,39 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string Server::getServerName(void) {
-	return this->_server_name;
-}
+std::string Server::getServerName(void) { return this->_server_name; }
 
-std::string Server::getRoot(void) {
-	return this->_root;
-}
+std::string Server::getRoot(void) { return this->_root; }
 
-std::string Server::getIndex(void) {
-	return this->_index;
-}
+std::string Server::getIndex(void) { return this->_index; }
 
-std::string Server::getHostStr(void) {
-	return this->_listen;
-}
+std::string Server::getHostStr(void) { return this->_listen; }
 
-unsigned int Server::getHost(void) {
-	return this->_host;
-}
+unsigned int Server::getHost(void) { return this->_host; }
 
-unsigned int Server::getPort(void) {
-	return this->_port;
-}
+unsigned int Server::getPort(void) { return this->_port; }
 
-unsigned int Server::getClientMaxBodySize(void) {
-	return this->_client_max_body_size;
-}
+unsigned int Server::getClientMaxBodySize(void) { return this->_client_max_body_size; }
 
-int Server::getFd(void) {
-	return this->_listenFd;
-}
+int Server::getFd(void) { return this->_listenFd; }
 
-bool Server::getAutoindex(void) {
-	return this->_autoindex;
-}
+bool Server::getAutoindex(void) { return this->_autoindex; }
 
 
-std::vector<Location> Server::getLocations(void) {
-	return this->_locations;
-}
+std::vector<Location> Server::getLocations(void) { return this->_locations; }
 
-std::map<int, std::string> Server::getErrorPages(void) {
-	return this->_error_page;
-}
+std::map<int, std::string> Server::getErrorPages(void) { return this->_error_page; }
 
 
-std::vector<std::string> Server::get_allServerNames(void) {
-	return this->_all_server_names;
-}
+std::vector<std::string> Server::get_allServerNames(void) { return this->_all_server_names; }
 
-std::vector<std::string> Server::get_allIndexes(void) {
-	return this->_all_index;
-}
+std::vector<std::string> Server::get_allIndexes(void) { return this->_all_index; }
 
 /**
  * Setters
 */
 
-void	Server::setServerName(std::string name) {
+void	Server::addServerName(std::string name) {
 	if (_server_name.empty())
 		_server_name = name;
 	this->_all_server_names.push_back(name);
@@ -151,10 +125,14 @@ void	Server::setRoot(std::string root) {
 	this->_root = root;
 }
 
-void	Server::setIndex(std::string index) {
+void	Server::addIndex(std::string index) {
 	if (_index.empty())
 		_index = index;
 	this->_all_index.push_back(index);
+}
+
+void	Server::setAllowedMethods(unsigned int methods) {
+	this->_allow_methods = methods;
 }
 
 void	Server::setHost(std::string host) {
@@ -186,7 +164,7 @@ void	Server::setErrorPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
 
-void	Server::setLocation(Location &location) {
+void	Server::addLocation(Location location) {
 	this->_locations.push_back(location);
 }
 

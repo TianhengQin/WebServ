@@ -37,16 +37,17 @@ public:
 	/* Setters */
 	void	setHost(std::string host);
 	void	setPort(unsigned int port);
-	void	setServerName(std::string name);
+	void	addServerName(std::string name);
 	void	setRoot(std::string root);
-	void	setIndex(std::string index);
+	void	addIndex(std::string index);
 	void	setAllowedMethods(unsigned int methods);
 	void	setErrorPage(int code, std::string path);
 	void	setClientMaxBodySize(unsigned int client_max_body_size);
 	void	setAutoindex(bool autoindex);
 	void	setCgi(std::string extension, std::string path);
 	void	setListenFd(int fd);
-	void	setLocation(Location &location);
+	// void	addLocation(Location &location);
+	void	addLocation(Location location);
 
 
 private:
@@ -54,23 +55,23 @@ private:
 	void initDefaultErrorPages(void);
 
 	/* Server */
-	std::string			_listen;
-	unsigned int		_host;
-	unsigned int		_port;
-	std::string			_server_name;
-	std::string			_root;
-	std::string			_index;
-	unsigned int		_allow_methods;
+	std::string					_listen;
+	unsigned int				_host;
+	unsigned int				_port;
+	std::string					_server_name;
+	std::string					_root;
+	std::string					_index;
+	unsigned int				_allow_methods;
 	std::map<int, std::string>	_error_page;
-	unsigned int		_client_max_body_size;
-	bool				_autoindex;
+	unsigned int						_client_max_body_size;
+	bool								_autoindex;
 	std::map<std::string, std::string>	_cgi;
+
+	std::vector<Location>		_locations;
 
 	struct sockaddr_in	_socket_address;
 	unsigned int		_socket_address_length;
 	int					_listenFd;
-	std::vector<Location>		_locations;
-
 	std::vector<std::string>	_all_server_names;
 	std::vector<std::string>	_all_index;
 
