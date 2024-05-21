@@ -10,18 +10,22 @@
 */
 
 class Directive : public ASTNode {
-private:
-	std::string					_name;
-	std::vector<std::string>	_arguments;
 
 public:
+	Directive(void);
 	Directive(const std::string& name, const std::vector<std::string>& arguments);
+	Directive(const Directive &other);
+	Directive &operator=(const Directive &other);
 	~Directive();
 
 	std::string					getName(void);
 	std::vector<std::string>	getArguments(void);
-
 	void print(int level = 0) const;
+
+private:
+	std::string					_name;
+	std::vector<std::string>	_arguments;
+
 };
 
 #endif // DIRECTIVE_HPP

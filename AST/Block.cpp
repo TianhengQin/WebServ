@@ -1,13 +1,25 @@
 
 #include "Block.hpp"
 
+Block::Block(void) {}
+
 Block::Block(const std::string& name, const std::vector<std::string>& arguments)
 	: _name(name), _arguments(arguments) {}
 
+Block::Block(const Block &other) {
+	*this = other;
+}
+
+Block &Block::operator=(const Block &other) {
+	if (this != &other) {
+		this->_name = other._name;
+		this->_arguments = other._arguments;
+		this->_children = other._children;
+	}
+	return (*this);
+}
+
 Block::~Block() {
-	// for (const auto& child : _children) {
-	// 	delete child;
-	// }
 	for (std::vector<ASTNode *>::iterator child = _children.begin(); child != _children.end(); ++child) {
 		delete *child;
 	}
@@ -42,15 +54,3 @@ void Block::print(int level) const {
 	std::cout << indentation << "}" << std::endl;
 }
 
-
-
-// Replaced in Configuration.cpp
-std::vector<ASTNode * > Block::getServers(void) {
-	std::vector<ASTNode *>	servers;
-	// for (std::vector<ASTNode *>::iterator child = this->_children.begin(); child != this->_children.end(); ++child) {
-	// 	if ((*child)->getName() == "server") {
-	// 		servers.push_back(*child);
-	// 	}
-	// }
-	return servers;
-}

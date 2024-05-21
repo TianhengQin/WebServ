@@ -9,7 +9,6 @@ Server::Server(void) {
 	this->_host = 0;
 	this->_port = 0;
 	this->_client_max_body_size = UINT_MAX;
-	this->_default = false;
 	this->_listenFd = 0;
 	this->_autoindex = false;
 	initDefaultErrorPages();
@@ -112,10 +111,6 @@ unsigned int Server::getClientMaxBodySize(void) {
 	return this->_client_max_body_size;
 }
 
-bool Server::getDefault(void) {
-	return this->_default;
-}
-
 int Server::getFd(void) {
 	return this->_listenFd;
 }
@@ -171,28 +166,24 @@ void	Server::setPort(unsigned int port) {
 	this->_port = port;
 }
 
-void	Server::setClientMaxBodySize(unsigned int cmb) {
-	this->_client_max_body_size = cmb;
-}
-
-void	Server::setDefault(bool def) {
-	this->_default = def;
+void	Server::setClientMaxBodySize(unsigned int client_max_body_size) {
+	this->_client_max_body_size = client_max_body_size;
 }
 
 void	Server::setListenFd(int fd) {
 	this->_listenFd = fd;
 }
 
-void	Server::setAutoindex(bool ai) {
-	this->_autoindex = ai;
+void	Server::setAutoindex(bool autoindex) {
+	this->_autoindex = autoindex;
 }
 
 void	Server::setErrorPage(int code, std::string path) {
 	this->_error_page[code] = path;
 }
 
-void	Server::setLocation(Location &loc) {
-	this->_locations.push_back(loc);
+void	Server::setLocation(Location &location) {
+	this->_locations.push_back(location);
 }
 
 std::ostream &operator<<(std::ostream &os, Server &sv) {
@@ -202,7 +193,6 @@ std::ostream &operator<<(std::ostream &os, Server &sv) {
 	os << "    Root: " << sv.getRoot() << std::endl;
 	os << "    Index: " << sv.getIndex() << std::endl;
 	os << "    Client Max Body: " << sv.getClientMaxBodySize() << std::endl;
-	os << "    Default: " << sv.getDefault() << std::endl;
 	os << "    Listen Fd: " << sv.getFd() << std::endl;
 	std::vector<Location> locs = sv.getLocations();
 	for (std::vector<Location>::iterator loc = locs.begin(); loc != locs.end(); ++loc) {

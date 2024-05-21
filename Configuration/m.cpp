@@ -17,8 +17,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // parseConfig(input);
-    // Block *root = parseConfig(argv[1]);
+    // parse_configuration_file(input);
+    // Block *root = parse_configuration_file(argv[1]);
 
     Configuration config(argv[1]);
     return 0;
