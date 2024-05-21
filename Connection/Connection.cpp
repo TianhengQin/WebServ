@@ -57,7 +57,7 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
-    _sponse.init(_quest, _server[_servChoice], _server[_servChoice].getLocations()[0]);
+    _sponse.init(*this, _quest, _server[_servChoice], _server[_servChoice].getLocations()[0]);
     // std::cout << _sponse.generate() << std::endl;
     
 

@@ -49,6 +49,8 @@ public:
     std::string getServName();
     std::string getPort();
 
+    void    setCgi
+
 private:
 
     void chooseServer();

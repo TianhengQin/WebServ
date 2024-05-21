@@ -1,4 +1,5 @@
 #include "Response.hpp"
+#include "Connection.hpp"
 
 Response::Response() {
     initResponsePhrase();
@@ -6,7 +7,7 @@ Response::Response() {
 
 Response::~Response() {}
 
-void Response::init(Request &request, Server server, Location location) {
+void Response::init(Connection &connection, Request &request, Server server, Location location) {
 
     // config setup
     _server = server;
@@ -17,7 +18,32 @@ void Response::init(Request &request, Server server, Location location) {
         return ;
     }
 
+    // replaces locationPath with root and put in _realPath right now /bla not ./bla
+    _realPath = request.get_dir();
+    std::string pathLocaton = location.getPath();
+    _realPath.replace(0, pathLocaton.size(), location.getRoot())
+
+
     // if () // cgi??
+    std::map<std::string, std::string> cgi = location.getCgi();
+    setCgiKey(request.get_dir());
+    if (cgi.find(_cgi) != cgi.end()) {
+        std::string pathToCgi = cgi[_cgi];
+        // _cgiProgram = pathToCgi;
+        // _cgiScript = _realPath; // u need it with ./ or /?
+
+        // std::string cgiScript = request.get_dir(); // ?? chould i expend with root? 
+        // std::string path = location.getPath();
+        // cgiScript.replace(0, path.size(), location.getRoot()); // replaces locationPath with root
+        
+        // http://127.0.0.1:8080/test/hdjahd.py
+        // ./HTTP/otherdir/hdjahd.py
+
+        // which function to call the cgi?
+
+    }
+
+
 
     clear();
     _method = request.get_method();
@@ -59,7 +85,7 @@ void    Response::clear() {
 }
 
 void    Response::getMethod(Request &request) {
-    std::string path = "." + _location.getRoot() + request.get_dir(); // ?? ./...
+    std::string path = "." + _realPath; // ?? ./...
 
     struct stat path_stat;
     if (stat(path.c_str(), &path_stat) != 0) {
@@ -92,7 +118,7 @@ void    Response::getMethod(Request &request) {
 
 void    Response::postMethod(Request &request) {
     std::string postData = request.get_body();
-    std::string newFileName = _location.getRoot() + request.get_dir();
+    std::string newFileName = _realPath;
 
     newFileName = newFileName.substr(1);
 
@@ -123,7 +149,7 @@ void    Response::postMethod(Request &request) {
 
 
 void    Response::deleteMethod(Request &request) {
-    std::string newFileName = _location.getRoot() + request.get_dir();
+    std::string newFileName = _realPath;
     newFileName = newFileName.substr(1);
 
 
@@ -198,6 +224,15 @@ std::string Response::generate() {
 
     std::string response = response_stream.str();
     return (response);
+}
+
+void Response::setCgiKey(std::string const &path) {
+    std::size_t dot = path.rfind(".");
+    if (dot == std::string::npos) {
+        _cgi = "";
+    } else {
+        _cgi = path.substr(dot);
+    }
 }
 
 void Response::setMimeType(std::string const &path) {
