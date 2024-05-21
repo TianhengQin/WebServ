@@ -8,6 +8,7 @@
 
 Configuration::Configuration(void) {
 	Server s1;
+	set_server_context(s1);
 	s1.setHost("127.0.0.1");
 	s1.setPort(8080);
 	s1.addServerName("127.0.0.1");
@@ -16,6 +17,7 @@ Configuration::Configuration(void) {
 	s1.setClientMaxBodySize(1024*1024);
 	s1.setRoot("./websites");
 	Location l1;
+	set_location_context(s1, l1);
 	l1.setPath("/");
 	l1.setRoot("/");
 	l1.setAllowedMethods((unsigned int) (GET|POST|DELETE));
@@ -23,6 +25,7 @@ Configuration::Configuration(void) {
 	l1.setCgi(".sh", "/bin/bash");
 	l1.setCgi(".py", "/usr/local/bin/python3");
 	Location l2;
+	set_location_context(s1, l2);
 	l2.setPath("/test");
 	l2.setAllowedMethods((unsigned int) (GET|PUT|DELETE));
 	l2.setRoot("/test_page");
@@ -33,18 +36,22 @@ Configuration::Configuration(void) {
 	_servers.push_back(s1);
 
 	Server s2;
+	set_server_context(s2);
 	s2.setHost("127.0.0.1");
 	s2.setPort(8080);
 	s2.addServerName("localhost");
 	s2.setRoot("./websites");
+	set_location_context(s2, l1);
 	s2.addLocation(l1);
 	_servers.push_back(s2);
 
 	Server s3;
+	set_server_context(s3);
 	s3.setHost("127.0.0.1");
 	s3.setPort(8081);
 	s3.addServerName("localhost");
 	s3.setRoot("./websites");
+	set_location_context(s3, l1);
 	s3.addLocation(l1);
 	_servers.push_back(s3);
 }
@@ -89,7 +96,7 @@ void	Configuration::parse_configuration_file(void) {
 
 	this->_parser = new NginxParser(file);
 	Block *httpBlock = this->_parser->getHttpBlock();
-	std::cout << *httpBlock << std::endl;
+	// std::cout << *httpBlock << std::endl;
 	process_http_block(httpBlock);
 
 }
@@ -134,20 +141,21 @@ void Configuration::process_http_block(Block *httpBlock) {
 		serverBlock = dynamic_cast<Block*>(*child);
 		if (serverBlock && serverBlock->getName() == "server") {
 			Server serv;
-			serv.setRoot(this->_root);
-			serv.addIndex(this->_index);
-			serv.setAllowedMethods(this->_allow_methods);
-			for (std::map<int, std::string>::iterator it = this->_error_page.begin(); it != this->_error_page.end(); ++it) {
-				serv.setErrorPage(it->first, it->second);
-			}
-			serv.setClientMaxBodySize(this->_client_max_body_size);
-			serv.setAutoindex(this->_autoindex);
-			for (std::map<std::string, std::string>::iterator it = this->_cgi.begin(); it != this->_cgi.end(); ++it) {
-				serv.setCgi(it->first, it->second);
-			}
+			set_server_context(serv);
+			// serv.setRoot(this->_root);
+			// serv.addIndex(this->_index);
+			// serv.setAllowedMethods(this->_allow_methods);
+			// for (std::map<int, std::string>::iterator it = this->_error_page.begin(); it != this->_error_page.end(); ++it) {
+			// 	serv.setErrorPage(it->first, it->second);
+			// }
+			// serv.setClientMaxBodySize(this->_client_max_body_size);
+			// serv.setAutoindex(this->_autoindex);
+			// for (std::map<std::string, std::string>::iterator it = this->_cgi.begin(); it != this->_cgi.end(); ++it) {
+			// 	serv.setCgi(it->first, it->second);
+			// }
 
+			process_server_block(serverBlock, serv);
 			this->_servers.push_back(serv);
-			process_server_block(serverBlock, this->_servers.back());
 		}
 	}
 }
@@ -207,22 +215,23 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 		locationBlock = dynamic_cast<Block*>(*child);
 		if (locationBlock && locationBlock->getName() == "location") {
 			Location loc;
+			set_location_context(server, loc);
 			loc.setPath(locationBlock->getArguments()[0]);
-			loc.setRoot(server.getRoot());
-			loc.addIndex(server.getIndex());
-			loc.setAllowedMethods(server.getAllowedMethods());
-			loc.setAutoindex(server.getAutoindex());
-			loc.setClientMaxBodySize(server.getClientMaxBodySize());
-			std::map<int, std::string> errorPages = server.getErrorPages();
-			for (std::map<int, std::string>::iterator it = errorPages.begin(); it != errorPages.end(); ++it) {
-				loc.setErrorPage(it->first, it->second);
-			}
-			std::map<std::string, std::string> cgi = server.getCgi();
-			for (std::map<std::string, std::string>::iterator it = cgi.begin(); it != cgi.end(); ++it) {
-				loc.setCgi(it->first, it->second);
-			}
+			// loc.setRoot(server.getRoot());
+			// loc.addIndex(server.getIndex());
+			// loc.setAllowedMethods(server.getAllowedMethods());
+			// loc.setAutoindex(server.getAutoindex());
+			// loc.setClientMaxBodySize(server.getClientMaxBodySize());
+			// std::map<int, std::string> errorPages = server.getErrorPages();
+			// for (std::map<int, std::string>::iterator it = errorPages.begin(); it != errorPages.end(); ++it) {
+			// 	loc.setErrorPage(it->first, it->second);
+			// }
+			// std::map<std::string, std::string> cgi = server.getCgi();
+			// for (std::map<std::string, std::string>::iterator it = cgi.begin(); it != cgi.end(); ++it) {
+			// 	loc.setCgi(it->first, it->second);
+			// }
+			process_location_block(locationBlock, loc);
 			server.addLocation(loc);
-			process_location_block(locationBlock, server.getLocations().back());
 		}
 	}
 }
@@ -273,6 +282,36 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 	}
 }
 
+void Configuration::set_server_context(Server &server) {
+	server.setRoot(this->_root);
+	server.addIndex(this->_index);
+	server.setAllowedMethods(this->_allow_methods);
+	for (std::map<int, std::string>::iterator it = this->_error_page.begin(); it != this->_error_page.end(); ++it) {
+		server.setErrorPage(it->first, it->second);
+	}
+	server.setClientMaxBodySize(this->_client_max_body_size);
+	server.setAutoindex(this->_autoindex);
+	for (std::map<std::string, std::string>::iterator it = this->_cgi.begin(); it != this->_cgi.end(); ++it) {
+		server.setCgi(it->first, it->second);
+	}
+}
+
+void Configuration::set_location_context(Server &server, Location &location) {
+	location.setRoot(server.getRoot());
+	location.addIndex(server.getIndex());
+	location.setAllowedMethods(server.getAllowedMethods());
+	location.setAutoindex(server.getAutoindex());
+	location.setClientMaxBodySize(server.getClientMaxBodySize());
+	std::map<int, std::string> errorPages = server.getErrorPages();
+	for (std::map<int, std::string>::iterator it = errorPages.begin(); it != errorPages.end(); ++it) {
+		location.setErrorPage(it->first, it->second);
+	}
+	std::map<std::string, std::string> cgi = server.getCgi();
+	for (std::map<std::string, std::string>::iterator it = cgi.begin(); it != cgi.end(); ++it) {
+		location.setCgi(it->first, it->second);
+	}
+}
+
 
 
 void Configuration::process_listen_directive(std::vector<std::string> &args, Server &server) {
@@ -304,11 +343,11 @@ unsigned int Configuration::parseSize(std::string sizeStr) {
 		numEnd++;
 	}
 
-	int size = 1024 * 1024;
+	unsigned int size = 1;
 	try {
 		size = std::stoi(sizeStr.substr(0, numEnd));
 	} catch (std::exception &e) {
-		size = 1024 * 1024;
+		size = 1;
 	}
 
 	if (numEnd < sizeStr.size()) {
