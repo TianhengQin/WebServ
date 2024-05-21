@@ -13,19 +13,19 @@ Configuration::Configuration(void) {
 	Location l1;
 	l1.setPath("/");
 	l1.setRoot("/");
-	l1.setMethods(GET|POST|DELETE);
+	l1.setAllowedMethods(GET|POST|DELETE);
 	l1.setCgi(".php", "/usr/bin/php");
 	l1.setCgi(".sh", "/bin/bash");
 	l1.setCgi(".py", "/usr/local/bin/python3");
 	Location l2;
 	l2.setPath("/test");
-	l2.setMethods(GET|PUT|DELETE);
+	l2.setAllowedMethods(GET|PUT|DELETE);
 	l2.setRoot("/test_page");
 	l2.setAutoindex(true);
 	l2.setIndex("index.html");
 	s1.setLocation(l1);
 	s1.setLocation(l2);
-	_servs.push_back(s1);
+	_servers.push_back(s1);
 
 	Server s2;
 	s2.setHost("127.0.0.1");
@@ -33,7 +33,7 @@ Configuration::Configuration(void) {
 	s2.setServerName("localhost");
 	s2.setRoot("./websites");
 	s2.setLocation(l1);
-	_servs.push_back(s2);
+	_servers.push_back(s2);
 
 	Server s3;
 	s3.setHost("127.0.0.1");
@@ -41,7 +41,7 @@ Configuration::Configuration(void) {
 	s3.setServerName("localhost");
 	s3.setRoot("./websites");
 	s3.setLocation(l1);
-	_servs.push_back(s3);
+	_servers.push_back(s3);
 }
 
 Configuration::Configuration(std::string filename) : _filename(filename) {
@@ -49,7 +49,7 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 	if (!file.is_open()) {
 		throw std::runtime_error("Error opening file: " + this->_filename);
 	}
-	parseConfig(file);
+	parse_configuration_file(file);
 }
 
 Configuration::~Configuration() {
@@ -63,35 +63,39 @@ Configuration::Configuration(const Configuration &other) {
 Configuration &Configuration::operator=(const Configuration &other) {
 	if (this != &other) {
 		this->_filename = other._filename;
-		this->_ast_root = other._ast_root;
-		this->_servs = other._servs;
+		this->_ast = other._ast;
+		this->_servers = other._servers;
 	}
 	return (*this);
 }
 
-void	Configuration::parseConfig(std::ifstream &file) {
+void	Configuration::parse_configuration_file(std::ifstream &file) {
 	NginxParser		parser(file);
 	
-	this->_ast_root = parser.getRoot();
-	std::vector<ASTNode *> rootChildren = this->_ast_root->getChildren();
+	this->_ast = parser.getRoot();
+	std::vector<ASTNode *> rootChildren = this->_ast->getChildren();
 
 	for (std::vector<ASTNode *>::iterator child = rootChildren.begin(); child != rootChildren.end(); ++child) {
 		Block *block = dynamic_cast<Block*>(*child);
 		if (block && block->getName() == "http") {
-			std::vector<ASTNode *> blockChildren = block->getChildren();
-			for (std::vector<ASTNode *>::iterator http_child = blockChildren.begin(); http_child != blockChildren.end(); ++http_child) {
-				Block *serverBlock = dynamic_cast<Block*>(*http_child);
-				if (serverBlock && serverBlock->getName() == "server") {
-					Server	server;
-					this->_servs.push_back(server);
-					setServerConfig(serverBlock, this->_servs.back());
-				}
-			}
+			process_http_block(block);
 		}
 	}
 }
 
-void Configuration::setServerConfig(Block *block, Server &server) {
+void Configuration::process_http_block(Block *httpBlock) {
+	std::vector<ASTNode *> blockChildren = httpBlock->getChildren();
+	
+	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
+		Block *serverBlock = dynamic_cast<Block*>(*child);
+		if (serverBlock && serverBlock->getName() == "server") {
+			this->_servers.push_back(Server());
+			process_server_block(serverBlock, this->_servers.back());
+		}
+	}
+}
+
+void Configuration::process_server_block(Block *block, Server &server) {
 	std::vector<ASTNode *> blockChildren = block->getChildren();
 	
 	for (std::vector<ASTNode *>::iterator child = blockChildren.begin(); child != blockChildren.end(); ++child) {
@@ -101,7 +105,7 @@ void Configuration::setServerConfig(Block *block, Server &server) {
 			std::vector<std::string> args = directive->getArguments();
 
 			if (name == "listen") {
-				processListenDirective(args, server);
+				process_listen_directive(args, server);
 			} else if (name == "server_name") {
 				server.setServerName(args[0]);
 			} else if (name == "root") {
@@ -118,35 +122,14 @@ void Configuration::setServerConfig(Block *block, Server &server) {
 		} else {
 			Block *childBlock = dynamic_cast<Block*>(*child);
 			if (childBlock && childBlock->getName() == "location") {
-				processLocationBlock(*child, server);
+				process_location_block(*child, server);
 			}
 		}
 	}
 }
 
-void Configuration::processListenDirective(std::vector<std::string> &args, Server &server) {
-	std::string	host = "0.0.0.0";
-	int			port = 80;
-	bool		isDefaultServer = false;
 
-	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
-		if (*it == "default_server") {
-			isDefaultServer = true;
-		} else if (it->find(":") != std::string::npos) {
-			size_t colonPos = it->find(":");
-			host = it->substr(0, colonPos);
-			port = std::stoi(it->substr(colonPos + 1));
-		} else {
-			port = std::stoi(*it);
-		}
-	}
-
-	server.setHost(host);
-	server.setPort(port);
-	server.setDefault(isDefaultServer);
-}
-
-void Configuration::processLocationBlock(ASTNode *locationNode, Server &server) {
+void Configuration::process_location_block(ASTNode *locationNode, Server &server) {
 	Block *locationBlock = dynamic_cast<Block*>(locationNode);
 	if (!locationBlock) {
 		return;
@@ -169,12 +152,14 @@ void Configuration::processLocationBlock(ASTNode *locationNode, Server &server) 
 		std::string name = directive->getName();
 		std::vector<std::string> args = directive->getArguments();
 
-		if (name == "root") {
+		if (name == "cgi") {
+			loc.setCgi(args[0], args[1]);
+		} else if (name == "root") {
 			loc.setRoot(args[0]);
 		} else if (name == "index") {
 			loc.setIndex(args[0]);
 		} else if (name == "limit_except") {
-			loc.setMethods((int)parseMethods(args));
+			loc.setAllowedMethods((int)parseMethods(args));
 		} else if (name == "autoindex") {
 			if (args[0] == "on") {
 				loc.setAutoindex(true);
@@ -201,6 +186,28 @@ void Configuration::processLocationBlock(ASTNode *locationNode, Server &server) 
 	}
 
 	server.setLocation(loc);
+}
+
+
+void Configuration::process_listen_directive(std::vector<std::string> &args, Server &server) {
+	std::string	host = "0.0.0.0";
+	int			port = 80;
+	bool		isDefaultServer = false;
+
+	for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+		if (*it == "default_server") {
+			isDefaultServer = true;
+		} else if (it->find(":") != std::string::npos) {
+			size_t colonPos = it->find(":");
+			host = it->substr(0, colonPos);
+			port = std::stoi(it->substr(colonPos + 1));
+		} else {
+			port = std::stoi(*it);
+		}
+	}
+
+	server.setHost(host);
+	server.setPort(port);
 }
 
 int Configuration::parseSize(std::string sizeStr) {
@@ -257,24 +264,35 @@ unsigned int Configuration::parseMethods(std::vector<std::string> &methods) {
 	return (methodFlags);
 }
 
+/* Getters */
 
 std::string Configuration::getFilename(void) {
 	return (this->_filename);
 }
 
 Block *Configuration::getASTRoot(void) {
-	return (this->_ast_root);
+	return (this->_ast);
 }
 
-std::vector<Server> Configuration::getServs(void) {
-	return (this->_servs);
+std::vector<Server> Configuration::getServers(void) {
+	return (this->_servers);
 }
 
+std::string Configuration::getRoot(void) { return (this->_root); }
+std::string Configuration::getIndex(void) { return (this->_index); }
+std::map<int, std::string> Configuration::getErrorPages(void) { return (this->_error_page); }
+unsigned int Configuration::getClientMaxBodySize(void) { return (this->_client_max_body_size); }
+unsigned int Configuration::getAllowedMethods(void) { return (this->_allow_methods); }
+bool Configuration::getAutoindex(void) { return (this->_autoindex); }
+std::map<std::string, std::string> Configuration::getCgi(void) { return (this->_cgi); }
+
+
+/* Operator overloads */
 
 std::ostream &operator<<(std::ostream &out, Configuration &config) {
 	out << "Configuration file: " << config.getFilename() << std::endl;
 	out << "Servers: " << std::endl;
-	std::vector<Server> servs = config.getServs();
+	std::vector<Server> servs = config.getServers();
 	for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
 		out << *serv << std::endl;
 	}

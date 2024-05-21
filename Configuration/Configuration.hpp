@@ -30,7 +30,6 @@
 
 class Configuration {
 
-
 public:
 	Configuration(void);
 	Configuration(const Configuration &other);
@@ -39,19 +38,41 @@ public:
 
 	Configuration(std::string filename);
 
+	/* Getters */
+	std::vector<Server>	getServers(void);
+
 	std::string			getFilename(void);
 	Block				*getASTRoot(void);
-	std::vector<Server>	getServs(void);
+	std::string			getRoot(void);
+	std::string			getIndex(void);
+	std::map<int, std::string>	getErrorPages(void);
+	unsigned int		getClientMaxBodySize(void);
+	unsigned int		getAllowedMethods(void);
+	bool				getAutoindex(void);
+	std::map<std::string, std::string>	getCgi(void);
+
+
 
 private:
 	std::string			_filename;
-	Block				*_ast_root;
-	std::vector<Server> _servs;
+	Block				*_ast;
+	std::string			_root;
+	std::string			_index;
+	std::map<int, std::string>	_error_page;
+	unsigned int		_client_max_body_size;
+	unsigned int		_allow_methods;
+	bool				_autoindex;
 
-	void			parseConfig(std::ifstream &file);
-	void			setServerConfig(Block *block, Server &server);
-	void			processListenDirective(std::vector<std::string> &args, Server &server);
-	void			processLocationBlock(ASTNode *locationNode, Server &server);
+	std::map<std::string, std::string>	_cgi;
+	std::vector<Server> _servers;
+
+
+
+	void			parse_configuration_file(std::ifstream &file);
+	void			process_http_block(Block *httpBlock);
+	void			process_server_block(Block *block, Server &server);
+	void			process_location_block(ASTNode *locationNode, Server &server);
+	void			process_listen_directive(std::vector<std::string> &args, Server &server);
 	int				parseSize(std::string sizeStr);
 	unsigned int	parseMethods(std::vector<std::string> &methods);
 
@@ -69,27 +90,27 @@ Configuration file
 You can get some inspiration from the ’server’ part of NGINX configuration file.
 
 In the configuration file, you should be able to:
-  1. Choose the port and host of each ’server’.
-  2. Setup the server_names or not.
-  3. The first server for a host:port will be the default for this host:port (that means it will answer to all the requests that don’t belong to an other server).
-  4. Setup default error pages.
-  5. Limit client body size.
-  6. Setup routes with one or multiple of the following rules/configuration (routes wont be using regexp):
-    (1) Define a list of accepted HTTP methods for the route.
-    (2) Define a HTTP redirection.
-    (3) Define a directory or a file from where the file should be searched (for example, if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet).
-    (4) Turn on or off directory listing.
-    (5) Set a default file to answer if the request is a directory.
-    (6) Execute CGI based on certain file extension (for example .php).
-    (7) Make it work with POST and GET methods.
-    (8) Make the route able to accept uploaded files and configure where they should be saved.
-      - Do you wonder what a CGI is?
-      - Because you won’t call the CGI directly, use the full path as PATH_INFO.
-      - Just remember that, for chunked request, your server needs to unchunk it, the CGI will expect EOF as end of the body.
-      - Same things for the output of the CGI. If no content_length is returned from the CGI, EOF will mark the end of the returned data.
-      - Your program should call the CGI with the file requested as first argument.
-      - The CGI should be run in the correct directory for relative path file access.
-      - Your server should work with one CGI (php-CGI, Python, and so forth).
+	1. Choose the port and host of each ’server’.
+	2. Setup the server_names or not.
+	3. The first server for a host:port will be the default for this host:port (that means it will answer to all the requests that don’t belong to an other server).
+	4. Setup default error pages.
+	5. Limit client body size.
+	6. Setup routes with one or multiple of the following rules/configuration (routes wont be using regexp):
+		(1) Define a list of accepted HTTP methods for the route.
+		(2) Define a HTTP redirection.
+		(3) Define a directory or a file from where the file should be searched (for example, if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet).
+		(4) Turn on or off directory listing.
+		(5) Set a default file to answer if the request is a directory.
+		(6) Execute CGI based on certain file extension (for example .php).
+		(7) Make it work with POST and GET methods.
+		(8) Make the route able to accept uploaded files and configure where they should be saved.
+			- Do you wonder what a CGI is?
+			- Because you won’t call the CGI directly, use the full path as PATH_INFO.
+			- Just remember that, for chunked request, your server needs to unchunk it, the CGI will expect EOF as end of the body.
+			- Same things for the output of the CGI. If no content_length is returned from the CGI, EOF will mark the end of the returned data.
+			- Your program should call the CGI with the file requested as first argument.
+			- The CGI should be run in the correct directory for relative path file access.
+			- Your server should work with one CGI (php-CGI, Python, and so forth).
 
 You must provide some configuration files and default basic files to test and demonstrate every feature works during evaluation.
 

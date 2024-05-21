@@ -102,8 +102,8 @@ http {
         listen address[:port];
         server_name name;
         root path;
-        allow_methods pattern;
         index file;
+        allow_methods methods;
         error_page code uri;
         client_max_body_size size;
         return code URL;
@@ -112,6 +112,7 @@ http {
         location [ uri ] {
             # directives defined here override the server directives
             index file;
+            allow_methods methods;
             error_page code uri;
             client_max_body_size size;
             return code URL;
@@ -178,12 +179,12 @@ http {
 
 - Describes HTTP methods be passed along a request.  
 - The method can be specified as a single method or a list of methods separated by spaces.  
-- GET POST PUT DELETE  
+- GET POST DELETE PUT HEAD
 
 #### `return`
 > Syntax: return code URL;  
 > Default: —  
-> Context: server, location, if  
+> Context: location  
 
 - Sends an HTTP response with a specified status code and optional URL.  
 
