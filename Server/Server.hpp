@@ -17,21 +17,21 @@ public:
 	void			setup(void);
 
 	/* Getters */
-	std::string		getServerName(void);
-	std::string		getRoot(void);
-	std::string		getIndex(void);
-	std::string		getHostStr(void);
-	unsigned int	getHost(void);
-	unsigned int	getPort(void);
-	unsigned int	getClientMaxBodySize(void);
-	int				getFd(void);
-	bool			getAutoindex(void);
-
-	std::map<int, std::string>	getErrorPages(void);
-	std::vector<std::string>	get_allServerNames(void);
-	std::vector<std::string>	get_allIndexes(void);
-	std::vector<Location>		getLocations(void);
-
+	std::string							getHostStr(void);
+	unsigned int						getHost(void);
+	unsigned int						getPort(void);
+	std::string							getServerName(void);
+	std::string							getRoot(void);
+	std::string							getIndex(void);
+	unsigned int						getAllowedMethods(void);
+	std::map<int, std::string>			getErrorPages(void);
+	unsigned int						getClientMaxBodySize(void);
+	bool								getAutoindex(void);
+	std::map<std::string, std::string>	getCgi(void);
+	int									getFd(void);
+	std::vector<Location>				getLocations(void);
+	std::vector<std::string>			get_allServerNames(void);
+	std::vector<std::string>			get_allIndexes(void);
 
 
 	/* Setters */
@@ -54,24 +54,25 @@ private:
 
 	void initDefaultErrorPages(void);
 
-	/* Server */
-	std::string					_listen;
-	unsigned int				_host;
-	unsigned int				_port;
-	std::string					_server_name;
-	std::string					_root;
-	std::string					_index;
-	unsigned int				_allow_methods;
-	std::map<int, std::string>	_error_page;
+	/* Server simple directives */
+	std::string							_listen;
+	unsigned int						_host;
+	unsigned int						_port;
+	std::string							_server_name;
+	std::string							_root;
+	std::string							_index;
+	unsigned int						_allow_methods;
+	std::map<int, std::string>			_error_page;
 	unsigned int						_client_max_body_size;
 	bool								_autoindex;
 	std::map<std::string, std::string>	_cgi;
 
-	std::vector<Location>		_locations;
+	/* Server block directive */
+	std::vector<Location>				_locations;
 
-	struct sockaddr_in	_socket_address;
-	unsigned int		_socket_address_length;
-	int					_listenFd;
+	struct sockaddr_in			_socket_address;
+	unsigned int				_socket_address_length;
+	int							_listenFd;
 	std::vector<std::string>	_all_server_names;
 	std::vector<std::string>	_all_index;
 

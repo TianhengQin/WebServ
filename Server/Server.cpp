@@ -83,33 +83,35 @@ void Server::setup(void) {
  * Getters
 */
 
-std::string Server::getServerName(void) { return this->_server_name; }
+std::string	Server::getHostStr(void) { return inet_ntoa(_socket_address.sin_addr); }
 
-std::string Server::getRoot(void) { return this->_root; }
+unsigned int	Server::getHost(void) { return _host; }
 
-std::string Server::getIndex(void) { return this->_index; }
+unsigned int	Server::getPort(void) { return _port; }
 
-std::string Server::getHostStr(void) { return this->_listen; }
+std::string	Server::getServerName(void) { return _server_name; }
 
-unsigned int Server::getHost(void) { return this->_host; }
+std::string	Server::getRoot(void) { return _root; }
 
-unsigned int Server::getPort(void) { return this->_port; }
+std::string	Server::getIndex(void) { return _index; }
 
-unsigned int Server::getClientMaxBodySize(void) { return this->_client_max_body_size; }
+unsigned int	Server::getAllowedMethods(void) { return _allow_methods; }
 
-int Server::getFd(void) { return this->_listenFd; }
+std::map<int, std::string>	Server::getErrorPages(void) { return _error_page; }
 
-bool Server::getAutoindex(void) { return this->_autoindex; }
+unsigned int	Server::getClientMaxBodySize(void) { return _client_max_body_size; }
 
+bool	Server::getAutoindex(void) { return _autoindex; }
 
-std::vector<Location> Server::getLocations(void) { return this->_locations; }
+std::map<std::string, std::string>	Server::getCgi(void) { return _cgi; }
 
-std::map<int, std::string> Server::getErrorPages(void) { return this->_error_page; }
+int	Server::getFd(void) { return _listenFd; }
 
+std::vector<Location>	Server::getLocations(void) { return _locations; }
 
-std::vector<std::string> Server::get_allServerNames(void) { return this->_all_server_names; }
+std::vector<std::string>	Server::get_allServerNames(void) { return _all_server_names; }
 
-std::vector<std::string> Server::get_allIndexes(void) { return this->_all_index; }
+std::vector<std::string>	Server::get_allIndexes(void) { return _all_index; }
 
 /**
  * Setters
@@ -121,9 +123,7 @@ void	Server::addServerName(std::string name) {
 	this->_all_server_names.push_back(name);
 }
 
-void	Server::setRoot(std::string root) {
-	this->_root = root;
-}
+void	Server::setRoot(std::string root) { this->_root = root; }
 
 void	Server::addIndex(std::string index) {
 	if (_index.empty())
@@ -131,54 +131,57 @@ void	Server::addIndex(std::string index) {
 	this->_all_index.push_back(index);
 }
 
-void	Server::setAllowedMethods(unsigned int methods) {
-	this->_allow_methods = methods;
-}
+void	Server::setAllowedMethods(unsigned int methods) { this->_allow_methods = methods; }
 
 void	Server::setHost(std::string host) {
 	this->_listen = host;
 	this->_host = inet_addr(host.c_str());
 }
 
-void	Server::setPort(unsigned int port) {
-	this->_port = port;
-}
+void	Server::setPort(unsigned int port) { this->_port = port; }
 
-void	Server::setClientMaxBodySize(unsigned int client_max_body_size) {
-	this->_client_max_body_size = client_max_body_size;
-}
+void	Server::setClientMaxBodySize(unsigned int client_max_body_size) { this->_client_max_body_size = client_max_body_size; }
 
-void	Server::setListenFd(int fd) {
-	this->_listenFd = fd;
-}
+void	Server::setListenFd(int fd) { this->_listenFd = fd; }
 
-void	Server::setAutoindex(bool autoindex) {
-	this->_autoindex = autoindex;
-}
+void	Server::setAutoindex(bool autoindex) { this->_autoindex = autoindex; }
 
-void	Server::setCgi(std::string extension, std::string path) {
-	this->_cgi[extension] = path;
-}
 
-void	Server::setErrorPage(int code, std::string path) {
-	this->_error_page[code] = path;
-}
+void	Server::setCgi(std::string extension, std::string path) { this->_cgi[extension] = path; }
 
-void	Server::addLocation(Location location) {
-	this->_locations.push_back(location);
-}
+void	Server::setErrorPage(int code, std::string path) { this->_error_page[code] = path; }
+
+void	Server::addLocation(Location location) { this->_locations.push_back(location); }
+
+
+/**
+ * Overload << operator
+*/
 
 std::ostream &operator<<(std::ostream &os, Server &sv) {
-	os << "  Server: " << sv.getServerName() << std::endl;
+	std::map<int, std::string> error_page = sv.getErrorPages();
+	std::map<std::string, std::string> cgi = sv.getCgi();
+	std::vector<Location> locations = sv.getLocations();
+
+	os << "  Server" << std::endl;
+	os << "    Listen: " << sv.getHostStr() << ":" << sv.getPort() << std::endl;
 	os << "    Host: " << sv.getHostStr() << std::endl;
 	os << "    Port: " << sv.getPort() << std::endl;
+	os << "    Server Name: " << sv.getServerName() << std::endl;
 	os << "    Root: " << sv.getRoot() << std::endl;
 	os << "    Index: " << sv.getIndex() << std::endl;
-	os << "    Client Max Body: " << sv.getClientMaxBodySize() << std::endl;
-	os << "    Listen Fd: " << sv.getFd() << std::endl;
-	std::vector<Location> locs = sv.getLocations();
-	for (std::vector<Location>::iterator loc = locs.begin(); loc != locs.end(); ++loc) {
-		os << *loc << std::endl;
+	os << "    Allowed Methods: " << sv.getAllowedMethods() << std::endl;
+	for (std::map<int, std::string>::iterator it = error_page.begin(); it != error_page.end(); it++) {
+		os << "    Error Page: " << it->first << " " << it->second << std::endl;
 	}
+	os << "    Client Max Body Size: " << sv.getClientMaxBodySize() << std::endl;
+	os << "    Autoindex: " << sv.getAutoindex() << std::endl;
+	for (std::map<std::string, std::string>::iterator it = cgi.begin(); it != cgi.end(); it++) {
+		os << "    CGI: " << it->first << " " << it->second << std::endl;
+	}
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
+		os << *it;
+	}
+
 	return os;
 }
