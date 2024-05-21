@@ -1,8 +1,22 @@
 
 #include "Directive.hpp"
 
+Directive::Directive(void) {}
+
 Directive::Directive(const std::string& name, const std::vector<std::string>& arguments)
 	: _name(name), _arguments(arguments) {}
+
+Directive::Directive(const Directive &other) {
+	*this = other;
+}
+
+Directive &Directive::operator=(const Directive &other) {
+	if (this != &other) {
+		this->_name = other._name;
+		this->_arguments = other._arguments;
+	}
+	return (*this);
+}
 
 Directive::~Directive() {}
 
