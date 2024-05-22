@@ -43,17 +43,52 @@ std::string Location::getRoot(void) { return (this->_root); }
 
 std::string Location::getIndex(void) { return (this->_index); }
 
-std::string Location::getRedir(void) { return (this->_return); }
+std::map<int, std::string> Location::getErrorPages(void) { return (this->_error_page); }
 
 unsigned int Location::getAllowedMethods(void) { return (this->_methods); }
 
-bool Location::getAutoindex(void) { return (this->_autoindex); }
-
 unsigned int Location::getClientMaxBodySize(void) { return (this->_client_max_body_size); }
 
-std::map<int, std::string> Location::getErrorPages(void) { return (this->_error_page); }
+std::string Location::getRedir(void) { return (this->_return); }
+
+bool Location::getAutoindex(void) { return (this->_autoindex); }
 
 std::map<std::string, std::string> Location::getCgi(void) { return (this->_cgi); }
+
+
+/**
+ * Special getters
+*/
+
+bool Location::hasErrorPage(int code) {
+	std::map<int, std::string> error_pages = this->getErrorPages();
+	return (error_pages.find(code) != error_pages.end());
+}
+
+bool Location::hasCgi(std::string ext) {
+	std::map<std::string, std::string> cgi = this->getCgi();
+	return (cgi.find(ext) != cgi.end());
+}
+
+std::string Location::getErrorPage(int code) {
+	std::map<int, std::string> error_pages = this->getErrorPages();
+	if (error_pages.find(code) != error_pages.end())
+		return (error_pages[code]);
+	return ("");
+}
+
+std::string Location::getCgi(std::string ext) {
+	std::map<std::string, std::string> cgi = this->getCgi();
+	if (cgi.find(ext) != cgi.end())
+		return (cgi[ext]);
+	return ("");
+}
+
+bool Location::hasMethod(unsigned int method) {
+	return ((this->_methods & method) == method);
+}
+
+
 
 /**
  * Setters
@@ -65,18 +100,23 @@ void Location::setRoot(std::string root) { this->_root = root; }
 
 void Location::addIndex(std::string index) { this->_index = index; }
 
-void Location::setRedir(std::string redir) { this->_return = redir; }
+void Location::setErrorPage(int code, std::string path) { this->_error_page[code] = path; }
 
 void Location::setAllowedMethods(unsigned int methods) { this->_methods = methods; }
 
-void Location::setAutoindex(bool autoindex) { this->_autoindex = autoindex; }
-
 void Location::setClientMaxBodySize(unsigned int cmb) { this->_client_max_body_size = cmb; }
 
-void Location::setErrorPage(int code, std::string path) { this->_error_page[code] = path; }
+void Location::setRedir(std::string redir) { this->_return = redir; }
 
-void Location::setCgi(std::string extension, std::string script) { this->_cgi[extension] = script; }
+void Location::setAutoindex(bool autoindex) { this->_autoindex = autoindex; }
 
+void Location::setCgi(std::string ext, std::string bin) { this->_cgi[ext] = bin; }
+
+
+
+/**
+ * Overload of the << operator
+*/
 
 std::ostream &operator<<(std::ostream &out, Location &loc) {
 	std::map<int, std::string> error_pages = loc.getErrorPages();
