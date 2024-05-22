@@ -32,9 +32,9 @@ Configuration::Configuration(void) {
 	l2.setAllowedMethods(GET|PUT|DELETE);
 	l2.setRoot("/HTML/test_page");
 	l2.setAutoindex(true);
-	l2.setIndex("/HTML/index.html");
-	s1.setLocation(l1);
-	s1.setLocation(l2);
+	l2.addIndex("/HTML/index.html");
+	s1.addLocation(l1);
+	s1.addLocation(l2);
 	_servers.push_back(s1);
 
 	Server s2;
@@ -267,6 +267,8 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 				location.setAllowedMethods(parseMethods(args));
 			} else if (directive->getName() == "client_max_body_size") {
 				location.setClientMaxBodySize(parseSize(args[0]));
+			} else if (directive->getName() == "return") {
+				location.setRedir(args[0]);
 			} else if (directive->getName() == "autoindex") {
 				if (args[0] == "on") {
 					location.setAutoindex(true);
