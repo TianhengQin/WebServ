@@ -7,55 +7,55 @@
  */
 
 Configuration::Configuration(void) {
-	Server s1;
-	set_server_context(s1);
-	s1.setHost("127.0.0.1");
-	s1.setPort(8080);
-	s1.addServerName("127.0.0.1");
-	s1.setErrorPage(301, "./websites/err_page/301.html");
-	s1.setErrorPage(404, "./websites/err_page/404.html");
-	s1.setClientMaxBodySize(1024*1024);
-	s1.setRoot("./websites");
+	// Server s1;
+	// set_server_context(s1);
+	// s1.setHost("127.0.0.1");
+	// s1.setPort(8080);
+	// s1.addServerName("127.0.0.1");
+	// s1.setErrorPage(301, "./websites/err_page/301.html");
+	// s1.setErrorPage(404, "./websites/err_page/404.html");
+	// s1.setClientMaxBodySize(1024*1024);
+	// s1.setRoot("./websites");
 	
-	Location l1;
-	set_location_context(s1, l1);
-	l1.setPath("/");
-	l1.setRoot("/HTML");
-	l1.setAllowedMethods(GET|POST|DELETE);
-	l1.setRedir("/HTML/index.html");
-	l1.setCgi(".php", "/usr/bin/php");
-	l1.setCgi(".sh", "/bin/bash");
-	l1.setCgi(".py", "/usr/local/bin/python3");
-	Location l2;
-	set_location_context(s1, l2);
-	l2.setPath("/test");
-	l2.setAllowedMethods(GET|PUT|DELETE);
-	l2.setRoot("/HTML/test_page");
-	l2.setAutoindex(true);
-	l2.addIndex("/HTML/index.html");
-	s1.addLocation(l1);
-	s1.addLocation(l2);
-	_servers.push_back(s1);
+	// Location l1;
+	// set_location_context(s1, l1);
+	// l1.setPath("/");
+	// l1.setRoot("/HTML");
+	// l1.setAllowedMethods(GET|POST|DELETE);
+	// l1.setRedir("/HTML/index.html");
+	// l1.setCgi(".php", "/usr/bin/php");
+	// l1.setCgi(".sh", "/bin/bash");
+	// l1.setCgi(".py", "/usr/local/bin/python3");
+	// Location l2;
+	// set_location_context(s1, l2);
+	// l2.setPath("/test");
+	// l2.setAllowedMethods(GET|PUT|DELETE);
+	// l2.setRoot("/HTML/test_page");
+	// l2.setAutoindex(true);
+	// l2.addIndex("/HTML/index.html");
+	// s1.addLocation(l1);
+	// s1.addLocation(l2);
+	// _servers.push_back(s1);
 
-	Server s2;
-	set_server_context(s2);
-	s2.setHost("127.0.0.1");
-	s2.setPort(8080);
-	s2.addServerName("localhost");
-	s2.setRoot("./websites");
-	set_location_context(s2, l1);
-	s2.addLocation(l1);
-	_servers.push_back(s2);
+	// Server s2;
+	// set_server_context(s2);
+	// s2.setHost("127.0.0.1");
+	// s2.setPort(8080);
+	// s2.addServerName("localhost");
+	// s2.setRoot("./websites");
+	// set_location_context(s2, l1);
+	// s2.addLocation(l1);
+	// _servers.push_back(s2);
 
-	Server s3;
-	set_server_context(s3);
-	s3.setHost("127.0.0.1");
-	s3.setPort(8081);
-	s3.addServerName("localhost");
-	s3.setRoot("./websites");
-	set_location_context(s3, l1);
-	s3.addLocation(l1);
-	_servers.push_back(s3);
+	// Server s3;
+	// set_server_context(s3);
+	// s3.setHost("127.0.0.1");
+	// s3.setPort(8081);
+	// s3.addServerName("localhost");
+	// s3.setRoot("./websites");
+	// set_location_context(s3, l1);
+	// s3.addLocation(l1);
+	// _servers.push_back(s3);
 }
 
 

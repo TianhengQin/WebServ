@@ -28,25 +28,17 @@
 
 
 int main(int argc, char **argv) {
-	
+	if (argc != 2) {
+		std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
+		return 1;
+	}
+
 	int watch_dog = 2;
 	while (--watch_dog) {
 		try {
 			Log::print(INFO, "Server Restarting ...", 0);
-			Configuration config;
-			if (argc == 2) {
-				config = Configuration(argv[1]);
-			} else {
-				config = Configuration();
-			}
-			if (INFO) {
-				// std::cout << config << std::endl;
-				std::vector<Server> servs = config.getServers();
-				for (std::vector<Server>::iterator serv = servs.begin(); serv != servs.end(); ++serv) {
-					std::cout << *serv << std::endl;
-				}
-			}
-			
+
+			Configuration config(argv[1]);
 			WebServ web_serv(config);
 			web_serv.run();
 		} catch (std::exception &e) {
