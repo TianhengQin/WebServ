@@ -48,6 +48,7 @@ void Connection::buildResponse() {
     //     myfile.close();
     // }
 
+    _keepAlive = false;
 
 
     // server map config...
@@ -57,16 +58,34 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
-    _sponse.init(_quest, _server[_servChoice], _server[_servChoice].getLocations()[0]);
+    std::vector<Location> locations = _server[_servChoice].getLocations();
+    bool match_found = false;
+
+    // change to longest path
+    for (size_t i = 0; i < locations.size(); ++i) {
+        if (_quest.get_dir().size() > locations[i].getPath().size()) {
+            if (locations[i].getPath() == _quest.get_dir().substr(0, locations[i].getPath().size())) {
+                _sponse.init(*this, _quest, _server[_servChoice], locations[i]);
+                match_found = true;
+                break;
+            }
+        }
+    }
+    if (!match_found) {
+        _sponse.set_code(404);
+    }
+    
     // std::cout << _sponse.generate() << std::endl;
     
 
+    if (_cgiState == CGI_ON) {
+        return ;
+    }
 
     std::ostringstream ss(_sponse.generate());
     // std::ostringstream ss;
     // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
     _sendBf = ss.str();
-    _keepAlive = false;
     // _quest.clear();
     // CGI test
     // std::cout << _quest.get().substr(0,500) << std::endl;
@@ -226,4 +245,12 @@ void Connection::chooseServer() {
         }
         i += 1024;
     }
+}
+
+void    Connection::setCgiProgram(std::string pathToCgi) {
+    _cgiProgram = pathToCgi;
+}
+
+void    Connection::setCgiScript(std::string realPath) {
+    _cgiScript = realPath;
 }

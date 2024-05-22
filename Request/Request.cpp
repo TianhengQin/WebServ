@@ -4,7 +4,7 @@ Request::Request() {
 	_cookie = "abcde";
 }
 
-Request::Request(std::string str)
+Request::Request(std::string &str)
 {
 	clear();
 	_request = str;
@@ -25,7 +25,7 @@ std::string Request::get() {
     return _request;
 }
 
-void Request::init(std::string str)
+void Request::init(std::string &str)
 {
 	clear();
 	_request = str;
@@ -109,8 +109,6 @@ void Request::parse()
 		}
 		_host = it->second.substr(0, pos);
 		_port = it->second.substr(pos + 1);
-		// std::cout << "host: " << _host << std::endl;
-		// std::cout << "port: " << _port << std::endl;
 	}
 
 	// Parse _cookies
@@ -125,35 +123,19 @@ void Request::parse()
 	if (_bad == 200) {
 		setFinish();
 	}
-
-	// // // test printing
-	// // std::cout << _method << std::endl;
-	// // std::cout << _dir << std::endl;
-	// // std::cout << _protocol << std::endl;
-	// // std::cout << _host << std::endl;
-	// // std::cout << _port << std::endl;
-	// // std::cout << _cookie << std::endl;
-	// // std::cout << _bad << std::endl;
-	// // std::cout << _body << std::endl;
-	// // std::cout << std::endl;
 }
 
 int Request::validate_request()
 {
 	// validate method
 	if (_method != "GET" && _method != "PUT" && _method != "POST" && _method != "HEAD" && _method != "DELETE") {
-		return (400);
+		return (405);
 	}
 
 	// validate HTTP protocol
 	if (_protocol != "HTTP/1.1") {
 		return (505);
 	}
-
-	// validate Host
-	// if (_host != "localhost" && _host != "127.0.0.1") {  // is that fine?
-	// 	return (400);
-	// }
 
 	// validate Port
 	for (size_t i = 0; _port[i] != '\0'; i++) { // or shoud i only allow 8080, 8081, 8082?
@@ -164,6 +146,7 @@ int Request::validate_request()
 
 	return (200);
 }
+
 
 
 // getters
@@ -220,7 +203,6 @@ int         Request::get_bad()
 {
 	return (_bad);
 }
-
 
 std::map<std::string, std::string> Request::get_headers()
 {

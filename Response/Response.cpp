@@ -1,4 +1,5 @@
 #include "Response.hpp"
+#include "Connection.hpp"
 
 Response::Response() {
     initResponsePhrase();
@@ -6,25 +7,52 @@ Response::Response() {
 
 Response::~Response() {}
 
-void Response::init(Request &request, Server server, Location location) {
+void Response::init(Connection &connection, Request &request, Server &server, Location &location) {
 
     // config setup
     _server = server;
     _location = location;
+
+    clear();
+    _code = request.get_bad();
+    if (_code != 200) {
+        return ;
+    }
 
     if (location.getClientMaxBodySize() < request.get_body().size()) {
         _code = 413;
         return ;
     }
 
-    // if () // cgi??
+    // replaces locationPath with root and put in _realPath right now /bla not ./bla
+    _realPath = request.get_dir();
+    std::string pathLocaton = location.getPath();
 
-    clear();
+    if (_realPath.size() < location.getPath().size()) {
+        _realPath.replace(0, pathLocaton.size(), location.getRoot());
+    }
+
+
+    // if () // cgi??
+    std::map<std::string, std::string> cgi = location.getCgi();
+    std::cout << cgi[".py"] << std::endl;
+    setCgiKey(request.get_dir());
+    std::cout << "_cgi: " << _cgi << _cgi.size() << std::endl;
+    if (cgi.find(_cgi) != cgi.end()) {
+        std::cout << "cgi in loop" << std::endl;
+        std::string pathToCgi = cgi[_cgi];
+        connection.setCgiProgram(pathToCgi);
+        connection.setCgiScript("." + _realPath);
+        connection.setCgiState(CGI_ON);
+        return ;
+    }
+
+
     _method = request.get_method();
     unsigned int allowed_methods = location.getAllowedMethods();
 
     if ((allowed_methods & GET) && _method == GET) {
-        getMethod(request);
+        getMethod();
 
 
     } else if ((allowed_methods & POST) && _method == POST) {
@@ -32,11 +60,11 @@ void Response::init(Request &request, Server server, Location location) {
         // Handle POST request
         // Process received data and send response
     } else if ((allowed_methods & DELETE) && _method == DELETE) {
-        deleteMethod(request);
+        deleteMethod();
         // Handle DELETE request
         // Delete requested resource and send confirmation
     }else if ((allowed_methods & HEAD) && _method == HEAD) {
-        getMethod(request);
+        getMethod();
     } else {
         _code = 405; // Method Not Allowed
 
@@ -58,8 +86,8 @@ void    Response::clear() {
 
 }
 
-void    Response::getMethod(Request &request) {
-    std::string path = "." + _location.getRoot() + request.get_dir(); // ?? ./...
+void    Response::getMethod() {
+    std::string path = "." + _realPath; // ?? ./...
 
     struct stat path_stat;
     if (stat(path.c_str(), &path_stat) != 0) {
@@ -92,7 +120,7 @@ void    Response::getMethod(Request &request) {
 
 void    Response::postMethod(Request &request) {
     std::string postData = request.get_body();
-    std::string newFileName = _location.getRoot() + request.get_dir();
+    std::string newFileName = _realPath;
 
     newFileName = newFileName.substr(1);
 
@@ -122,8 +150,8 @@ void    Response::postMethod(Request &request) {
 
 
 
-void    Response::deleteMethod(Request &request) {
-    std::string newFileName = _location.getRoot() + request.get_dir();
+void    Response::deleteMethod() {
+    std::string newFileName = _realPath;
     newFileName = newFileName.substr(1);
 
 
@@ -158,6 +186,7 @@ void Response::initResponsePhrase() {
     _responsePhrase[200] = "OK";
     _responsePhrase[201] = "Created";
     _responsePhrase[204] = "No Content";
+    _responsePhrase[301] = "Moved Permanently";
     _responsePhrase[400] = "Bad Request";
     _responsePhrase[401] = "Unauthorized";
     _responsePhrase[403] = "Forbidden";
@@ -180,15 +209,23 @@ std::string Response::getResponsePhrase(int const &sufix) {
 
 std::string Response::generate() {
     std::stringstream response_stream;
+    response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     
     if (_code > 399) { // ?? 
         std::map<int, std::string> error_pages = _location.getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
             _body = error_pages[_code];
-            _mimeType = "text/html";
+        } else {
+            _body = "";
         }
+        _mimeType = "text/html";
+    } else if (_code > 299) {
+
+        // _body = _location.getRedir();
+        response_stream << "Location: " << _location.getRedir() << "\r\n";
+        _body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
+        _mimeType = "text/html";
     }
-    response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     response_stream << "Content-Type: " << _mimeType << "\r\n";
     response_stream << "Content-Length: " << _body.size() << "\r\n";
     response_stream << "\r\n";
@@ -198,6 +235,15 @@ std::string Response::generate() {
 
     std::string response = response_stream.str();
     return (response);
+}
+
+void Response::setCgiKey(std::string const &path) {
+    std::size_t dot = path.rfind(".");
+    if (dot == std::string::npos) {
+        _cgi = "";
+    } else {
+        _cgi = path.substr(dot);
+    }
 }
 
 void Response::setMimeType(std::string const &path) {
@@ -235,6 +281,10 @@ std::string toString(const T val)
     std::stringstream stream;
     stream << val;
     return stream.str();
+}
+
+void Response::set_code(int const &code) {
+    _code = code;
 }
 
 void Response::setAutoindex(std::string const &path) {
