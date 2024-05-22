@@ -63,7 +63,7 @@ void Connection::buildResponse() {
 
     // change to longest path
     for (size_t i = 0; i < locations.size(); ++i) {
-        if (_quest.get_dir().size() > locations[i].getPath().size()) {
+        if (_quest.get_dir().size() >= locations[i].getPath().size()) {
             if (locations[i].getPath() == _quest.get_dir().substr(0, locations[i].getPath().size())) {
                 _sponse.init(*this, _quest, _server[_servChoice], locations[i]);
                 match_found = true;
