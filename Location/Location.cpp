@@ -21,6 +21,7 @@ Location &Location::operator=(Location const &loc) {
 	_return = loc._return;
 	_methods = loc._methods;
 	_autoindex = loc._autoindex;
+	_cgi = loc._cgi;
 	return (*this);
 }
 

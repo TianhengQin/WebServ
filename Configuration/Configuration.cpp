@@ -10,19 +10,21 @@ Configuration::Configuration(void) {
 	s1.setErrorPage(404, "./websites/err_page/404.html");
 	s1.setClientMaxBodySize(1024*1024);
 	s1.setRoot("./websites");
+	
 	Location l1;
 	l1.setPath("/");
-	l1.setRoot("/");
+	l1.setRoot("/HTML");
 	l1.setAllowedMethods(GET|POST|DELETE);
+	l1.setRedir("/HTML/index.html");
 	l1.setCgi(".php", "/usr/bin/php");
 	l1.setCgi(".sh", "/bin/bash");
 	l1.setCgi(".py", "/usr/local/bin/python3");
 	Location l2;
 	l2.setPath("/test");
 	l2.setAllowedMethods(GET|PUT|DELETE);
-	l2.setRoot("/test_page");
+	l2.setRoot("/HTML/test_page");
 	l2.setAutoindex(true);
-	l2.setIndex("index.html");
+	l2.setIndex("/HTML/index.html");
 	s1.setLocation(l1);
 	s1.setLocation(l2);
 	_servers.push_back(s1);

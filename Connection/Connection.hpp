@@ -49,7 +49,8 @@ public:
     std::string getServName();
     std::string getPort();
 
-    void    setCgi
+    void    setCgiProgram(std::string pathToCgi);
+    void    setCgiScript(std::string realPath);
 
 private:
 

@@ -22,14 +22,15 @@ public:
 
     std::string generate();
 
-    void    getMethod(Request &request);
+    void    getMethod();
     void    postMethod(Request &request);
-    void    deleteMethod(Request &request);
+    void    deleteMethod();
 
     int setBody(std::string const &file);
     void setMimeType(std::string const &path);
     void setAutoindex(std::string const &path);
     void setCgiKey(std::string const &path);
+    void set_code(int const &code);
 
 private:
 

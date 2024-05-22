@@ -21,16 +21,29 @@ void Response::init(Connection &connection, Request &request, Server server, Loc
     // replaces locationPath with root and put in _realPath right now /bla not ./bla
     _realPath = request.get_dir();
     std::string pathLocaton = location.getPath();
-    _realPath.replace(0, pathLocaton.size(), location.getRoot())
+
+    if (_realPath.size() < location.getPath().size()) {
+        _realPath.replace(0, pathLocaton.size(), location.getRoot());
+    }
 
 
     // if () // cgi??
     std::map<std::string, std::string> cgi = location.getCgi();
+    std::cout << cgi[".py"] << std::endl;
     setCgiKey(request.get_dir());
+    std::cout << "_cgi: " << _cgi << _cgi.size() << std::endl;
     if (cgi.find(_cgi) != cgi.end()) {
+        std::cout << "cgi in loop" << std::endl;
         std::string pathToCgi = cgi[_cgi];
+        connection.setCgiProgram(pathToCgi);
+        connection.setCgiScript("." + _realPath);
+        connection.setCgiState(CGI_ON);
         // _cgiProgram = pathToCgi;
         // _cgiScript = _realPath; // u need it with ./ or /?
+        // _cgiSendBf = request.getBody(); // "[cgi request body]"
+        // _cgiState = CGI_ON; CGI_ON; ?
+
+
 
         // std::string cgiScript = request.get_dir(); // ?? chould i expend with root? 
         // std::string path = location.getPath();
@@ -41,6 +54,8 @@ void Response::init(Connection &connection, Request &request, Server server, Loc
 
         // which function to call the cgi?
 
+
+        return ; // or no return? or call cgi?
     }
 
 
@@ -50,7 +65,7 @@ void Response::init(Connection &connection, Request &request, Server server, Loc
     unsigned int allowed_methods = location.getAllowedMethods();
 
     if ((allowed_methods & GET) && _method == GET) {
-        getMethod(request);
+        getMethod();
 
 
     } else if ((allowed_methods & POST) && _method == POST) {
@@ -58,11 +73,11 @@ void Response::init(Connection &connection, Request &request, Server server, Loc
         // Handle POST request
         // Process received data and send response
     } else if ((allowed_methods & DELETE) && _method == DELETE) {
-        deleteMethod(request);
+        deleteMethod();
         // Handle DELETE request
         // Delete requested resource and send confirmation
     }else if ((allowed_methods & HEAD) && _method == HEAD) {
-        getMethod(request);
+        getMethod();
     } else {
         _code = 405; // Method Not Allowed
 
@@ -84,7 +99,7 @@ void    Response::clear() {
 
 }
 
-void    Response::getMethod(Request &request) {
+void    Response::getMethod() {
     std::string path = "." + _realPath; // ?? ./...
 
     struct stat path_stat;
@@ -148,7 +163,7 @@ void    Response::postMethod(Request &request) {
 
 
 
-void    Response::deleteMethod(Request &request) {
+void    Response::deleteMethod() {
     std::string newFileName = _realPath;
     newFileName = newFileName.substr(1);
 
@@ -184,6 +199,7 @@ void Response::initResponsePhrase() {
     _responsePhrase[200] = "OK";
     _responsePhrase[201] = "Created";
     _responsePhrase[204] = "No Content";
+    _responsePhrase[301] = "Moved Permanently";
     _responsePhrase[400] = "Bad Request";
     _responsePhrase[401] = "Unauthorized";
     _responsePhrase[403] = "Forbidden";
@@ -206,15 +222,23 @@ std::string Response::getResponsePhrase(int const &sufix) {
 
 std::string Response::generate() {
     std::stringstream response_stream;
+    response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     
     if (_code > 399) { // ?? 
         std::map<int, std::string> error_pages = _location.getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
             _body = error_pages[_code];
-            _mimeType = "text/html";
+        } else {
+            _body = "";
         }
+        _mimeType = "text/html";
+    } else if (_code > 299) {
+
+        // _body = _location.getRedir();
+        response_stream << "Location: " << _location.getRedir() << "\r\n";
+        _body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
+        _mimeType = "text/html";
     }
-    response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     response_stream << "Content-Type: " << _mimeType << "\r\n";
     response_stream << "Content-Length: " << _body.size() << "\r\n";
     response_stream << "\r\n";
@@ -270,6 +294,10 @@ std::string toString(const T val)
     std::stringstream stream;
     stream << val;
     return stream.str();
+}
+
+void Response::set_code(int const &code) {
+    _code = code;
 }
 
 void Response::setAutoindex(std::string const &path) {
