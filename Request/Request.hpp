@@ -6,7 +6,7 @@
 /*   By: tkilling <tkilling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:42:58 by tkilling          #+#    #+#             */
-/*   Updated: 2024/05/22 11:40:24 by tkilling         ###   ########.fr       */
+/*   Updated: 2024/05/22 12:01:50 by tkilling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,6 @@
 
 # include "Head.hpp"
 # include "Location.hpp"
-// #include <iostream>
-// #include <string>
-// #include <sstream>
-// #include <map>
-// #include <vector>
-// #include <algorithm>
-// # define GET 1
-// # define POST 2
-// # define DELETE 4
-// # define PUT 8
-// # define HEAD 16
-
 
 class Request {
 
@@ -36,19 +24,9 @@ public:
     Request(std::string &str);
     ~Request();
 
-    // void init();
-    // void parse();
-
-    // void setFinish();
-
     void append(char const *bf, size_t n);
 
     std::string get();
-    // bool getBad();
-    // int getMethod();
-    // std::string &getDir();
-    // std::
-
 
     void    init(std::string &str);
     void    parse();
@@ -86,7 +64,6 @@ private:
     int _bad; // valid
 
     bool _finish;
-    // int _method; // method
     // std::vector<std::string> _accept;
 
 

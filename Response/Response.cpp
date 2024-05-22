@@ -13,6 +13,12 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
     _server = server;
     _location = location;
 
+    clear();
+    _code = request.get_bad();
+    if (_code != 200) {
+        return ;
+    }
+
     if (location.getClientMaxBodySize() < request.get_body().size()) {
         _code = 413;
         return ;
@@ -38,29 +44,10 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         connection.setCgiProgram(pathToCgi);
         connection.setCgiScript("." + _realPath);
         connection.setCgiState(CGI_ON);
-        // _cgiProgram = pathToCgi;
-        // _cgiScript = _realPath; // u need it with ./ or /?
-        // _cgiSendBf = request.getBody(); // "[cgi request body]"
-        // _cgiState = CGI_ON; CGI_ON; ?
-
-
-
-        // std::string cgiScript = request.get_dir(); // ?? chould i expend with root? 
-        // std::string path = location.getPath();
-        // cgiScript.replace(0, path.size(), location.getRoot()); // replaces locationPath with root
-        
-        // http://127.0.0.1:8080/test/hdjahd.py
-        // ./HTTP/otherdir/hdjahd.py
-
-        // which function to call the cgi?
-
-
-        return ; // or no return? or call cgi?
+        return ;
     }
 
 
-
-    clear();
     _method = request.get_method();
     unsigned int allowed_methods = location.getAllowedMethods();
 
