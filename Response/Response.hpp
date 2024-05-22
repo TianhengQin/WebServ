@@ -15,7 +15,7 @@ public:
     Response();
     ~Response();
 
-    void init(Connection &connection, Request &request, Server server, Location location);
+    void init(Connection &connection, Request &request, Server &server, Location &location);
     void initResponsePhrase();
     std::string getResponsePhrase(int const &sufix);
     void clear();

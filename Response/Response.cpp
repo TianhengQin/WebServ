@@ -7,7 +7,7 @@ Response::Response() {
 
 Response::~Response() {}
 
-void Response::init(Connection &connection, Request &request, Server server, Location location) {
+void Response::init(Connection &connection, Request &request, Server &server, Location &location) {
 
     // config setup
     _server = server;

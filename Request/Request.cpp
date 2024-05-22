@@ -4,7 +4,7 @@ Request::Request() {
 	_cookie = "abcde";
 }
 
-Request::Request(std::string str)
+Request::Request(std::string &str)
 {
 	clear();
 	_request = str;
@@ -25,7 +25,7 @@ std::string Request::get() {
     return _request;
 }
 
-void Request::init(std::string str)
+void Request::init(std::string &str)
 {
 	clear();
 	_request = str;

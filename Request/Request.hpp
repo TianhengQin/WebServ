@@ -6,7 +6,7 @@
 /*   By: tkilling <tkilling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:42:58 by tkilling          #+#    #+#             */
-/*   Updated: 2024/05/20 16:16:24 by tkilling         ###   ########.fr       */
+/*   Updated: 2024/05/22 11:40:24 by tkilling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Request {
 public:
 
     Request();
-    Request(std::string str);
+    Request(std::string &str);
     ~Request();
 
     // void init();
@@ -50,7 +50,7 @@ public:
     // std::
 
 
-    void    init(std::string str);
+    void    init(std::string &str);
     void    parse();
     int     validate_request();
 
