@@ -14,21 +14,6 @@ Server::Server(void) {
 	_listenFd = 0;
 	_socket_address_length = sizeof(_socket_address);
 	memset(&_socket_address, 0, _socket_address_length);
-
-	// Old code
-	// this->_server_name = "";
-	// this->_root = "";
-	// this->_index = "";
-	// this->_socket_address_length = sizeof(_socket_address);
-	// memset(&_socket_address, 0, _socket_address_length);
-	// this->_host = 0;
-	// this->_port = 0;
-	// this->_client_max_body_size = 1024 * 1024;
-	// this->_listenFd = 0;
-	// this->_autoindex = false;
-
-
-
 }
 
 Server::~Server() {}
@@ -40,35 +25,41 @@ Server::Server(const Server &sv) {
 Server &Server::operator=(const Server &sv) {
 
 	if (this != &sv) {
-		this->_server_name = sv._server_name;
-		this->_root = sv._root;
-		this->_port = sv._port;
-		this->_host = sv._host;
-		this->_client_max_body_size = sv._client_max_body_size;
-		this->_index = sv._index;
-		this->_error_page = sv._error_page;
-		this->_locations = sv._locations;
-		this->_listenFd = sv._listenFd;
-		this->_socket_address = sv._socket_address;
-		this->_socket_address_length = sv._socket_address_length;
+		_listen = sv._listen;
+		_host = sv._host;
+		_port = sv._port;
+		_server_name = sv._server_name;
+		_root = sv._root;
+		_index = sv._index;
+		_allow_methods = sv._allow_methods;
+		_error_page = sv._error_page;
+		_client_max_body_size = sv._client_max_body_size;
+		_autoindex = sv._autoindex;
+		_cgi = sv._cgi;
+		_locations = sv._locations;
+		_socket_address = sv._socket_address;
+		_socket_address_length = sv._socket_address_length;
+		_listenFd = sv._listenFd;
+		_all_server_names = sv._all_server_names;
+		_all_index = sv._all_index;
 	}
 	return (*this);
 }
 
 void Server::initDefaultErrorPages(void) {
-	this->_error_page[301] = "HTML/default_error_pages/301.html";
-	this->_error_page[302] = "HTML/default_error_pages/302.html";
-	this->_error_page[400] = "HTML/default_error_pages/400.html";
-	this->_error_page[401] = "HTML/default_error_pages/401.html";
-	this->_error_page[403] = "HTML/default_error_pages/403.html";
-	this->_error_page[404] = "HTML/default_error_pages/404.html";
-	this->_error_page[405] = "HTML/default_error_pages/405.html";
-	this->_error_page[406] = "HTML/default_error_pages/406.html";
-	this->_error_page[500] = "HTML/default_error_pages/500.html";
-	this->_error_page[501] = "HTML/default_error_pages/501.html";
-	this->_error_page[502] = "HTML/default_error_pages/502.html";
-	this->_error_page[503] = "HTML/default_error_pages/503.html";
-	this->_error_page[505] = "HTML/default_error_pages/505.html";
+	this->_error_page[301] = ".HTML/default_error_pages/301.html";
+	this->_error_page[302] = ".HTML/default_error_pages/302.html";
+	this->_error_page[400] = ".HTML/default_error_pages/400.html";
+	this->_error_page[401] = ".HTML/default_error_pages/401.html";
+	this->_error_page[403] = ".HTML/default_error_pages/403.html";
+	this->_error_page[404] = ".HTML/default_error_pages/404.html";
+	this->_error_page[405] = ".HTML/default_error_pages/405.html";
+	this->_error_page[406] = ".HTML/default_error_pages/406.html";
+	this->_error_page[500] = ".HTML/default_error_pages/500.html";
+	this->_error_page[501] = ".HTML/default_error_pages/501.html";
+	this->_error_page[502] = ".HTML/default_error_pages/502.html";
+	this->_error_page[503] = ".HTML/default_error_pages/503.html";
+	this->_error_page[505] = ".HTML/default_error_pages/505.html";
 }
 
 void Server::setup(void) {
@@ -139,7 +130,9 @@ void	Server::addServerName(std::string name) {
 	this->_all_server_names.push_back(name);
 }
 
-void	Server::setRoot(std::string root) { this->_root = root; }
+void	Server::setRoot(std::string root) {
+	this->_root = root;
+}
 
 void	Server::addIndex(std::string index) {
 	if (_index.empty())
@@ -147,27 +140,43 @@ void	Server::addIndex(std::string index) {
 	this->_all_index.push_back(index);
 }
 
-void	Server::setAllowedMethods(unsigned int methods) { this->_allow_methods = methods; }
+void	Server::setAllowedMethods(unsigned int methods) {
+	this->_allow_methods = methods;
+}
 
 void	Server::setHost(std::string host) {
 	this->_listen = host;
 	this->_host = inet_addr(host.c_str());
 }
 
-void	Server::setPort(unsigned int port) { this->_port = port; }
+void	Server::setPort(unsigned int port) {
+	this->_port = port;
+}
 
-void	Server::setClientMaxBodySize(unsigned int client_max_body_size) { this->_client_max_body_size = client_max_body_size; }
+void	Server::setClientMaxBodySize(unsigned int client_max_body_size) {
+	this->_client_max_body_size = client_max_body_size;
+}
 
-void	Server::setListenFd(int fd) { this->_listenFd = fd; }
+void	Server::setListenFd(int fd) {
+	this->_listenFd = fd;
+}
 
-void	Server::setAutoindex(bool autoindex) { this->_autoindex = autoindex; }
+void	Server::setAutoindex(bool autoindex) {
+	this->_autoindex = autoindex;
+}
 
 
-void	Server::setCgi(std::string extension, std::string path) { this->_cgi[extension] = path; }
+void	Server::setCgi(std::string extension, std::string path) {
+	this->_cgi[extension] = path;
+}
 
-void	Server::setErrorPage(int code, std::string path) { this->_error_page[code] = path; }
+void	Server::setErrorPage(int code, std::string path) {
+	this->_error_page[code] = path;
+}
 
-void	Server::addLocation(Location location) { this->_locations.push_back(location); }
+void	Server::addLocation(Location location) {
+	this->_locations.push_back(location);
+}
 
 
 /**
@@ -198,6 +207,5 @@ std::ostream &operator<<(std::ostream &os, Server &sv) {
 	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++) {
 		os << *it;
 	}
-
 	return os;
 }

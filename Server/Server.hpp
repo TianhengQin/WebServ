@@ -16,7 +16,7 @@ public:
 
 	void			setup(void);
 
-	/* Getters */
+	/* Getters for private members */
 	std::string							getHostStr(void);
 	unsigned int						getHost(void);
 	unsigned int						getPort(void);
@@ -35,19 +35,18 @@ public:
 
 
 	/* Setters */
-	void	setHost(std::string host);
-	void	setPort(unsigned int port);
-	void	addServerName(std::string name);
-	void	setRoot(std::string root);
-	void	addIndex(std::string index);
-	void	setAllowedMethods(unsigned int methods);
-	void	setErrorPage(int code, std::string path);
-	void	setClientMaxBodySize(unsigned int client_max_body_size);
-	void	setAutoindex(bool autoindex);
-	void	setCgi(std::string extension, std::string path);
-	void	setListenFd(int fd);
-	// void	addLocation(Location &location);
-	void	addLocation(Location location);
+	void			setHost(std::string host);
+	void			setPort(unsigned int port);
+	void			addServerName(std::string name);
+	void			setRoot(std::string root);
+	void			addIndex(std::string index);
+	void			setAllowedMethods(unsigned int methods);
+	void			setErrorPage(int code, std::string path);
+	void			setClientMaxBodySize(unsigned int client_max_body_size);
+	void			setAutoindex(bool autoindex);
+	void			setCgi(std::string extension, std::string path);
+	void			setListenFd(int fd);
+	void			addLocation(Location location);
 
 
 private:
@@ -66,15 +65,13 @@ private:
 	unsigned int						_client_max_body_size;
 	bool								_autoindex;
 	std::map<std::string, std::string>	_cgi;
-
-	/* Server block directive */
 	std::vector<Location>				_locations;
 
-	struct sockaddr_in			_socket_address;
-	unsigned int				_socket_address_length;
-	int							_listenFd;
-	std::vector<std::string>	_all_server_names;
-	std::vector<std::string>	_all_index;
+	struct sockaddr_in					_socket_address;
+	unsigned int						_socket_address_length;
+	int									_listenFd;
+	std::vector<std::string>			_all_server_names;
+	std::vector<std::string>			_all_index;
 
 };
 
