@@ -58,22 +58,28 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
-    std::vector<Location> locations = _server[_servChoice].getLocations();
-    bool match_found = false;
+    std::vector<Location>   locations = _server[_servChoice].getLocations();
+    Location                match;
+    size_t                  match_length = 0;
+    bool                    match_found = false;
 
-    // change to longest path
     for (size_t i = 0; i < locations.size(); ++i) {
         if (_quest.get_dir().size() >= locations[i].getPath().size()) {
             if (locations[i].getPath() == _quest.get_dir().substr(0, locations[i].getPath().size())) {
-                _sponse.init(*this, _quest, _server[_servChoice], locations[i]);
-                match_found = true;
-                break;
+                if (locations[i].getPath().size() > match_length) {
+                    match = locations[i];
+                    match_length = locations[i].getPath().size();
+                    match_found = true;
+                }
             }
         }
     }
-    if (!match_found) {
+    if (match_found) {
+        _sponse.init(*this, _quest, _server[_servChoice], match);
+    } else {
         _sponse.set_code(404);
     }
+
     
     // std::cout << _sponse.generate() << std::endl;
     
