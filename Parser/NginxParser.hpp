@@ -35,9 +35,7 @@ public:
 
 	void	parse(void);
 	void	parse_configuration_file(void);
-	void	parseBlock(Block *block);
-	void	parseDirective(Directive *directive);
-
+	bool	is_absolute_path(std::string &path);
 
 	Block	*getRoot(void) const;
 	Block	*getHttpBlock(void) const;
