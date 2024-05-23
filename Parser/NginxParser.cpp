@@ -55,6 +55,10 @@ NginxParser::NginxParser(std::istream& input) : _input(input) {
 NginxParser::~NginxParser() { }
 
 
+bool	NginxParser::is_absolute_path(std::string &path) {
+	return path[0] == '/';
+}
+
 void	NginxParser::ltrim(std::string &s) {
 	std::string::iterator it = std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace)));
 	s.erase(s.begin(), it);

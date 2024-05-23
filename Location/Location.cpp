@@ -3,14 +3,14 @@
 Location::Location(void) {
 	_path = "/";
 	_root = "/";
-	_alias = "/";
 	_index = "index.html";
-	_return = "";
+	// 
 	_methods = GET | POST | DELETE | PUT | HEAD;
-	_autoindex = false;
 	_client_max_body_size = 1024 * 1024;
-	// _error_page[400] = "";
-	// _cgi[".py"] = "/usr/bin/php-cgi";
+	_autoindex = false;
+	_alias = "/";
+	// 
+	_return = "";
 }
 
 Location::Location(Location const &loc) {
