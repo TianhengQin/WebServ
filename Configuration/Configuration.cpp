@@ -60,7 +60,7 @@ void	Configuration::parse_configuration_file(void) {
 	try {
 		this->process_http_block(httpBlock);
 	} catch (std::exception &e) {
-		throw std::runtime_error("Error processing configuration file: " + this->_filename);
+		throw std::runtime_error("\n Error processing configuration file: " + this->_filename + "\n " + e.what());
 	}
 }
 
@@ -80,14 +80,25 @@ void Configuration::process_http_block(Block *httpBlock) {
 		name = directive->getName();
 		args = directive->getArguments();
 		if (name == "root") {
-			this->_root = args[0];
+			if (_parser->is_absolute_path(args[0]))
+				this->_root = args[0];
+			else
+				throw std::runtime_error("Invalid root path: " + args[0]);
 		} else if (name == "index") {
-			this->_index = args[0];
+			for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+				if (_parser->is_absolute_path(*it))
+					this->_index = *it;
+				else
+					throw std::runtime_error("Invalid index path: " + *it);
+			}
 		} else if (name == "error_page") {
 			if (args.size() == 2) {
-				this->_error_page[std::stoi(args[0])] = args[1];
-			} else if (args.size() == 1) {
-				this->_error_page[std::stoi(args[0])] = "";
+				if (_parser->is_absolute_path(args[1]))
+					this->_error_page[std::stoi(args[0])] = args[1];
+				else
+					throw std::runtime_error("Invalid error page path: " + args[1]);
+			} else {
+				throw std::runtime_error("Insufficient arguments for error_page directive");
 			}
 		} else if (name == "client_max_body_size") {
 			this->_client_max_body_size = parseSize(args[0]);
@@ -127,25 +138,36 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 		if (directive) {
 			name = directive->getName();
 			args = directive->getArguments();
-			if (name == "listen") {
+			if (args.empty())
+				continue;
+			else if (name == "listen") {
 				process_listen_directive(args, server);
 			} else if (name == "server_name") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
 					server.addServerName(*it);
 				}
 			} else if (name == "root") {
-				server.setRoot(args[0]);
+				if (_parser->is_absolute_path(args[0]))
+					server.setRoot(args[0]);
+				else
+					throw std::runtime_error("Invalid root path :" + args[0]);
 			} else if (name == "index") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
-					server.addIndex(*it);
+					if (_parser->is_absolute_path(*it))
+						server.addIndex(*it);
+					else
+						throw std::runtime_error("Invalid index path :" + *it);
 				}
 			} else if (name == "allow_methods") {
 				server.setAllowedMethods(parseMethods(args));
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
-					server.setErrorPage(std::stoi(args[0]), args[1]);
-				} else if (args.size() == 1) {
-					server.setErrorPage(std::stoi(args[0]), "");
+					if (_parser->is_absolute_path(args[1]))
+						server.setErrorPage(std::stoi(args[0]), args[1]);
+					else
+						throw std::runtime_error("Invalid error page path" + args[1]);
+				} else {
+					throw std::runtime_error("Insufficient arguments for error_page directive");
 				}
 			} else if (name == "client_max_body_size") {
 				server.setClientMaxBodySize(parseSize(args[0]));
@@ -157,7 +179,14 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 				}
 			} else if (name == "cgi") {
 				try {
-					server.setCgi(args[0], args[1]);
+					if (args.size() >= 2) {
+						if (_parser->is_absolute_path(args[1]))
+							server.setCgi(args[0], args[1]);
+						else
+							throw std::runtime_error("Invalid cgi path" + args[1]);
+					} else {
+						throw std::runtime_error("Insufficient arguments for cgi directive");
+					}
 				} catch (std::exception &e) {
 					throw std::runtime_error("Insufficient arguments for cgi directive");
 				}
@@ -166,10 +195,15 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 	}
 	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
 		locationBlock = dynamic_cast<Block*>(*child);
-		if (locationBlock && locationBlock->getName() == "location" && locationBlock->getArguments().back() == "/") {
+		if (locationBlock && locationBlock->getName() == "location") {
 			Location loc;
 			set_location_context(server, loc);
-			loc.setPath(locationBlock->getArguments()[0]);
+			args = locationBlock->getArguments();
+			if (!args.empty() && _parser->is_absolute_path(args[0])) {
+				loc.setPath(args[0]);
+			} else {
+				throw std::runtime_error("Invalid location path");
+			}
 			process_location_block(locationBlock, loc);
 			server.addLocation(loc);
 		}
@@ -191,26 +225,43 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 		if (directive) {
 			name = directive->getName();
 			args = directive->getArguments();
-			if (name == "root") {
-				location.setRoot(args[0]);
+			if (args.empty()) {
+				continue;
+			} else if (name == "root") {
+				if (_parser->is_absolute_path(args[0]))
+					location.setRoot(args[0]);
+				else
+					throw std::runtime_error("Invalid root path:" + args[0]);
 			} else if (name == "alias") {
-				location.setAlias(args[0]);
+				if (_parser->is_absolute_path(args[0]) && args[0].back() == '/')
+					location.setAlias(args[0]);
+				else
+					throw std::runtime_error("Invalid alias path:" + args[0]);
 			} else if (name == "index") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
-					location.addIndex(*it);
+					if (_parser->is_absolute_path(*it))
+						location.addIndex(*it);
+					else
+						throw std::runtime_error("Invalid index path");
 				}
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
-					location.setErrorPage(std::stoi(args[0]), args[1]);
-				} else if (args.size() == 1) {
-					location.setErrorPage(std::stoi(args[0]), "");
+					if (_parser->is_absolute_path(args[1]))
+						location.setErrorPage(std::stoi(args[0]), args[1]);
+					else
+						throw std::runtime_error("Invalid error page path:" + args[1]);
+				} else {
+					throw std::runtime_error("Insufficient arguments for error_page directive");
 				}
 			} else if (name == "allow_methods"){ //} || name == "limit_except") {
 				location.setAllowedMethods(parseMethods(args));
 			} else if (name == "client_max_body_size") {
 				location.setClientMaxBodySize(parseSize(args[0]));
 			} else if (name == "return") {
-				location.setRedir(args[0]);
+				if (_parser->is_absolute_path(args[0]))
+					location.setRedir(args[0]);
+				else
+					throw std::runtime_error("Invalid return path:" + args[0]);
 			} else if (name == "autoindex") {
 				if (args[0] == "on") {
 					location.setAutoindex(true);
@@ -218,9 +269,12 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 					location.setAutoindex(false);
 				}
 			} else if (name == "cgi") {
-				try {
-					location.setCgi(args[0], args[1]);
-				} catch (std::exception &e) {
+				if (args.size() == 2) {
+					if (_parser->is_absolute_path(args[1]))
+						location.setCgi(args[0], args[1]);
+					else
+						throw std::runtime_error("Invalid cgi path:" + args[1]);
+				} else {
 					throw std::runtime_error("Insufficient arguments for cgi directive");
 				}
 			}
