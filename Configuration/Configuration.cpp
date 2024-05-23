@@ -279,6 +279,7 @@ void Configuration::process_listen_directive(std::vector<std::string> &args, Ser
 
 	server.setHost(host);
 	server.setPort(port);
+	(void)isDefaultServer;
 }
 
 

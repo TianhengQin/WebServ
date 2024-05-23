@@ -159,6 +159,11 @@ int Connection::cgiState() {
 
 void Connection::setCgiState(int s) {
     _cgiState = s;
+    if (s == CGI_FAILED) {
+        std::ostringstream ss;
+        ss << "HTTP/1.1 500 Internal Server Error\n\n";
+        _sendBf = ss.str();
+    }
 }
 
 std::string &Connection::getCgiProgram() {
