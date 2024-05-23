@@ -10,8 +10,8 @@ Response::~Response() {}
 void Response::init(Connection &connection, Request &request, Server &server, Location &location) {
 
     // config setup
-    _server = server;
-    _location = location;
+    _server = &server;
+    _location = &location;
 
     clear();
     _code = request.get_bad();
@@ -24,17 +24,16 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         return ;
     }
 
-    if (location.getRedir() != "") {
+    if (location.getRedir() != "" && location.getRedir() != request.get_dir()) {
         _code = 301;
         return ;
     }
 
     // replaces locationPath with root and put in _realPath right now /bla not ./bla
     _realPath = request.get_dir();
-    std::string pathLocaton = location.getPath();
 
-    if (_realPath.size() < location.getPath().size()) {
-        _realPath.replace(0, pathLocaton.size(), location.getRoot());
+    if (_realPath.size() >= location.getPath().size() && location.getAlias() != "") {
+        _realPath.replace(0, location.getPath().size(), location.getAlias()); // or alias???
     }
 
 
@@ -58,8 +57,6 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
 
     if ((allowed_methods & GET) && _method == GET) {
         getMethod();
-
-
     } else if ((allowed_methods & POST) && _method == POST) {
         postMethod(request);
         // Handle POST request
@@ -102,21 +99,23 @@ void    Response::getMethod() {
         setBody(path);
     } else if (S_ISDIR(path_stat.st_mode)) {
         if (path.back() != '/') {
-
+            path += "/";
             
-            _code = 301;
-            return;
+            // _code = 301;
+            // return;
         }
-        if (_location.getAutoindex()) {
+        if (_location->getAutoindex()) {
             setAutoindex(path); // path = dir listing file setDirListing(path);
             return ;
-        } else {
-            path += _location.getIndex(); // Default file
+        } else if (_location->getIndex() != "") {
+            path += _location->getIndex(); // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
                 setBody(path);
             } else {
                 _code = 403;
             }
+        } else {
+            _code = 404;
         }
     } else {
         _code = 404;
@@ -125,11 +124,30 @@ void    Response::getMethod() {
     setMimeType(path);
 }
 
-void    Response::postMethod(Request &request) {
-    std::string postData = request.get_body();
-    std::string newFileName = _realPath;
+std::string getFileName(const std::string& path) {
+    size_t pos = path.find_last_of("/");
+    if (pos == std::string::npos) {
+        return path;
+    }
+    return path.substr(pos + 1);
+}
 
-    newFileName = newFileName.substr(1);
+void    Response::postMethod(Request &request) {
+    std::string postData        = request.get_body();
+    std::string targetDirectory = _location->getRoot();;
+    std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
+
+
+    if (newFileName[0] == '/') {
+        newFileName = newFileName.substr(1);
+    }
+
+    // checking if root of configurationfile is valid;
+    struct stat dirStat;
+    if (stat(targetDirectory.c_str(), &dirStat) != 0 || !S_ISDIR(dirStat.st_mode)) {
+        _code = 500;
+        return ;
+    }
 
     // check if file exists 409 otherwise
     struct stat buffer;
@@ -137,18 +155,19 @@ void    Response::postMethod(Request &request) {
         _code = 409;
         return ;
     } else if (S_ISDIR(buffer.st_mode)) {
-
+        _code = 409;
+        return ;
     }
 
     // create file
     std::ofstream file(newFileName.c_str());
     if (file.is_open()) {
-        // if (!postData.empty()) {
+        if (!postData.empty()) {
             file.write(postData.c_str(), postData.size());
             file.close();
-        // } else {
-        //     _code = 400;
-        // }
+        } else {
+            _code = 400;
+        }
         _code = 201;
     } else {
         _code = 500;
@@ -219,7 +238,7 @@ std::string Response::generate() {
     response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     
     if (_code > 399) { // ?? 
-        std::map<int, std::string> error_pages = _location.getErrorPages();
+        std::map<int, std::string> error_pages = _location->getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
             setBody("./" + error_pages[_code]);
             // _body = error_pages[_code];
@@ -231,7 +250,7 @@ std::string Response::generate() {
         
 
         // _body = _location.getRedir();
-        response_stream << "Location: " << _location.getRedir() << "\r\n";
+        response_stream << "Location: " << _location->getRedir() << "\r\n";
         _body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
         _mimeType = "text/html";
     }

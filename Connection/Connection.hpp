@@ -69,6 +69,7 @@ private:
 
     std::time_t _timeStamp;
 
+    std::vector<bool> _used;
     std::string _sendBf;
     std::string _cgiSendBf;
 

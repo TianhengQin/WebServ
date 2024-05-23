@@ -51,18 +51,36 @@ void Connection::buildResponse() {
     _keepAlive = false;
 
 
-    // server map config...
-    // std::cout << _server[_servChoice];
-
-
-    //test timo
-    // _quest.init("");
+    // test timo
+    // init _Request
     _quest.parse();
+    // choose server
     chooseServer();
+
+    // chose location
     std::vector<Location>   locations = _server[_servChoice].getLocations();
     Location                match;
     size_t                  match_length = 0;
     bool                    match_found = false;
+    // _used.resize(locations.size(), 0);
+
+    // for (size_t i = 0; i < locations.size(); ++i) {
+    //     if (_quest.get_dir().size() >= locations[i].getPath().size()) {
+    //         if (locations[i].getPath() == _quest.get_dir().substr(0, locations[i].getPath().size())) {
+    //             if (locations[i].getPath().size() > match_length) {
+    //                 _used[i] = true;
+    //                 match = locations[i];
+    //                 match_length = locations[i].getPath().size();
+    //                 match_found = true;
+    //             }
+    //         }
+    //     }
+    // }
+    // if (match_found) {
+    //     _sponse.init(*this, _quest, _server[_servChoice], match);
+    // } else {
+    //     _sponse.set_code(404);
+    // }
 
     for (size_t i = 0; i < locations.size(); ++i) {
         if (_quest.get_dir().size() >= locations[i].getPath().size()) {
@@ -75,34 +93,27 @@ void Connection::buildResponse() {
             }
         }
     }
+
     if (match_found) {
         _sponse.init(*this, _quest, _server[_servChoice], match);
+        // _used[i] = (ret == 301);
     } else {
         _sponse.set_code(404);
     }
+        
 
-    
-    // std::cout << _sponse.generate() << std::endl;
-    
 
+    // return to cgi
     if (_cgiState == CGI_ON) {
         return ;
     }
 
-    std::ostringstream ss(_sponse.generate());
-    // std::ostringstream ss;
-    // ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << html.size() << "\n\n" << html;
-    _sendBf = ss.str();
-    // _quest.clear();
-    // CGI test
-    // std::cout << _quest.get().substr(0,500) << std::endl;
-    // // _cgiProgram = "/usr/local/bin/python3";
-    // // _cgiScript = "_test/website/cgi_test.py";
-    // _cgiProgram = "/bin/bash";
-    // _cgiScript = "_test/website/cgi_test.sh";
-    // _cgiSendBf = "[cgi request body]";
-    // _cgiState = CGI_ON;
-    // _keepAlive = false;
+    // create Response
+    _sendBf = _sponse.generate();
+
+    // std::ostringstream ss(_sponse.generate());
+    
+    // _sendBf = ss.str();
 }
 
 void Connection::setResponse(std::string &bf) {
