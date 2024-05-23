@@ -166,7 +166,7 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 	}
 	for (child = blockChildren.begin(); child != blockChildren.end(); ++child) {
 		locationBlock = dynamic_cast<Block*>(*child);
-		if (locationBlock && locationBlock->getName() == "location") {
+		if (locationBlock && locationBlock->getName() == "location" && locationBlock->getArguments().back() == "/") {
 			Location loc;
 			set_location_context(server, loc);
 			loc.setPath(locationBlock->getArguments()[0]);
@@ -193,6 +193,8 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 			args = directive->getArguments();
 			if (name == "root") {
 				location.setRoot(args[0]);
+			} else if (name == "alias") {
+				location.setAlias(args[0]);
 			} else if (name == "index") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
 					location.addIndex(*it);

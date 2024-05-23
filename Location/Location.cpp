@@ -3,6 +3,7 @@
 Location::Location(void) {
 	_path = "/";
 	_root = "/";
+	_alias = "/";
 	_index = "index.html";
 	_return = "";
 	_methods = GET | POST | DELETE | PUT | HEAD;
@@ -25,6 +26,7 @@ Location &Location::operator=(Location const &loc) {
 		this->_methods = loc._methods;
 		this->_autoindex = loc._autoindex;
 		this->_client_max_body_size = loc._client_max_body_size;
+		this->_alias = loc._alias;
 		this->_error_page = loc._error_page;
 		this->_cgi = loc._cgi;
 	}
@@ -49,12 +51,13 @@ unsigned int Location::getAllowedMethods(void) { return (this->_methods); }
 
 unsigned int Location::getClientMaxBodySize(void) { return (this->_client_max_body_size); }
 
-std::string Location::getRedir(void) { return (this->_return); }
-
 bool Location::getAutoindex(void) { return (this->_autoindex); }
+
+std::string Location::getAlias(void) { return (this->_alias); }
 
 std::map<std::string, std::string> Location::getCgi(void) { return (this->_cgi); }
 
+std::string Location::getRedir(void) { return (this->_return); }
 
 /**
  * Special getters
@@ -106,12 +109,13 @@ void Location::setAllowedMethods(unsigned int methods) { this->_methods = method
 
 void Location::setClientMaxBodySize(unsigned int cmb) { this->_client_max_body_size = cmb; }
 
-void Location::setRedir(std::string redir) { this->_return = redir; }
-
 void Location::setAutoindex(bool autoindex) { this->_autoindex = autoindex; }
+
+void Location::setAlias(std::string alias) { this->_alias = alias; }
 
 void Location::setCgi(std::string ext, std::string bin) { this->_cgi[ext] = bin; }
 
+void Location::setRedir(std::string redir) { this->_return = redir; }
 
 
 /**
@@ -131,6 +135,7 @@ std::ostream &operator<<(std::ostream &out, Location &loc) {
 	out << "      Methods: " << loc.getAllowedMethods() << std::endl;
 	out << "      ClientMaxBodySize: " << loc.getClientMaxBodySize() << std::endl;
 	out << "      Autoindex: " << loc.getAutoindex() << std::endl;
+	out << "      Alias: " << loc.getAlias() << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = cgi.begin(); it != cgi.end(); ++it) {
 		out << "      CGI: " << it->first << " -> " << it->second << std::endl;
 	}

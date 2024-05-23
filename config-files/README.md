@@ -44,6 +44,8 @@ http {
 
 - `autoindex` - Enables or disables the directory listing output.  
 
+- `alias` - Defines a replacement for the specified location.
+
 - `cgi` - Maps a response file extension to a CGI script.   
 
 - `return` - Sends an HTTP response with a specified status code and optional URL. 
@@ -94,7 +96,7 @@ Sets configuration depending on a request URI.
   
 ## **Simple Directives**  
 
-Simple directives are used to specify a single configuration parameter. The simple directives are: `listen`, `server_name`, `root`, `allow_methods`, `index`, `error_page`, `client_max_body_size`, `return`, `autoindex`, and `cgi`.
+Simple directives are used to specify a single configuration parameter. The simple directives are: `listen`, `server_name`, `root`, `index`, `error_page`, `client_max_body_size`, `allow_methods`, `autoindex`, `alias`, `cgi`, and `return`.
 
 ```nginx
 http {
@@ -127,6 +129,7 @@ http {
             client_max_body_size size;
 
             autoindex [on | off];
+            alias path;
             cgi extension script;
             return code URL;
         }
@@ -198,6 +201,12 @@ http {
 > Context: http, server, location  
 
 - Enables or disables the directory listing output.
+
+> Syntax: alias path;  
+> Default: —  
+> Context: location  
+
+- Defines a replacement for the specified location.
 
 #### `cgi`
 > Syntax: cgi extension script;  

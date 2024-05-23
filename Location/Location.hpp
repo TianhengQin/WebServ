@@ -26,9 +26,10 @@ public:
 	std::map<int, std::string>			getErrorPages(void);
 	unsigned int						getAllowedMethods(void);
 	unsigned int						getClientMaxBodySize(void);
-	std::string							getRedir(void);
 	bool								getAutoindex(void);
+	std::string							getAlias(void);
 	std::map<std::string, std::string>	getCgi(void);
+	std::string							getRedir(void);
 
 	// Special getters
 	bool			hasErrorPage(int code);
@@ -44,9 +45,10 @@ public:
 	void	setErrorPage(int code, std::string path);
 	void	setAllowedMethods(unsigned int methods);
 	void	setClientMaxBodySize(unsigned int cmb);
-	void	setRedir(std::string redir);
 	void	setAutoindex(bool autoindex);
+	void	setAlias(std::string alias);
 	void	setCgi(std::string ext, std::string bin);
+	void	setRedir(std::string redir);
 
 private:
 
@@ -56,9 +58,10 @@ private:
 	std::map<int, std::string>			_error_page;
 	unsigned int						_methods;
 	unsigned int						_client_max_body_size;
-	std::string							_return;
 	bool								_autoindex;
+	std::string							_alias;
 	std::map<std::string, std::string>	_cgi;
+	std::string							_return;
 
 };
 
