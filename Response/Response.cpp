@@ -24,6 +24,11 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         return ;
     }
 
+    if (location.getRedir() != "") {
+        _code = 301;
+        return ;
+    }
+
     // replaces locationPath with root and put in _realPath right now /bla not ./bla
     _realPath = request.get_dir();
     std::string pathLocaton = location.getPath();
@@ -97,6 +102,8 @@ void    Response::getMethod() {
         setBody(path);
     } else if (S_ISDIR(path_stat.st_mode)) {
         if (path.back() != '/') {
+
+            
             _code = 301;
             return;
         }
@@ -214,12 +221,14 @@ std::string Response::generate() {
     if (_code > 399) { // ?? 
         std::map<int, std::string> error_pages = _location.getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
-            _body = error_pages[_code];
+            setBody("./" + error_pages[_code]);
+            // _body = error_pages[_code];
         } else {
             _body = "";
         }
         _mimeType = "text/html";
     } else if (_code > 299) {
+        
 
         // _body = _location.getRedir();
         response_stream << "Location: " << _location.getRedir() << "\r\n";

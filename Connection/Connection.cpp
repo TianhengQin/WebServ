@@ -58,6 +58,7 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
+    chooseServer();
     std::vector<Location>   locations = _server[_servChoice].getLocations();
     Location                match;
     size_t                  match_length = 0;
