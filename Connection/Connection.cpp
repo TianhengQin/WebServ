@@ -34,7 +34,7 @@ void Connection::buildResponse() {
         f2 << _quest.get().substr(pos + 4);
     }
     f2.close();
-    std::cout << _quest.get() << std::endl;
+    // std::cout << _quest.get() << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
     // std::string line;
@@ -109,11 +109,11 @@ void Connection::buildResponse() {
     }
 
     // create Response
-    _sendBf = _sponse.generate();
+    // _sendBf = _sponse.generate();
 
-    // std::ostringstream ss(_sponse.generate());
+    std::ostringstream ss(_sponse.generate());
     
-    // _sendBf = ss.str();
+    _sendBf = ss.str();
 }
 
 void Connection::setResponse(std::string &bf) {

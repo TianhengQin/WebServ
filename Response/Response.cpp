@@ -25,6 +25,7 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
     }
 
     if (location.getRedir() != "" && location.getRedir() != request.get_dir()) {
+        std::cout << "???????" << std::endl;
         _code = 301;
         return ;
     }
@@ -133,13 +134,13 @@ std::string getFileName(const std::string& path) {
 }
 
 void    Response::postMethod(Request &request) {
-    std::string postData        = request.get_body();
     std::string targetDirectory = _location->getRoot();;
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
 
     if (newFileName[0] == '/') {
         newFileName = newFileName.substr(1);
+        targetDirectory = targetDirectory.substr(1);
     }
 
     // checking if root of configurationfile is valid;
@@ -159,15 +160,23 @@ void    Response::postMethod(Request &request) {
         return ;
     }
 
+    // check if file is empty
+    if (request.get_body() == "") {
+            _code = 400;
+        return ;
+    }
+
     // create file
     std::ofstream file(newFileName.c_str());
     if (file.is_open()) {
-        if (!postData.empty()) {
-            file.write(postData.c_str(), postData.size());
+        // if (!postData.empty()) {
+            
+
+            file.write(request.get_body().c_str(), request.get_body().size());
             file.close();
-        } else {
-            _code = 400;
-        }
+        // } else {
+        //     _code = 400;
+        // }
         _code = 201;
     } else {
         _code = 500;
@@ -177,9 +186,25 @@ void    Response::postMethod(Request &request) {
 
 
 void    Response::deleteMethod() {
-    std::string newFileName = _realPath;
-    newFileName = newFileName.substr(1);
+    // std::string newFileName = _realPath;
+    // newFileName = newFileName.substr(1);
 
+
+    std::string targetDirectory = _location->getRoot();;
+    std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
+
+
+    if (newFileName[0] == '/') {
+        newFileName = newFileName.substr(1);
+        targetDirectory = targetDirectory.substr(1);
+    }
+
+    // checking if root of configurationfile is valid;
+    struct stat dirStat;
+    if (stat(targetDirectory.c_str(), &dirStat) != 0 || !S_ISDIR(dirStat.st_mode)) {
+        _code = 500;
+        return ;
+    }
 
     struct stat path_stat;
     if (stat(newFileName.c_str(), &path_stat) != 0) {
@@ -240,7 +265,7 @@ std::string Response::generate() {
     if (_code > 399) { // ?? 
         std::map<int, std::string> error_pages = _location->getErrorPages();
         if (error_pages.find(_code) != error_pages.end()) {
-            setBody("./" + error_pages[_code]);
+            setBody("." + error_pages[_code]);
             // _body = error_pages[_code];
         } else {
             _body = "";
@@ -358,4 +383,6 @@ void Response::setAutoindex(std::string const &path) {
         _body.append("</td>\n</tr>\n");
     }
     _body.append("</table>\n<hr>\n</body>\n</html>\n");
+
 }
+
