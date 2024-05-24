@@ -51,8 +51,8 @@ private:
 
     std::string _realPath;
     std::string _cgi;
-    Server      *_server;
-    Location    *_location;
+    Server      _server;
+    Location    _location;
 
 };
 

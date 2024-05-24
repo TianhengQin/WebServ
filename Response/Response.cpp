@@ -10,8 +10,8 @@ Response::~Response() {}
 void Response::init(Connection &connection, Request &request, Server &server, Location &location) {
 
     // config setup
-    _server = &server;
-    _location = &location;
+    _server = server;
+    _location = location;
 
     clear();
     _code = request.get_bad();
@@ -25,13 +25,13 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
     }
 
     if (location.getRedir() != "" && location.getRedir() != request.get_dir()) {
-        std::cout << "???????" << std::endl;
         _code = 301;
         return ;
     }
 
     // replaces locationPath with root and put in _realPath right now /bla not ./bla
     _realPath = request.get_dir();
+    std::string pathLocaton = location.getPath();
 
     if (_realPath.size() >= location.getPath().size() && location.getAlias() != "") {
         _realPath.replace(0, location.getPath().size(), location.getAlias()); // or alias???
@@ -58,6 +58,8 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
 
     if ((allowed_methods & GET) && _method == GET) {
         getMethod();
+
+
     } else if ((allowed_methods & POST) && _method == POST) {
         postMethod(request);
         // Handle POST request
@@ -89,6 +91,7 @@ void    Response::clear() {
 
 }
 
+
 void    Response::getMethod() {
     std::string path = "." + _realPath; // ?? ./...
 
@@ -105,11 +108,11 @@ void    Response::getMethod() {
             // _code = 301;
             // return;
         }
-        if (_location->getAutoindex()) {
+        if (_location.getAutoindex()) {
             setAutoindex(path); // path = dir listing file setDirListing(path);
             return ;
-        } else if (_location->getIndex() != "") {
-            path += _location->getIndex(); // Default file
+        } else if (_location.getIndex() != "") {
+            path += _location.getIndex(); // Default file
             if (stat(path.c_str(), &path_stat) == 0 && S_ISREG(path_stat.st_mode)) {
                 setBody(path);
             } else {
@@ -134,7 +137,7 @@ std::string getFileName(const std::string& path) {
 }
 
 void    Response::postMethod(Request &request) {
-    std::string targetDirectory = _location->getRoot();;
+    std::string targetDirectory = _location.getRoot();
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
 
@@ -156,15 +159,14 @@ void    Response::postMethod(Request &request) {
         _code = 409;
         return ;
     } else if (S_ISDIR(buffer.st_mode)) {
-        _code = 409;
-        return ;
+
     }
 
     // check if file is empty
-    if (request.get_body() == "") {
-            _code = 400;
-        return ;
-    }
+    // if (request.get_body() == "") {
+    //     _code = 400;
+    //     return ;
+    // }
 
     // create file
     std::ofstream file(newFileName.c_str());
@@ -190,7 +192,7 @@ void    Response::deleteMethod() {
     // newFileName = newFileName.substr(1);
 
 
-    std::string targetDirectory = _location->getRoot();;
+    std::string targetDirectory = _location.getRoot();;
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
 
@@ -263,19 +265,17 @@ std::string Response::generate() {
     response_stream << "HTTP/1.1 " << _code << " " << getResponsePhrase(_code) << "\r\n";
     
     if (_code > 399) { // ?? 
-        std::map<int, std::string> error_pages = _location->getErrorPages();
-        if (error_pages.find(_code) != error_pages.end()) {
-            setBody("." + error_pages[_code]);
-            // _body = error_pages[_code];
+        if (_location.hasErrorPage(_code)) {
+            setBody("." + _location.getErrorPage(_code));
         } else {
-            _body = "";
+            setBody("");
         }
         _mimeType = "text/html";
     } else if (_code > 299) {
         
 
         // _body = _location.getRedir();
-        response_stream << "Location: " << _location->getRedir() << "\r\n";
+        response_stream << "Location: " << _location.getRedir() << "\r\n";
         _body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
         _mimeType = "text/html";
     }

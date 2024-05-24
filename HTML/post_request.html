@@ -35,16 +35,16 @@
       fetch(apiUrl, requestOptions)
         .then(response => {
           if (response.ok) {
-            document.getElementById('result').innerHTML = 'File uploaded successfully. status: ' + response.status + " " + response.statusText;
+            document.getElementById('result').innerHTML = 'File uploaded. status: ' + response.status + " " + response.statusText;
             document.getElementById('location').setAttribute('href', response.headers.get('Location'));
             document.getElementById('location').innerHTML = response.headers.get('Location');
           } else {
-            document.getElementById('result').innerHTML = 'An error occurred while uploading the file. status: ' + response.status + " " + response.statusText;
+            document.getElementById('result').innerHTML = 'Error while uploading. status: ' + response.status + " " + response.statusText;
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          document.getElementById('result').innerHTML = 'An error occurred while uploading the file. status: ' + response.status + " " + response.statusText;
+          document.getElementById('result').innerHTML = 'Error while uploading. status: ' + response.status + " " + response.statusText;
         });
     }
   }

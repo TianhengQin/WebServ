@@ -258,10 +258,10 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 			} else if (name == "client_max_body_size") {
 				location.setClientMaxBodySize(parseSize(args[0]));
 			} else if (name == "return") {
-				if (_parser->is_absolute_path(args[0]))
+				// if (_parser->is_absolute_path(args[0]))
 					location.setRedir(args[0]);
-				else
-					throw std::runtime_error("Invalid return path:" + args[0]);
+				// else
+					// throw std::runtime_error("Invalid return path:" + args[0]);
 			} else if (name == "autoindex") {
 				if (args[0] == "on") {
 					location.setAutoindex(true);
@@ -333,6 +333,7 @@ void Configuration::process_listen_directive(std::vector<std::string> &args, Ser
 
 	server.setHost(host);
 	server.setPort(port);
+	(void)isDefaultServer;
 }
 
 

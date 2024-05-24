@@ -46,9 +46,7 @@ public:
 
 private:
 
-	// std::string		_filename;
 	std::ifstream	_file;
-	// std::ifstream	_input;
 	std::istream&	_input;
 	Block			*ast_root;
 
