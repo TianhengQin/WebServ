@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>File Delete</title>
+</head>
+
+<body>
+  <form id="delete-form">
+    <input type="text" id="uri-input" name="uri" placeholder="Resource uri">
+    <button type="button" onclick="deleteFile()">Delete</button><br>
+    <a id="result"></a><br>
+  </form>
+</body>
+
+<script>
+  function deleteFile() {
+
+    const apiUrl = document.getElementById('uri-input').value;
+    const requestOptions = {
+      method: 'DELETE'
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('result').innerHTML = 'File deleted. status: ' + response.status + " " + response.statusText;
+        } else {
+          document.getElementById('result').innerHTML = 'Error while deleting. status: ' + response.status + " " + response.statusText;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').innerHTML = 'Error while deleting. status: ' + response.status + " " + response.statusText;
+      });
+  }
+
+</script>
+
+</html>
