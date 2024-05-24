@@ -169,10 +169,14 @@ void Cgi::setEnv(Connection &conn) {
 }
 
 void Cgi::exeCgi() {
+    std::size_t pos = _script.rfind("/");
+    std::string path = _script.substr(0, pos);
+    if (chdir(path.c_str()))
+        exit(1);
     std::vector<char *> arg;
     std::vector<char *> env;
     arg.push_back(const_cast<char *>(_program.c_str()));
-    arg.push_back(const_cast<char *>(_script.c_str()));
+    arg.push_back(basename(const_cast<char *>(_script.c_str())));
     arg.push_back(NULL);
     std::vector<std::string>::iterator it;
     for (it = _env.begin(); it != _env.end(); ++it) {
