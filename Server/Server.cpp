@@ -47,19 +47,19 @@ Server &Server::operator=(const Server &sv) {
 }
 
 void Server::initDefaultErrorPages(void) {
-	this->_error_page[301] = ".HTML/default_error_pages/301.html";
-	this->_error_page[302] = ".HTML/default_error_pages/302.html";
-	this->_error_page[400] = ".HTML/default_error_pages/400.html";
-	this->_error_page[401] = ".HTML/default_error_pages/401.html";
-	this->_error_page[403] = ".HTML/default_error_pages/403.html";
-	this->_error_page[404] = ".HTML/default_error_pages/404.html";
-	this->_error_page[405] = ".HTML/default_error_pages/405.html";
-	this->_error_page[406] = ".HTML/default_error_pages/406.html";
-	this->_error_page[500] = ".HTML/default_error_pages/500.html";
-	this->_error_page[501] = ".HTML/default_error_pages/501.html";
-	this->_error_page[502] = ".HTML/default_error_pages/502.html";
-	this->_error_page[503] = ".HTML/default_error_pages/503.html";
-	this->_error_page[505] = ".HTML/default_error_pages/505.html";
+	this->_error_page[301] = "/HTML/default_error_pages/301.html";
+	this->_error_page[302] = "/HTML/default_error_pages/302.html";
+	this->_error_page[400] = "/HTML/default_error_pages/400.html";
+	this->_error_page[401] = "/HTML/default_error_pages/401.html";
+	this->_error_page[403] = "/HTML/default_error_pages/403.html";
+	this->_error_page[404] = "/HTML/default_error_pages/404.html";
+	this->_error_page[405] = "/HTML/default_error_pages/405.html";
+	this->_error_page[406] = "/HTML/default_error_pages/406.html";
+	this->_error_page[500] = "/HTML/default_error_pages/500.html";
+	this->_error_page[501] = "/HTML/default_error_pages/501.html";
+	this->_error_page[502] = "/HTML/default_error_pages/502.html";
+	this->_error_page[503] = "/HTML/default_error_pages/503.html";
+	this->_error_page[505] = "/HTML/default_error_pages/505.html";
 }
 
 void Server::setup(void) {

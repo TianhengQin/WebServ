@@ -9,43 +9,18 @@ NginxParser::NginxParser(void) : _input(std::cin) {
 // 	std::cerr << "Error: no filename provided" << std::endl;
 // }
 
-NginxParser::NginxParser(const NginxParser &other) : _input(other._input)
-{
+NginxParser::NginxParser(const NginxParser &other) : _input(other._input) {
 	*this = other;
 }
 
-NginxParser &NginxParser::operator=(const NginxParser &other)
-{
+NginxParser &NginxParser::operator=(const NginxParser &other) {
 	if (this != &other) {
-		// TODO: copy
+
+		this->ast_root = other.ast_root;
 	}
 	return (*this);
 }
 
-
-// NginxParser::NginxParser(std::string filename) : _filename(filename), _input(std::ifstream(filename.c_str())) {
-// 	this->ast_root = new Block("root", std::vector<std::string>());
-
-// 	// this->_input = std::ifstream(filename.c_str());
-// 	// if (!this->_input.is_open()) {
-// 	// 	throw std::runtime_error("Error: could not open file " + filename);
-// 	// }
-// 	// this->parse(this->_file);
-
-// 	// std::ifstream file(this->_filename.c_str());
-// 	// if (!file.is_open()) {
-// 	// 	throw std::runtime_error("Error opening file: " + this->_filename);
-// 	// }
-// 	// _input = file;
-// 	// this->parse();
-
-// 	// if (!file.is_open()) {
-// 	// 	std::cerr << "Error: could not open file " << filename << std::endl;
-// 	// 	exit(1);
-// 	// }
-// 	// this->_input = file;
-// 	// this->parse();
-// }
 
 NginxParser::NginxParser(std::istream& input) : _input(input) {
 	this->ast_root = new Block("root", std::vector<std::string>());
@@ -56,7 +31,9 @@ NginxParser::~NginxParser() { }
 
 
 bool	NginxParser::is_absolute_path(std::string &path) {
-	return path[0] == '/';
+	if (path.empty())
+		return false;
+	return (path[0] == '/');
 }
 
 void	NginxParser::ltrim(std::string &s) {
@@ -71,6 +48,11 @@ void	NginxParser::rtrim(std::string &s) {
 
 void	NginxParser::trim(std::string &s) {
 	this->ltrim(s);
+	// Trim comments from the end of the line
+	std::string::size_type pos = s.find('#');
+	if (pos != std::string::npos) {
+		s.erase(pos);
+	}
 	this->rtrim(s);
 }
 
@@ -104,7 +86,6 @@ void	NginxParser::parse(void) {
 	std::stack< Block * >	blockStack;
 	std::string				line;
 
-	
 	blockStack.push(this->ast_root);
 	while (getline(_input, line)) {
 		trim(line);
