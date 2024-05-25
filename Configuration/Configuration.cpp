@@ -1,5 +1,6 @@
 
 #include "Configuration.hpp"
+#include "Server.hpp"
 
 /**
  * @brief Construct a new Configuration:: Configuration object
@@ -37,7 +38,7 @@ Configuration::~Configuration() {
 Configuration::Configuration(std::string filename) : _filename(filename) {
 	this->_root = "";
 	this->_index = "";
-	this->_error_page = std::map<int, std::string>();
+	// this->_error_page = std::map<int, std::string>();
 	this->_client_max_body_size = 1024 * 1024;
 	this->_allow_methods = GET | POST | DELETE | PUT | HEAD;
 	this->_autoindex = false;
@@ -101,9 +102,9 @@ void Configuration::process_http_block(Block *httpBlock) {
 				throw std::runtime_error("Insufficient arguments for error_page directive");
 			}
 		} else if (name == "client_max_body_size") {
-			this->_client_max_body_size = parseSize(args[0]);
-		} else if (name == "allow_methods") { // || name == "limit_except") {
-			this->_allow_methods = parseMethods(args);
+			this->_client_max_body_size = _parser->parse_size(args[0]);
+		} else if (name == "allow_methods" || name == "limit_except") {
+			this->_allow_methods = _parser->parse_method(args);
 		} else if (name == "autoindex") {
 			if (args[0] == "on") {
 				this->_autoindex = true;
@@ -159,7 +160,7 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 						throw std::runtime_error("Invalid index path :" + *it);
 				}
 			} else if (name == "allow_methods") {
-				server.setAllowedMethods(parseMethods(args));
+				server.setAllowedMethods(_parser->parse_method(args));
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
 					if (_parser->is_absolute_path(args[1]))
@@ -170,7 +171,7 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 					throw std::runtime_error("Insufficient arguments for error_page directive");
 				}
 			} else if (name == "client_max_body_size") {
-				server.setClientMaxBodySize(parseSize(args[0]));
+				server.setClientMaxBodySize(_parser->parse_size(args[0]));
 			} else if (name == "autoindex") {
 				if (args[0] == "on") {
 					server.setAutoindex(true);
@@ -253,10 +254,10 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 				} else {
 					throw std::runtime_error("Insufficient arguments for error_page directive");
 				}
-			} else if (name == "allow_methods"){ //} || name == "limit_except") {
-				location.setAllowedMethods(parseMethods(args));
+			} else if (name == "allow_method" || name == "limit_except") {
+				location.setAllowedMethods(_parser->parse_method(args));
 			} else if (name == "client_max_body_size") {
-				location.setClientMaxBodySize(parseSize(args[0]));
+				location.setClientMaxBodySize(_parser->parse_size(args[0]));
 			} else if (name == "return") {
 				// if (_parser->is_absolute_path(args[0]))
 					location.setRedir(args[0]);

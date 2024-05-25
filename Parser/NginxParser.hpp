@@ -33,16 +33,18 @@ public:
 
 	NginxParser(std::istream& input);
 
-	void	parse(void);
-	void	parse_configuration_file(void);
-	bool	is_absolute_path(std::string &path);
+	void			parse(void);
+	bool			is_absolute_path(std::string &path);
+	unsigned int	parse_size(std::string &str);
+	unsigned int 	parse_method(std::vector<std::string> &methods);
+	void			trim(std::string &s);
+	void			ltrim(std::string &s);
+	void			rtrim(std::string &s);
+
 
 	Block	*getRoot(void) const;
 	Block	*getHttpBlock(void) const;
-
-	void	trim(std::string &s);
-	void	ltrim(std::string &s);
-	void	rtrim(std::string &s);
+	void	parse_configuration_file(void);
 
 private:
 

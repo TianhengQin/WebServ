@@ -3,7 +3,6 @@
 
 # include "Head.hpp"
 # include "Location.hpp"
-// # include "../Log/Log.hpp"
 
 class Server {
 
