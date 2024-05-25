@@ -161,7 +161,16 @@ void Cgi::setEnv(Connection &conn) {
     _env.push_back("QUERY_STRING="+conn.getQuery());
     _env.push_back("REDIRECT_STATUS=200");
     _env.push_back("SCRIPT_NAME="+_script);
-    _env.push_back("CONTENT_LENGTH="+std::to_string(conn.getBodyLen()));
+
+    // _env.push_back("CONTENT_LENGTH="+std::to_string(conn.getBodyLen()));
+    int bodyLength = conn.getBodyLen();
+
+// Convert integer to string using string stream.
+    std::ostringstream oss;
+    oss << bodyLength;
+    // std::string bodyLengthStr = oss.str();
+    _env.push_back("CONTENT_LENGTH="+oss.str());
+
     _env.push_back("CONTENT_TYPE="+conn.getMimeType());
     _env.push_back("SERVER_NAME="+conn.getServName());
     _env.push_back("SERVER_PORT="+conn.getPort());

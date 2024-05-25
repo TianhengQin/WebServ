@@ -1,4 +1,14 @@
 #include "WebServ.hpp"
+// # define FD_COPY(dst,src) { FD_ZERO(dst); for (int fd = 0; fd < FD_SETSIZE; ++fd) { if (FD_ISSET(fd, src)) { FD_SET(fd, dst); } } } 
+
+void fd_copy(fd_set *dst, const fd_set *src) {
+    FD_ZERO(dst);
+    for (int fd = 0; fd < FD_SETSIZE; ++fd) {
+        if (FD_ISSET(fd, src)) {
+            FD_SET(fd, dst);
+        }
+    }
+}
 
 WebServ::WebServ(Configuration &conf) {
 
@@ -79,8 +89,11 @@ void WebServ::run() {
 
 	while (true) {
 
-		FD_COPY(&_recvFds, &recv_dup);
-		FD_COPY(&_sendFds, &send_dup);
+		// FD_COPY(&_recvFds, &recv_dup);
+		// FD_COPY(&_sendFds, &send_dup);
+
+		fd_copy(&_recvFds, &recv_dup);
+		fd_copy(&_sendFds, &send_dup);
 	
 		// Log::print(DEBUG, "Selecting ", 0);
 		ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
@@ -116,7 +129,7 @@ void WebServ::run() {
 void WebServ::timeOut() {
 	// Log::print(DEBUG, "==== Check time out ", 0);
 	std::vector<int> timeOutList;
-	std::time_t currentTime = std::time(nullptr);
+	std::time_t currentTime = std::time(NULL);
 	std::map<int, Connection>::iterator it;
 	for (it = _connections.begin(); it != _connections.end(); ++it) {
 		// Log::print(DEBUG, "Checking ", 0);

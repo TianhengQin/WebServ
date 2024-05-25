@@ -7,6 +7,8 @@
 # include "Connection.hpp"
 # include "Cgi.hpp"
 
+// # define FD_COPY(fd_set *dst, const fd_set *src) { FD_ZERO(dst); for (int fd = 0; fd < FD_SETSIZE; ++fd) { if (FD_ISSET(fd, src)) { FD_SET(fd, dst); } } } 
+
 class WebServ {
 
 public:

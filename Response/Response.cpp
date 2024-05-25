@@ -102,7 +102,7 @@ void    Response::getMethod() {
     } else if (S_ISREG(path_stat.st_mode)) { // check if it is a file
         setBody(path);
     } else if (S_ISDIR(path_stat.st_mode)) {
-        if (path.back() != '/') {
+        if (path[path.size() - 1] != '/') {
             path += "/";
             
             // _code = 301;

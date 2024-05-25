@@ -1,7 +1,7 @@
 
 NAME		= webserver
 
-CXX			= c++
+CXX			= clang
 CXXFLAGS	= -std=c++98
 CXXFLAGS	+= -Wall -Wextra -Werror
 INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \

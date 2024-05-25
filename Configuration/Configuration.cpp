@@ -95,7 +95,7 @@ void Configuration::process_http_block(Block *httpBlock) {
 		} else if (name == "error_page") {
 			if (args.size() == 2) {
 				if (_parser->is_absolute_path(args[1]))
-					this->_error_page[std::stoi(args[0])] = args[1];
+					this->_error_page[std::atoi(args[0].c_str())] = args[1];
 				else
 					throw std::runtime_error("Invalid error page path: " + args[1]);
 			} else {
@@ -164,7 +164,7 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
 					if (_parser->is_absolute_path(args[1]))
-						server.setErrorPage(std::stoi(args[0]), args[1]);
+						server.setErrorPage(std::atoi(args[0].c_str()), args[1]);
 					else
 						throw std::runtime_error("Invalid error page path" + args[1]);
 				} else {
@@ -234,10 +234,12 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 				else
 					throw std::runtime_error("Invalid root path:" + args[0]);
 			} else if (name == "alias") {
-				if (_parser->is_absolute_path(args[0]) && args[0].back() == '/')
+				if (_parser->is_absolute_path(args[0]) && args[0][args[0].size() - 1] == '/')
 					location.setAlias(args[0]);
-				else
-					throw std::runtime_error("Invalid alias path:" + args[0]);
+				else {
+					std::string error_message = "Invalid alias path:" + args[0];
+					throw std::runtime_error(error_message);
+				}
 			} else if (name == "index") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
 					if (_parser->is_absolute_path(*it))
@@ -248,7 +250,7 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
 					if (_parser->is_absolute_path(args[1]))
-						location.setErrorPage(std::stoi(args[0]), args[1]);
+						location.setErrorPage(std::atoi(args[0].c_str()), args[1]);
 					else
 						throw std::runtime_error("Invalid error page path:" + args[1]);
 				} else {
@@ -326,9 +328,9 @@ void Configuration::process_listen_directive(std::vector<std::string> &args, Ser
 		} else if (it->find(":") != std::string::npos) {
 			size_t colonPos = it->find(":");
 			host = it->substr(0, colonPos);
-			port = std::stoi(it->substr(colonPos + 1));
+			port = std::atoi(it->substr(colonPos + 1).c_str());
 		} else {
-			port = std::stoi(*it);
+			port = std::atoi((*it).c_str());
 		}
 	}
 
@@ -347,7 +349,7 @@ unsigned int Configuration::parseSize(std::string sizeStr) {
 
 	unsigned int size = 1;
 	try {
-		size = std::stoi(sizeStr.substr(0, numEnd));
+		size = std::atoi(sizeStr.substr(0, numEnd).c_str());
 	} catch (std::exception &e) {
 		size = 1;
 	}

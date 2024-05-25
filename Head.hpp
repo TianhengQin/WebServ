@@ -18,6 +18,9 @@
 # include <sys/socket.h>
 # include <sys/select.h>
 # include <arpa/inet.h>
+# include <sys/wait.h>
+# include <cstdlib>
+# include <cstring>
 
 # include <vector>
 # include <map>

@@ -3,7 +3,7 @@
 Connection::Connection() {}
 
 Connection::Connection(std::map<int, Server> &svs, int fd) {
-    _timeStamp = std::time(nullptr);
+    _timeStamp = std::time(NULL);
     _server.insert(std::make_pair(fd, svs[fd]));
     _servChoice = fd;
     _locationChoice = 0;
@@ -105,7 +105,7 @@ void Connection::setResponse(std::string &bf) {
 }
 
 void Connection::updateTime() {
-    _timeStamp = std::time(nullptr);
+    _timeStamp = std::time(NULL);
 }
 
 std::time_t Connection::getTimeStamp() {
@@ -191,7 +191,7 @@ std::string Connection::getCookie() {
 
 int Connection::saveFile(std::string const &file) {
 
-    std::ofstream f2(file, std::fstream::trunc | std::fstream::binary);
+    std::ofstream f2(file.c_str(), std::fstream::trunc | std::fstream::binary);
     if (f2.fail()) {
         return 1;
     }
