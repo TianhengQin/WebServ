@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	int watch_dog = 2;
+	int watch_dog = 1000;
 	while (--watch_dog) {
 		try {
 			Log::print(INFO, "Server Restarting ...", 0);

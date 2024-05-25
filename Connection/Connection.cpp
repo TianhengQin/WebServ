@@ -11,6 +11,7 @@ Connection::Connection(std::map<int, Server> &svs, int fd) {
         _server.insert(std::make_pair(fd, svs[fd]));
         fd += 1024;
     }
+    _keepAlive = false;
 }
 
 Connection::~Connection() {}
@@ -47,8 +48,6 @@ void Connection::buildResponse() {
     //     }
     //     myfile.close();
     // }
-
-    _keepAlive = false;
 
 
     // server map config...

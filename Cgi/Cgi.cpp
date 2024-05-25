@@ -66,10 +66,10 @@ int Cgi::run(Connection &conn) {
 }
 
 void Cgi::kill() {
-    close(_pipeIn[0]);
+
     close(_pipeIn[1]);
     close(_pipeOut[0]);
-    close(_pipeOut[1]);
+
     Log::print(DEBUG, "kill cgi", 0);
     ::kill(_pid, SIGKILL);
     waitpid(_pid, NULL, 0);

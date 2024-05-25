@@ -85,6 +85,7 @@ void WebServ::run() {
 		// Log::print(DEBUG, "Selecting ", 0);
 		ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
 		if (ready < 0) {
+			// perror("select: ");
 			Log::print(ERROR, "Select failed ", ready);
 			throw std::runtime_error("Select Failed");
 		} else if (ready == 0) {
@@ -135,6 +136,7 @@ void WebServ::timeOut() {
 }
 
 void WebServ::addFd(int fd, char rs) {
+	// std::cerr << "add "<< fd << std::endl;
 	if (rs == 'r') {
 		FD_SET(fd, &_recvFds);
 	} else if (rs == 's') {
@@ -146,9 +148,12 @@ void WebServ::addFd(int fd, char rs) {
 }
 
 void WebServ::rmFd(int fd, char rs) {
+	// std::cerr << "try rm "<< fd << std::endl;
 	if (rs == 'r' && FD_ISSET(fd, &_recvFds)) {
+		// std::cerr << "rm rcv "<< fd << std::endl;
 		FD_CLR(fd, &_recvFds);
 	} else if (rs == 's' && FD_ISSET(fd, &_sendFds)) {
+		// std::cerr << "rm send "<< fd << std::endl;
 		FD_CLR(fd, &_sendFds);
 	}
 	if (fd == _fdMax) {
@@ -240,12 +245,12 @@ void WebServ::receive(int fd) {
 void WebServ::send(int fd) {
 	Log::print(DEBUG, "Sending on ", fd);
 	if(_connections[fd].send() == 0) {
-		if (_connections[fd].session() == true) {
-			fdSwitch(fd, 's');
-			Log::print(DEBUG, "Keep alive on ", fd);
-		} else {
-			disconnect(fd);
-		}
+		// if (_connections[fd].session() == true) {
+		// 	fdSwitch(fd, 's');
+		// 	Log::print(DEBUG, "Keep alive on ", fd);
+		// } else {
+		disconnect(fd);
+		// }
 	}
 }
 
@@ -275,6 +280,8 @@ void WebServ::closeCgi(int fd, int state) {
 	int conn = _cgis[_cgiFds[fd]].getConnectFd();
 	rmFd(inFd, 's');
 	rmFd(outFd, 'r');
+	close(inFd);
+	close(outFd);
 	if (state != CGI_SUCCEED) {
 		_cgis[_cgiFds[fd]].kill();
 	}
@@ -292,6 +299,7 @@ void WebServ::recvCgi(int fd) {
 	} else if (re == 0) {
 		if (_cgis[_cgiFds[fd]].end()) {
 			closeCgi(fd, CGI_FAILED);
+			return;
 		}
 		int conn = _cgis[_cgiFds[fd]].getConnectFd();
 		_connections[conn].buildCgiResponse(_cgis[_cgiFds[fd]].response());
