@@ -40,11 +40,11 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
 
     // if () // cgi??
     std::map<std::string, std::string> cgi = location.getCgi();
-    std::cout << cgi[".py"] << std::endl;
+    // std::cout << cgi[".py"] << std::endl;
     setCgiKey(request.get_dir());
-    std::cout << "_cgi: " << _cgi << _cgi.size() << std::endl;
+    // std::cout << "_cgi: " << _cgi << _cgi.size() << std::endl;
     if (cgi.find(_cgi) != cgi.end()) {
-        std::cout << "cgi in loop" << std::endl;
+        // std::cout << "cgi in loop" << std::endl;
         std::string pathToCgi = cgi[_cgi];
         connection.setCgiProgram(pathToCgi);
         connection.setCgiScript("." + _realPath);

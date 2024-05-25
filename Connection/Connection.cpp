@@ -31,7 +31,7 @@ void Connection::buildResponse() {
 
     std::size_t pos = _quest.get().find("\r\n\r\n");
     if (pos != std::string::npos) {
-        std::cerr << "no body" << std::endl;
+        // std::cerr << "no body" << std::endl;
         f2 << _quest.get().substr(pos + 4);
     }
     f2.close();
@@ -75,7 +75,7 @@ void Connection::buildResponse() {
         }
     }
     if (match_found) {
-        std::cout << "---------" << match.getPath() << std::endl;
+        // std::cout << "---------" << match.getPath() << std::endl;
         _sponse.init(*this, _quest, _server[_servChoice], match);
 
     } else {

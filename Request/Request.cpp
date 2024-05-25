@@ -169,7 +169,7 @@ int	Request::get_method()
 
 std::string Request::get_dir()
 {
-	std::cout << _dir.length() << std::endl;
+	// std::cout << _dir.length() << std::endl;
 	return (_dir);
 }
 
