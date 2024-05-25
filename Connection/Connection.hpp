@@ -11,6 +11,7 @@
 # define CGI_ON 1
 # define CGI_OFF 0
 # define CGI_FAILED -1
+# define CGI_TIMEOUT 3
 
 class Connection {
 

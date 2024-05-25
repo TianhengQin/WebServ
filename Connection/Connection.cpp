@@ -3,6 +3,7 @@
 Connection::Connection() {}
 
 Connection::Connection(std::map<int, Server> &svs, int fd) {
+    _timeStamp = std::time(nullptr);
     _server.insert(std::make_pair(fd, svs[fd]));
     _servChoice = fd;
     _locationChoice = 0;
@@ -152,10 +153,13 @@ int Connection::cgiState() {
 
 void Connection::setCgiState(int s) {
     _cgiState = s;
-    if (s == CGI_FAILED) {
-        std::ostringstream ss;
-        ss << "HTTP/1.1 500 Internal Server Error\n\n";
-        _sendBf = ss.str();
+    if (s == CGI_FAILED || s == CGI_TIMEOUT) {
+        _sponse.set_code(500);
+        _sendBf = _sponse.generate();
+
+        // std::ostringstream ss;
+        // ss << "HTTP/1.1 500 Internal Server Error\n\n";
+        // _sendBf = ss.str();
     }
 }
 

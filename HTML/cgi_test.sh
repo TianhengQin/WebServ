@@ -11,4 +11,5 @@ echo -e "Content-type: text/html\n\n\
 <h1>Cookie: [$HTTP_COOKIE]</h1>\n\
 </body>\n\
 </html>"
+sleep 100
 exit 1
