@@ -1,7 +1,7 @@
 #include "Request.hpp"
 
 Request::Request() {
-	_cookie = "abcde";
+	clear();
 }
 
 Request::Request(std::string &str)
@@ -45,6 +45,7 @@ void Request::clear()
 	_host = "";
 	_port = "";
 	_cookie = "";
+	_query = "";
 	// std::vector<std::string> _accept; ???
 }
 
@@ -116,6 +117,17 @@ void Request::parse()
 	if (it != _headers.end()) {
 		_cookie = it->second;
 	}
+	// _cookie = "aaaaaaaaa";
+	// Parse _query
+	// _query = "bbbbbbbbb";
+	size_t query = _dir.find("?");
+	if (query != std::string::npos) {
+		_query = _dir.substr(query + 1);
+		_dir = _dir.substr(0, query);
+	}
+
+	// std::cout << "query: " << _query << "---" << std::endl;
+	// std::cout << "dir: " << _dir << "---" << std::endl;
 
 
 	_bad = validate_request();
@@ -163,7 +175,6 @@ int	Request::get_method()
 	} else if (_method == "DELETE") {
 		return (DELETE);
 	}
-	std::cout << "lel |" << _method << "|" << std::endl;
 	return (-1);
 }
 
@@ -203,6 +214,12 @@ int         Request::get_bad()
 {
 	return (_bad);
 }
+
+std::string         Request::get_query()
+{
+	return (_query);
+}
+
 
 std::map<std::string, std::string> Request::get_headers()
 {

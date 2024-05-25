@@ -114,30 +114,30 @@ void WebServ::run() {
 }
 
 void WebServ::timeOut() {
-	Log::print(DEBUG, "==== Check time out ", 0);
+	// Log::print(DEBUG, "==== Check time out ", 0);
 	std::vector<int> timeOutList;
 	std::time_t currentTime = std::time(nullptr);
 	std::map<int, Connection>::iterator it;
 	for (it = _connections.begin(); it != _connections.end(); ++it) {
-		Log::print(DEBUG, "Checking ", 0);
+		// Log::print(DEBUG, "Checking ", 0);
 		if(currentTime - it->second.getTimeStamp() > _timeOut) {
 			timeOutList.push_back(it->first);
 		}
 	}
 	if (timeOutList.empty()) {
-		Log::print(DEBUG, "==== No time out", 0);
+		// Log::print(DEBUG, "==== No time out", 0);
 		return;
 	}
 	std::vector<int>::iterator itt;
 	for (itt = timeOutList.begin(); itt != timeOutList.end(); ++itt) {
-		Log::print(DEBUG, "==== There is time out ====", 0);
+		// Log::print(DEBUG, "==== There is time out ====", 0);
 		if (_connections[*itt].cgiState() == CGI_ON) {
 			closeCgi(_cgis[*itt].getPipeInFd(), CGI_TIMEOUT);
 			return;
 		}
 		disconnect(*itt);
 	}
-	Log::print(DEBUG, "Check time out finish", 0);
+	// Log::print(DEBUG, "Check time out finish", 0);
 }
 
 void WebServ::addFd(int fd, char rs) {

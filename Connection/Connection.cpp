@@ -58,6 +58,7 @@ void Connection::buildResponse() {
     //test timo
     // _quest.init("");
     _quest.parse();
+    // std::cout << "After parse: " << _quest.get_query() << std::endl;
     chooseServer();
     std::vector<Location>   locations = _server[_servChoice].getLocations();
     Location                match;
@@ -225,8 +226,7 @@ std::string Connection::getMethod() {
 }
 
 std::string Connection::getQuery() {
-    // return _quest.get_query();
-    return "";
+    return _quest.get_query();
 }
 
 std::size_t Connection::getBodyLen() {

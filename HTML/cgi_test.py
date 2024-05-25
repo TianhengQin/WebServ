@@ -2,7 +2,7 @@ import sys
 import os
 
 input_string = sys.stdin.read()
-cookie = os.environ['HTTP_COOKIE']
+cookie = os.environ['QUERY_STRING']
 
 print("Content-type: text/html\n")
 print("<html>")

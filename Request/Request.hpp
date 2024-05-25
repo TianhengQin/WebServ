@@ -6,7 +6,7 @@
 /*   By: tkilling <tkilling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 13:42:58 by tkilling          #+#    #+#             */
-/*   Updated: 2024/05/22 12:01:50 by tkilling         ###   ########.fr       */
+/*   Updated: 2024/05/25 12:15:40 by tkilling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ public:
     std::string get_port();
     std::string get_cookie();
     std::string get_body();
+    std::string get_query();
     int         get_bad();
     std::map<std::string, std::string> get_headers();
 
@@ -60,6 +61,7 @@ private:
     std::string _host;
     std::string _port;
     std::string _cookie;
+    std::string _query;
 
     int _bad; // valid
 
