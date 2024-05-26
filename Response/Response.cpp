@@ -96,7 +96,7 @@ void    Response::clear() {
 void    Response::getMethod() {
     std::string path = "." + _realPath; // ?? ./...
 
-    if (path.find("..")) {
+    if (path.find("..") != std::string::npos) {
         _code = 403;
         return ;
     }
@@ -146,7 +146,7 @@ void    Response::postMethod(Request &request) {
     std::string targetDirectory = _location.getRoot();
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
-    if (newFileName.find("..")) {
+    if (newFileName.find("..") != std::string::npos) {
         _code = 403;
         return ;
     }
@@ -206,7 +206,7 @@ void    Response::deleteMethod() {
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
 
-    if (newFileName.find("..")) {
+    if (newFileName.find("..") != std::string::npos) {
         _code = 403;
         return ;
     }
