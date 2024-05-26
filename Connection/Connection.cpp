@@ -155,7 +155,7 @@ int Connection::cgiState() {
 void Connection::setCgiState(int s) {
     _cgiState = s;
     if (s == CGI_FAILED || s == CGI_TIMEOUT) {
-        _sponse.set_code(500);
+        _sponse.set_code(504);
         _sendBf = _sponse.generate();
 
         // std::ostringstream ss;
