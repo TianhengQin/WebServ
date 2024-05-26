@@ -158,16 +158,10 @@ void Connection::setCgiState(int s) {
         _sponse.set_code(504);
         _sendBf = _sponse.generate();
 
-        // std::ostringstream ss;
-        // ss << "HTTP/1.1 500 Internal Server Error\n\n";
-        // _sendBf = ss.str();
     } else if (s == CGI_FAILED) {
         _sponse.set_code(500);
         _sendBf = _sponse.generate();
 
-        // std::ostringstream ss;
-        // ss << "HTTP/1.1 500 Internal Server Error\n\n";
-        // _sendBf = ss.str();
     }
 }
 
