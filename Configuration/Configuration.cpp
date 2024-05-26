@@ -123,6 +123,14 @@ void Configuration::process_http_block(Block *httpBlock) {
 			this->_servers.push_back(serv);
 		}
 	}
+	// Check if there are repeated server (host, port, server_name)
+	for (std::vector<Server>::iterator it = this->_servers.begin(); it != this->_servers.end(); ++it) {
+		for (std::vector<Server>::iterator it2 = it + 1; it2 != this->_servers.end(); ++it2) {
+			if (*it == *it2) {
+				throw std::runtime_error("Repeated server configuration");
+			}
+		}
+	}
 }
 
 void Configuration::process_server_block(Block *serverBlock, Server &server) {

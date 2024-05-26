@@ -179,6 +179,15 @@ void	Server::addLocation(Location location) {
 	this->_locations.push_back(location);
 }
 
+bool	Server::operator==(Server const &sv) const {
+	if (_host == sv._host && _port == sv._port && _server_name == sv._server_name)
+		return true;
+	return false;
+}
+
+bool	Server::operator!=(Server const &sv) const {
+	return !(*this == sv);
+}
 
 /**
  * Overload << operator

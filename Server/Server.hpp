@@ -46,8 +46,9 @@ public:
 	void			setCgi(std::string extension, std::string path);
 	void			setListenFd(int fd);
 	void			addLocation(Location location);
-
-
+	/* Server methods */
+	bool	operator==(Server const &sv) const;
+	bool	operator!=(Server const &sv) const;
 private:
 
 	void initDefaultErrorPages(void);
@@ -71,6 +72,7 @@ private:
 	int									_listenFd;
 	std::vector<std::string>			_all_server_names;
 	std::vector<std::string>			_all_index;
+
 
 };
 
