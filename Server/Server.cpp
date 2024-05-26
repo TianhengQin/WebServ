@@ -59,6 +59,7 @@ void Server::initDefaultErrorPages(void) {
 	this->_error_page[501] = "/HTML/default_error_pages/501.html";
 	this->_error_page[502] = "/HTML/default_error_pages/502.html";
 	this->_error_page[503] = "/HTML/default_error_pages/503.html";
+	this->_error_page[504] = "/HTML/default_error_pages/504.html";
 	this->_error_page[505] = "/HTML/default_error_pages/505.html";
 }
 
