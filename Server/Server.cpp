@@ -7,7 +7,7 @@ Server::Server(void) {
 	_server_name = "";
 	_root = "";
 	_index = "";
-	_allow_methods = GET | POST | DELETE | PUT | HEAD;
+	_allow_methods = GET | POST | DELETE | HEAD;
 	initDefaultErrorPages();
 	_client_max_body_size = 1024 * 1024;
 	_autoindex = false;

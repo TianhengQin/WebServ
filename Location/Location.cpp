@@ -5,7 +5,7 @@ Location::Location(void) {
 	_root = "/";
 	_index = "index.html";
 	// 
-	_methods = GET | POST | DELETE | PUT | HEAD;
+	_methods = GET | POST | DELETE | HEAD;
 	_client_max_body_size = 1024 * 1024;
 	_autoindex = false;
 	_alias = "/";

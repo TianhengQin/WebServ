@@ -39,7 +39,7 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 	this->_root = "";
 	this->_index = "";
 	this->_client_max_body_size = 1024 * 1024;
-	this->_allow_methods = GET | POST | DELETE | PUT | HEAD;
+	this->_allow_methods = GET | POST | DELETE | HEAD;
 	this->_autoindex = false;
 
 	this->parse_configuration_file();

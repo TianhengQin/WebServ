@@ -193,7 +193,7 @@ http {
 
 - Describes HTTP methods be passed along a request.  
 - The method can be specified as a single method or a list of methods separated by spaces.  
-- GET POST DELETE PUT HEAD
+- GET POST DELETE HEAD
 
 #### `autoindex`
 > Syntax: autoindex [on | off];  
