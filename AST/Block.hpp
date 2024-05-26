@@ -18,18 +18,18 @@ public:
 	Block &operator=(const Block &other);
 	~Block();
 
-	void addChild(ASTNode * child);
+	void addChild(ASTNode *child);
 
 	std::string					getName(void);
 	std::vector<std::string>	getArguments(void);
-	std::vector<ASTNode * >		getChildren(void);
+	std::vector<ASTNode *>		getChildren(void);
 
-	void print(int level = 0) const;
+	void						print(int level = 0) const;
 
 private:
 	std::string					_name;
 	std::vector<std::string>	_arguments;
-	std::vector<ASTNode * > 	_children;
+	std::vector<ASTNode *>	 	_children;
 
 
 };

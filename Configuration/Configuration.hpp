@@ -72,9 +72,6 @@ private:
 	void			set_server_context(Server &server);
 	void			set_location_context(Server &server, Location &location);
 	void			process_listen_directive(std::vector<std::string> &args, Server &server);
-	unsigned int	parseSize(std::string sizeStr);
-	unsigned int	parseMethods(std::vector<std::string> &methods);
-
 
 };
 
