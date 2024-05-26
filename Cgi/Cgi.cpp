@@ -162,10 +162,10 @@ void Cgi::setEnv(Connection &conn) {
     _env.push_back("REDIRECT_STATUS=200");
     _env.push_back("SCRIPT_NAME="+_script);
 
-    _env.push_back("CONTENT_LENGTH=" + std::to_string(conn.getBodyLen()));
-    // std::stringstream ss;
-    // ss << conn.getBodyLen();
-    // _env.push_back("CONTENT_LENGTH=" + ss.str());
+    // _env.push_back("CONTENT_LENGTH=" + std::to_string(conn.getBodyLen()));
+    std::stringstream ss;
+    ss << conn.getBodyLen();
+    _env.push_back("CONTENT_LENGTH=" + ss.str());
 
 
     _env.push_back("CONTENT_TYPE="+conn.getMimeType());
