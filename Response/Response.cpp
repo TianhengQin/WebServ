@@ -57,10 +57,22 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
     _method = request.get_method();
     unsigned int allowed_methods = location.getAllowedMethods();
 
+    // std::cout << "method: " ;
+    // for (int i = 0; i < 5; i++) {
+    //     std::cout << (_method & 1);
+    //     _method >>= 1;
+    // }
+    // std::cout << "\nallowed_methods: ";// Print last 5 bits
+    // for (int i = 0; i < 5; i++) {
+    //     std::cout << (allowed_methods & 1);
+    //     allowed_methods >>= 1;
+    // }
+    // std::cout << std::endl;
+    
+    // _method = request.get_method();
+    // allowed_methods = location.getAllowedMethods();
     if ((allowed_methods & GET) && _method == GET) {
         getMethod();
-
-
     } else if ((allowed_methods & POST) && _method == POST) {
         postMethod(request);
         // Handle POST request

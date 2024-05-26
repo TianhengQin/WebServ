@@ -102,6 +102,10 @@ void Configuration::process_http_block(Block *httpBlock) {
 		} else if (name == "client_max_body_size") {
 			this->_client_max_body_size = _parser->parse_size(args[0]);
 		} else if (name == "allow_methods" || name == "limit_except") {
+			// std::cout << "ALLOW METHODS" << std::endl;
+			// for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+			// 	std::cout << *it << std::endl;
+			// }
 			this->_allow_methods = _parser->parse_method(args);
 		} else if (name == "autoindex") {
 			if (args[0] == "on") {
@@ -144,9 +148,11 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 		if (directive) {
 			name = directive->getName();
 			args = directive->getArguments();
-			if (args.empty())
-				continue;
-			else if (name == "listen") {
+			// std::cout << "Name: " << name << std::endl;
+			// for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+			// 	std::cout << "Args: " << *it << std::endl;
+			// }
+			if (name == "listen") {
 				process_listen_directive(args, server);
 			} else if (name == "server_name") {
 				for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
@@ -165,6 +171,11 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 						throw std::runtime_error("Invalid index path :" + *it);
 				}
 			} else if (name == "allow_methods") {
+				// std::cout << "ALLOW METHODS" << std::endl;
+				// for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+				// 	std::cout << *it << std::endl;
+				// }
+
 				server.setAllowedMethods(_parser->parse_method(args));
 			} else if (name == "error_page") {
 				if (args.size() == 2) {
@@ -239,9 +250,11 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 		if (directive) {
 			name = directive->getName();
 			args = directive->getArguments();
-			if (args.empty()) {
-				continue;
-			} else if (name == "root") {
+			// std::cout << "Name: " << name << std::endl;
+			// for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it) {
+			// 	std::cout << "Args: " << *it << std::endl;
+			// }
+			if (name == "root") {
 				if (_parser->is_absolute_path(args[0]))
 					location.setRoot(args[0]);
 				else
@@ -267,7 +280,7 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 				} else {
 					throw std::runtime_error("Insufficient arguments for error_page directive");
 				}
-			} else if (name == "allow_method" || name == "limit_except") {
+			} else if (name == "allow_methods" || name == "limit_except") {
 				location.setAllowedMethods(_parser->parse_method(args));
 			} else if (name == "client_max_body_size") {
 				location.setClientMaxBodySize(_parser->parse_size(args[0]));

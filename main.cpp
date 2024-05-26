@@ -24,6 +24,23 @@ int main(int argc, char **argv) {
 
 			Configuration config(argv[1]);
 
+			// std::vector<Server> servers = config.getServers();
+			// for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); ++it) {
+			// 	Log::print(INFO, "Server ", it->getPort());
+			// 	std::vector<Location> locations = it->getLocations();
+			// 	for (std::vector<Location>::iterator it2 = locations.begin(); it2 != locations.end(); ++it2) {
+			// 		// Log::print(INFO, "Location ", it2->getPath());
+			// 		std::cout << "Location " << it2->getPath() << std::endl;
+			// 		unsigned int i = it2->getAllowedMethods();
+			// 		for (int j = 0; j < 5; j++) {
+			// 			if (i & (1 << j)) {
+			// 				Log::print(INFO, "Method ", 1);
+			// 			} else {
+			// 				Log::print(INFO, "Method ", 0);
+			// 			}
+			// 		}
+			// 	}
+			// }
 			WebServ web_serv(config);
 			web_serv.run();
 		} catch (std::exception &e) {
