@@ -49,6 +49,7 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         connection.setCgiProgram(pathToCgi);
         connection.setCgiScript("." + _realPath);
         connection.setCgiState(CGI_ON);
+        connection.setCgiSendBf(request.get_body());
         return ;
     }
 
