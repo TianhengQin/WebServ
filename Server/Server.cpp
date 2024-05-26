@@ -55,6 +55,8 @@ void Server::initDefaultErrorPages(void) {
 	this->_error_page[404] = "/HTML/default_error_pages/404.html";
 	this->_error_page[405] = "/HTML/default_error_pages/405.html";
 	this->_error_page[406] = "/HTML/default_error_pages/406.html";
+	this->_error_page[409] = "/HTML/default_error_pages/409.html";
+	this->_error_page[413] = "/HTML/default_error_pages/413.html";
 	this->_error_page[500] = "/HTML/default_error_pages/500.html";
 	this->_error_page[501] = "/HTML/default_error_pages/501.html";
 	this->_error_page[502] = "/HTML/default_error_pages/502.html";
