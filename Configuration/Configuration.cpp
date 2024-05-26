@@ -339,65 +339,6 @@ void Configuration::process_listen_directive(std::vector<std::string> &args, Ser
 
 
 
-unsigned int Configuration::parseSize(std::string sizeStr) {
-	size_t numEnd = 0;
-	while (numEnd < sizeStr.size() && std::isdigit(sizeStr[numEnd])) {
-		numEnd++;
-	}
-
-	unsigned int size = 1;
-	try {
-		size = std::atoi(sizeStr.substr(0, numEnd).c_str());
-	} catch (std::exception &e) {
-		size = 1;
-	}
-
-	if (numEnd < sizeStr.size()) {
-		char suffix = sizeStr[numEnd];
-		switch (suffix) {
-			case 'K':
-			case 'k':
-				size *= 1024;
-				break;
-			case 'M':
-			case 'm':
-				size *= 1024 * 1024;
-				break;
-			case 'G':
-			case 'g':
-				size *= 1024 * 1024 * 1024;
-				break;
-			default:
-				size = 1024 * 1024;
-		}
-	}
-
-	return size;
-}
-
-unsigned int Configuration::parseMethods(std::vector<std::string> &methods) {
-	unsigned int methodFlags = 0;
-
-	for (std::vector<std::string>::iterator method = methods.begin(); method != methods.end(); ++method) {
-		std::transform(method->begin(), method->end(), method->begin(), ::toupper);
-
-		if (*method == "GET") {
-			methodFlags |= GET;
-		} else if (*method == "POST") {
-			methodFlags |= POST;
-		} else if (*method == "DELETE") {
-			methodFlags |= DELETE;
-		} else if (*method == "PUT") {
-			methodFlags |= PUT;
-		} else if (*method == "HEAD") {
-			methodFlags |= HEAD;
-		}
-	}
-	return (methodFlags);
-}
-
-
-
 /* Getters */
 
 std::string Configuration::getFilename(void) { return (this->_filename); }

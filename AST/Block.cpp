@@ -21,7 +21,8 @@ Block &Block::operator=(const Block &other) {
 }
 
 Block::~Block() {
-	for (std::vector<ASTNode *>::iterator child = _children.begin(); child != _children.end(); ++child) {
+	std::vector<ASTNode *>::iterator child;
+	for (child = _children.begin(); child != _children.end(); ++child) {
 		delete *child;
 	}
 }

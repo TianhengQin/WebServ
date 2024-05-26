@@ -5,3 +5,4 @@ _test*.*
 *.o
 webserver
 *.debug
+*.DS_Store

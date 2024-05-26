@@ -20,7 +20,8 @@ public:
 
 	std::string					getName(void);
 	std::vector<std::string>	getArguments(void);
-	void print(int level = 0) const;
+
+	void						print(int level = 0) const;
 
 private:
 	std::string					_name;
