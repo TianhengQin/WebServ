@@ -118,6 +118,14 @@ void Location::setCgi(std::string ext, std::string bin) { this->_cgi[ext] = bin;
 void Location::setRedir(std::string redir) { this->_return = redir; }
 
 
+bool Location::operator==(Location const &loc) const {
+	return (this->_path == loc._path);
+}
+
+bool Location::operator!=(Location const &loc) const {
+	return (this->_path != loc._path);
+}
+
 /**
  * Overload of the << operator
 */

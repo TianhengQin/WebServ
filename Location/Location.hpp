@@ -50,6 +50,9 @@ public:
 	void	setCgi(std::string ext, std::string bin);
 	void	setRedir(std::string redir);
 
+	bool	operator==(Location const &loc) const;
+	bool	operator!=(Location const &loc) const;
+
 private:
 
 	std::string							_path; // URI

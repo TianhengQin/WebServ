@@ -217,6 +217,15 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 			server.addLocation(loc);
 		}
 	}
+	// Check if there are repeated locations (path)
+	std::vector<Location> locations = server.getLocations();
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); ++it) {
+		for (std::vector<Location>::iterator it2 = it + 1; it2 != locations.end(); ++it2) {
+			if (*it == *it2) {
+				throw std::runtime_error("Repeated location configuration");
+			}
+		}
+	}
 }
 
 
