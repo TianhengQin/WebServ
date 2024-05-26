@@ -28,14 +28,14 @@ int Connection::getFd() {
 void Connection::buildResponse() {
 
     // PUT test
-    std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
+    // std::ofstream f2("test.jpeg", std::fstream::trunc | std::fstream::binary);
 
-    std::size_t pos = _quest.get().find("\r\n\r\n");
-    if (pos != std::string::npos) {
-        f2 << _quest.get().substr(pos + 4);
-    }
-    f2.close();
-    Log::print(INFO, "size :", _quest.get().size());
+    // std::size_t pos = _quest.get().find("\r\n\r\n");
+    // if (pos != std::string::npos) {
+    //     f2 << _quest.get().substr(pos + 4);
+    // }
+    // f2.close();
+    // Log::print(INFO, "size :", _quest.get().size());
 
 
     _quest.parse();

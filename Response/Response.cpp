@@ -145,7 +145,7 @@ std::string getFileName(const std::string& path) {
 void    Response::postMethod(Request &request) {
     std::string targetDirectory = _location.getRoot();
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
-
+    // std::cerr << "craet file" << std::endl;
     if (newFileName.find("..") != std::string::npos) {
         _code = 403;
         return ;
@@ -332,7 +332,6 @@ int Response::setBody(std::string const &file) {
         std::streampos fileSize = myfile.tellg();
         myfile.seekg(0, std::ios::beg);
 
-        // string to the correct size and read the file into it
         _body.resize(fileSize);
         myfile.read(&_body[0], fileSize);
         myfile.close();
