@@ -31,7 +31,8 @@ Configuration &Configuration::operator=(const Configuration &other) {
 }
 
 Configuration::~Configuration() {
-	delete this->_parser;
+	if (this->_parser)
+		delete this->_parser;
 }
 
 
@@ -43,6 +44,9 @@ Configuration::Configuration(std::string filename) : _filename(filename) {
 	this->_autoindex = false;
 
 	this->parse_configuration_file();
+	
+	delete this->_parser;
+	this->_parser = NULL;
 }
 
 void	Configuration::parse_configuration_file(void) {

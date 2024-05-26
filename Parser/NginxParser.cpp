@@ -18,7 +18,9 @@ NginxParser &NginxParser::operator=(const NginxParser &other) {
 	return (*this);
 }
 
-NginxParser::~NginxParser() { }
+NginxParser::~NginxParser() {
+	delete this->ast_root;
+}
 
 
 
