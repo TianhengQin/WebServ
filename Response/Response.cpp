@@ -240,7 +240,10 @@ void    Response::deleteMethod() {
         _code = 404;
         return;
     } else if (S_ISREG(path_stat.st_mode)) {
-        if (std::remove(newFileName.c_str()) == 0) {
+        if (access(newFileName.c_str(), W_OK) != 0) {
+            _code = 403;
+            return ;
+        } else if (std::remove(newFileName.c_str()) == 0) {
             _code = 204;
         } else {
             _code = 500;
