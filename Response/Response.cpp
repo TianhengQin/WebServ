@@ -19,7 +19,7 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         return ;
     }
 
-    if (location.getClientMaxBodySize() < request.get_body().size()) {
+    if (location.getClientMaxBodySize() < (unsigned int) request.get_body().size()) {
         _code = 413;
         return ;
     }
