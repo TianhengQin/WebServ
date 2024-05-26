@@ -116,7 +116,7 @@ void WebServ::run() {
 void WebServ::timeOut() {
 	// Log::print(DEBUG, "==== Check time out ", 0);
 	std::vector<int> timeOutList;
-	std::time_t currentTime = std::time(nullptr);
+	std::time_t currentTime = std::time(NULL);
 	std::map<int, Connection>::iterator it;
 	for (it = _connections.begin(); it != _connections.end(); ++it) {
 		// Log::print(DEBUG, "Checking ", 0);

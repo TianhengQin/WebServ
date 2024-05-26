@@ -40,7 +40,7 @@ void	NginxParser::parse(void) {
 		trim(line);
 		if (line.empty() || line[0] == '#') continue;
 
-		if (line.back() == '{') {
+		if (line[line.size() - 1] == '{') {
 			name_args = parseNameAndArguments(line.substr(0, line.size() - 1));
 			block = new Block(name_args.first, name_args.second);
 			if (!blockStack.empty()) {
@@ -106,7 +106,7 @@ unsigned int	NginxParser::parse_size(std::string &sizeStr) {
 
 	unsigned int size = 1;
 	try {
-		size = std::stoi(sizeStr.substr(0, numEnd));
+		size = std::atoi(sizeStr.substr(0, numEnd).c_str());
 	} catch (std::exception &e) {
 		size = 1;
 	}

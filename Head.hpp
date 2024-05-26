@@ -1,7 +1,16 @@
 #ifndef HEAD_HPP
 # define HEAD_HPP
 
+
+// to compile in linux:
+// # ifndef FD_COPY
+// #  define FD_COPY(f, t)   __DARWIN_FD_COPY(f, t)
+// #  define __DARWIN_FD_COPY(f, t)  bcopy(f, t, sizeof(*(f)))
+// # endif /* FD_COPY */
+
+
 # include <string>
+# include <cstring>
 # include <iostream>
 # include <fstream>
 # include <sstream>
@@ -18,6 +27,7 @@
 # include <sys/socket.h>
 # include <sys/select.h>
 # include <arpa/inet.h>
+# include <sys/wait.h>
 
 # include <vector>
 # include <map>
