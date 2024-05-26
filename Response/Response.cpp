@@ -272,6 +272,7 @@ void Response::initResponsePhrase() {
     _responsePhrase[403] = "Forbidden";
     _responsePhrase[404] = "Not Found";
     _responsePhrase[405] = "Method Not Allowed";
+    _responsePhrase[409] = "Conflict";
     _responsePhrase[413] = "Request Entity Too Long";
     _responsePhrase[500] = "Internal Server Error";
     _responsePhrase[501] = "Not Implemented";
