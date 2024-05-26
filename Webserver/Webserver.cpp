@@ -1,4 +1,4 @@
-#include "WebServ.hpp"
+#include "Webserver.hpp"
 
 WebServ::WebServ(Configuration &conf) {
 

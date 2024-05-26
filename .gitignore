@@ -3,6 +3,6 @@ a.out
 .DS_*
 _test*.*
 *.o
-webserver
+webserv
 *.debug
 *.DS_Store

@@ -1,11 +1,11 @@
 
-NAME		= webserver
+NAME		= webserv
 
 CXX			= c++
 CXXFLAGS	= -std=c++98
 CXXFLAGS	+= -Wall -Wextra -Werror
 INCLUDE		= -I./AST -I./Configuration/ -I./Server/ -I./Location/ -I./Connection/ -I./Cgi/ \
-			-I./Log/ -I./MimeType/ -I./Parser/ -I./Request/ -I./Response/ -I./WebServ/ -I./
+			-I./Log/ -I./MimeType/ -I./Parser/ -I./Request/ -I./Response/ -I./Webserver/ -I./
 
 SRCS	= main.cpp \
 		  AST/ASTNode.cpp AST/Block.cpp AST/Directive.cpp \
@@ -13,7 +13,7 @@ SRCS	= main.cpp \
 		  Parser/NginxParser.cpp \
 		  Cgi/Cgi.cpp Request/Request.cpp Connection/Connection.cpp Location/Location.cpp Log/Log.cpp \
 		  MimeType/MimeType.cpp Response/Response.cpp \
-		  Server/Server.cpp WebServ/WebServ.cpp
+		  Server/Server.cpp Webserver/Webserver.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
