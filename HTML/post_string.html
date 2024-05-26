@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Post name</title>
+</head>
+
+<body>
+  <form id="post-name">
+    <input type="text" id="uri-input" name="uri" placeholder="your name">
+    <button type="button" onclick="uploadFile()">confirm</button><br>
+    <a id="result"></a><br>
+    <a id="location"></a>
+  </form>
+</body>
+
+<script>
+  function uploadFile() {
+
+    const apiUrl = "/session/cookie.py"
+    const name = document.getElementById('uri-input').value;
+    const requestOptions = {
+      method: 'POST',
+      body: name,
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then(response => {})
+      .catch(error => {});
+  }
+
+</script>
+
+</html>

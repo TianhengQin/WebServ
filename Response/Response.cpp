@@ -49,6 +49,7 @@ void Response::init(Connection &connection, Request &request, Server &server, Lo
         connection.setCgiProgram(pathToCgi);
         connection.setCgiScript("." + _realPath);
         connection.setCgiState(CGI_ON);
+        connection.setCgiSendBf(request.get_body());
         return ;
     }
 
@@ -95,6 +96,11 @@ void    Response::clear() {
 void    Response::getMethod() {
     std::string path = "." + _realPath; // ?? ./...
 
+    if (path.find("..")) {
+        _code = 403;
+        return ;
+    }
+
     struct stat path_stat;
     if (stat(path.c_str(), &path_stat) != 0) {
         _code = 404;
@@ -140,6 +146,10 @@ void    Response::postMethod(Request &request) {
     std::string targetDirectory = _location.getRoot();
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
+    if (newFileName.find("..")) {
+        _code = 403;
+        return ;
+    }
 
     if (newFileName[0] == '/') {
         newFileName = newFileName.substr(1);
@@ -195,6 +205,11 @@ void    Response::deleteMethod() {
     std::string targetDirectory = _location.getRoot();;
     std::string newFileName     = targetDirectory + "/" + getFileName(_realPath);
 
+
+    if (newFileName.find("..")) {
+        _code = 403;
+        return ;
+    }
 
     if (newFileName[0] == '/') {
         newFileName = newFileName.substr(1);

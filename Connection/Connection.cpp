@@ -263,3 +263,7 @@ void    Connection::setCgiProgram(std::string pathToCgi) {
 void    Connection::setCgiScript(std::string realPath) {
     _cgiScript = realPath;
 }
+
+void    Connection::setCgiSendBf(std::string bf) {
+    _cgiSendBf = bf;
+}

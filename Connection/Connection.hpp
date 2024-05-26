@@ -52,6 +52,7 @@ public:
 
     void    setCgiProgram(std::string pathToCgi);
     void    setCgiScript(std::string realPath);
+    void    setCgiSendBf(std::string bf);
 
 private:
 
