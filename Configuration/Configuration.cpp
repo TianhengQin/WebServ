@@ -58,6 +58,8 @@ void	Configuration::parse_configuration_file(void) {
 	httpBlock = this->_parser->getHttpBlock();
 	// std::cout << *httpBlock << std::endl; // Debug
 
+	// Close file
+	file.close();
 	try {
 		this->process_http_block(httpBlock);
 	} catch (std::exception &e) {
