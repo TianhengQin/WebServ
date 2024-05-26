@@ -20,12 +20,10 @@ WebServ::WebServ(Configuration &conf) {
 			if (it->getHost() == itr->getHost() && it->getPort() == itr->getPort()) {
 				if (same_nb == 0) {
 					its = itr;
-					// Log::print(DEBUG, "Same host:port", 0);
 				}
 				++same_nb;
 			}
 		}
-		// Log::print(DEBUG, "Same host:port num ", same_nb);
 		if (same_nb) {
 			_servers.insert(std::make_pair(its->getFd() + 1024 * same_nb, *it));
 			continue;
@@ -82,10 +80,8 @@ void WebServ::run() {
 		FD_COPY(&_recvFds, &recv_dup);
 		FD_COPY(&_sendFds, &send_dup);
 	
-		// Log::print(DEBUG, "Selecting ", 0);
 		ready = select(_fdMax+1, &recv_dup, &send_dup, NULL, &timeout);
 		if (ready < 0) {
-			// perror("select: ");
 			Log::print(ERROR, "Select failed ", ready);
 			throw std::runtime_error("Select Failed");
 		} else if (ready == 0) {
@@ -114,34 +110,28 @@ void WebServ::run() {
 }
 
 void WebServ::timeOut() {
-	// Log::print(DEBUG, "==== Check time out ", 0);
 	std::vector<int> timeOutList;
 	std::time_t currentTime = std::time(NULL);
 	std::map<int, Connection>::iterator it;
 	for (it = _connections.begin(); it != _connections.end(); ++it) {
-		// Log::print(DEBUG, "Checking ", 0);
 		if(currentTime - it->second.getTimeStamp() > _timeOut) {
 			timeOutList.push_back(it->first);
 		}
 	}
 	if (timeOutList.empty()) {
-		// Log::print(DEBUG, "==== No time out", 0);
 		return;
 	}
 	std::vector<int>::iterator itt;
 	for (itt = timeOutList.begin(); itt != timeOutList.end(); ++itt) {
-		// Log::print(DEBUG, "==== There is time out ====", 0);
 		if (_connections[*itt].cgiState() == CGI_ON) {
 			closeCgi(_cgis[*itt].getPipeInFd(), CGI_TIMEOUT);
 			return;
 		}
 		disconnect(*itt);
 	}
-	// Log::print(DEBUG, "Check time out finish", 0);
 }
 
 void WebServ::addFd(int fd, char rs) {
-	// std::cerr << "add "<< fd << std::endl;
 	if (rs == 'r') {
 		FD_SET(fd, &_recvFds);
 	} else if (rs == 's') {
@@ -153,12 +143,10 @@ void WebServ::addFd(int fd, char rs) {
 }
 
 void WebServ::rmFd(int fd, char rs) {
-	// std::cerr << "try rm "<< fd << std::endl;
+
 	if (rs == 'r' && FD_ISSET(fd, &_recvFds)) {
-		// std::cerr << "rm rcv "<< fd << std::endl;
 		FD_CLR(fd, &_recvFds);
 	} else if (rs == 's' && FD_ISSET(fd, &_sendFds)) {
-		// std::cerr << "rm send "<< fd << std::endl;
 		FD_CLR(fd, &_sendFds);
 	}
 	if (fd == _fdMax) {
@@ -200,7 +188,6 @@ void WebServ::connect(int fd) {
 		return;
 	}
 	connect.setFd(connect_fd);
-	Log::print(DEBUG, "New connection on ", connect_fd);
 	_connections.insert(std::make_pair(connect_fd, connect));
 }
 
@@ -211,12 +198,10 @@ void WebServ::disconnect(int fd) {
 	if (FD_ISSET(fd, &_recvFds))
 		rmFd(fd, 'r');
 	close(fd);
-	Log::print(DEBUG, "Closed ", fd);
 	if (_connections[fd].cgiState() == CGI_ON) {
 		closeCgi(_cgis[fd].getPipeInFd(), CGI_ON);
 	}
 	_connections.erase(fd);
-	Log::print(DEBUG, "Remove connection ", fd);
 }
 
 void WebServ::receive(int fd) {
@@ -232,15 +217,11 @@ void WebServ::receive(int fd) {
 			_connections[fd].receive(bf, received);
 			return;
 		}
-		Log::print(DEBUG, "Received finish ", fd);
 		fdSwitch(fd, 'r');
-		Log::print(DEBUG, "Switch to send ", fd);
 		_connections[fd].buildResponse();
 		if (_connections[fd].cgiState() == CGI_ON) {
-			Log::print(DEBUG, "open cgi ", fd);
 			openCgi(fd);
 		}
-		Log::print(DEBUG, "build complete ", fd);
 	} else {
 		_connections[fd].receive(bf, received);
 		Log::print(INFO, "Received ", received);
@@ -248,14 +229,8 @@ void WebServ::receive(int fd) {
 }
 
 void WebServ::send(int fd) {
-	Log::print(DEBUG, "Sending on ", fd);
 	if(_connections[fd].send() == 0) {
-		// if (_connections[fd].session() == true) {
-		// 	fdSwitch(fd, 's');
-		// 	Log::print(DEBUG, "Keep alive on ", fd);
-		// } else {
 		disconnect(fd);
-		// }
 	}
 }
 
@@ -267,16 +242,12 @@ void WebServ::openCgi(int fd) {
 		_connections[fd].buildCgiResponse("fail");
 		return;
 	}
-	Log::print(DEBUG, "cgi created ", fd);
 	addFd(cgi.getPipeInFd(), 's');
-	Log::print(DEBUG, "cgi pipin ", cgi.getPipeInFd());
 	addFd(cgi.getPipeOutFd(), 'r');
-	Log::print(DEBUG, "cgi pipout ", cgi.getPipeOutFd());
 	_cgis.insert(std::make_pair(fd, cgi));
 	_cgiFds[cgi.getPipeInFd()] = fd;
 	_cgiFds[cgi.getPipeOutFd()] = fd;
 	_cgis[fd].run(_connections[fd]);
-	Log::print(DEBUG, "cgi run ", fd);
 }
 
 void WebServ::closeCgi(int fd, int state) {
@@ -293,7 +264,6 @@ void WebServ::closeCgi(int fd, int state) {
 	_cgis.erase(_cgiFds[fd]);
 	_cgiFds.erase(outFd);
 	_cgiFds.erase(inFd);
-	Log::print(INFO, "Close Cgi on connection ", conn);
 	_connections[conn].setCgiState(state);
 }
 
