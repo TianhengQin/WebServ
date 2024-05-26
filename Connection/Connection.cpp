@@ -154,13 +154,17 @@ int Connection::cgiState() {
 
 void Connection::setCgiState(int s) {
     _cgiState = s;
-    if (s == CGI_FAILED || s == CGI_TIMEOUT) {
+    if (s == CGI_FAILED) {
         _sponse.set_code(500);
         _sendBf = _sponse.generate();
 
         // std::ostringstream ss;
         // ss << "HTTP/1.1 500 Internal Server Error\n\n";
         // _sendBf = ss.str();
+    } else if (s == CGI_TIMEOUT) {
+        _sponse.set_code(504);
+        _sendBf = _sponse.generate();
+    
     }
 }
 
