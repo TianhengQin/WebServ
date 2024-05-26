@@ -398,6 +398,5 @@ void Response::setAutoindex(std::string const &path) {
         _body.append("</td>\n</tr>\n");
     }
     _body.append("</table>\n<hr>\n</body>\n</html>\n");
-
+    closedir(dir);
 }
-
