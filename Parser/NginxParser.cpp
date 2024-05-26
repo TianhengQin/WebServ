@@ -230,6 +230,5 @@ void	NginxParser::parse_configuration_file(void) {
 std::ostream &operator<<(std::ostream &out, NginxParser &parser) {
 	ASTNode *node = parser.getRoot();
 	node->print();
-	// out << *(parser.getRoot());
 	return out;
 }
