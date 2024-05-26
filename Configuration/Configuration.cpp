@@ -38,12 +38,10 @@ Configuration::~Configuration() {
 Configuration::Configuration(std::string filename) : _filename(filename) {
 	this->_root = "";
 	this->_index = "";
-	// this->_error_page = std::map<int, std::string>();
 	this->_client_max_body_size = 1024 * 1024;
 	this->_allow_methods = GET | POST | DELETE | PUT | HEAD;
 	this->_autoindex = false;
 
-	// this->_parser = NginxParser(filename);
 	this->parse_configuration_file();
 }
 
@@ -56,9 +54,7 @@ void	Configuration::parse_configuration_file(void) {
 	}
 	this->_parser = new NginxParser(file);
 	httpBlock = this->_parser->getHttpBlock();
-	// std::cout << *httpBlock << std::endl; // Debug
 
-	// Close file
 	file.close();
 	try {
 		this->process_http_block(httpBlock);
@@ -125,7 +121,6 @@ void Configuration::process_http_block(Block *httpBlock) {
 			this->_servers.push_back(serv);
 		}
 	}
-	// Check if there are repeated server (host, port, server_name)
 	for (std::vector<Server>::iterator it = this->_servers.begin(); it != this->_servers.end(); ++it) {
 		for (std::vector<Server>::iterator it2 = it + 1; it2 != this->_servers.end(); ++it2) {
 			if (*it == *it2) {
@@ -219,7 +214,6 @@ void Configuration::process_server_block(Block *serverBlock, Server &server) {
 			server.addLocation(loc);
 		}
 	}
-	// Check if there are repeated locations (path)
 	std::vector<Location> locations = server.getLocations();
 	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); ++it) {
 		for (std::vector<Location>::iterator it2 = it + 1; it2 != locations.end(); ++it2) {
@@ -278,10 +272,7 @@ void Configuration::process_location_block(Block *locationBlock, Location &locat
 			} else if (name == "client_max_body_size") {
 				location.setClientMaxBodySize(_parser->parse_size(args[0]));
 			} else if (name == "return") {
-				// if (_parser->is_absolute_path(args[0]))
-					location.setRedir(args[0]);
-				// else
-					// throw std::runtime_error("Invalid return path:" + args[0]);
+				location.setRedir(args[0]);
 			} else if (name == "autoindex") {
 				if (args[0] == "on") {
 					location.setAutoindex(true);
