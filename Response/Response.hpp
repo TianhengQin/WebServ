@@ -34,7 +34,7 @@ public:
 
 private:
 
-    int _method;
+    unsigned int _method;
 
     int _code;
     std::string _phrase;

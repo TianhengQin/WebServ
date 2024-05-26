@@ -187,15 +187,19 @@ std::string Connection::getHost() {
 }
 
 std::string Connection::getMethod() {
-    int method = _quest.get_method();
+    unsigned int method = _quest.get_method();
     if (method == GET) {
         return "GET";
     } else if (method == POST) {
         return "POST";
     } else if (method == DELETE) {
         return "DELETE";
+    } else if (method == HEAD) {
+        return "HEAD";
+    } else if (method == PUT) {
+        return "PUT";
     }
-    return "PUT";
+    return "UNKNOWN";
 }
 
 std::string Connection::getQuery() {

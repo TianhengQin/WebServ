@@ -162,7 +162,7 @@ int Request::validate_request()
 
 
 // getters
-int	Request::get_method()
+unsigned int	Request::get_method()
 {
 	if (_method == "GET") {
 		return (GET);
@@ -175,7 +175,7 @@ int	Request::get_method()
 	} else if (_method == "DELETE") {
 		return (DELETE);
 	}
-	return (-1);
+	return (0);
 }
 
 std::string Request::get_dir()
