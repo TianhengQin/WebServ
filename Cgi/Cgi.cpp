@@ -27,14 +27,11 @@ Cgi::Cgi(Connection &conn) {
         conn.setCgiState(CGI_FAILED);
     }
     setEnv(conn);
-    Log::print(DEBUG, "Cgi create succeed", 0);
     _sendBf = conn.getCgiSendBf();
 }
 
 int Cgi::run(Connection &conn) {
-    // Log::print(DEBUG, "Cgi before fork", 0);
     _pid = fork();
-    // std::cerr << _pid << std::endl;
     if (_pid < 0) {
         Log::print(ERROR, "Cgi fork failed on connection ", _connectFd);
         conn.setCgiState(CGI_FAILED);
@@ -57,7 +54,6 @@ int Cgi::run(Connection &conn) {
         }
         close(_pipeOut[1]);
         close(_pipeIn[0]);
-        // Log::print(DEBUG, "Cgi exe", 0);
         exeCgi();
     }
     close(_pipeOut[1]);
@@ -70,16 +66,13 @@ void Cgi::kill() {
     close(_pipeIn[1]);
     close(_pipeOut[0]);
 
-    Log::print(DEBUG, "kill cgi", 0);
     ::kill(_pid, SIGKILL);
     waitpid(_pid, NULL, 0);
 }
 
 int Cgi::end() {
     int exit;
-    Log::print(DEBUG, "wait pid", 0);
     waitpid(_pid, &exit, 0);
-    Log::print(DEBUG, "cgi exit ", exit);
     if (exit) {
         return 1;
     } else {
@@ -105,14 +98,12 @@ int Cgi::send() {
 
     int sent;
     size_t bf_size = _sendBf.size();
-    Log::print(DEBUG, "Cgi send buffer ", bf_size);
     if (bf_size <= RS_BF_SIZE) {
         sent = write(_pipeIn[1], _sendBf.c_str(), bf_size);
         if (sent < 0) {
             Log::print(ERROR, "Write error on pipe ", _pipeIn[1]);
             return -1;
         }
-        Log::print(DEBUG, "Cgi sent ", sent);
         _sendBf.clear();
         return 0;
     }
@@ -133,8 +124,6 @@ int Cgi::receive() {
         Log::print(ERROR, "Read error on pip ", _pipeOut[0]);
         return -1;
     } else if (received == 0) {
-        // _recvBf.append(bf, received);
-        Log::print(DEBUG, "Received cgi finish ", _pipeOut[0]);
         return 0;
     } else {
         _recvBf.append(bf, received);

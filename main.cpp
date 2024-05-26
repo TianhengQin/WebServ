@@ -31,12 +31,5 @@ int main(int argc, char **argv) {
 			Log::print(WARNING, "Watch Dog ", watch_dog);
 		}
 	}
-	// Log::print(INFO, "Server Restarting ...", 0);
-	// Configuration config;
-	// WebServ web_serv(config);
-	// web_serv.run();
-	// Log::print(ERROR, "Server Stopped", 0);
-	(void) argc;
-	(void) argv;
 	return 1;
 }

@@ -32,33 +32,14 @@ void Connection::buildResponse() {
 
     std::size_t pos = _quest.get().find("\r\n\r\n");
     if (pos != std::string::npos) {
-        // std::cerr << "no body" << std::endl;
         f2 << _quest.get().substr(pos + 4);
     }
     f2.close();
-    // std::cout << _quest.get() << std::endl;
     Log::print(INFO, "size :", _quest.get().size());
 
-    // std::string line;
-    // std::string html;
-    // std::ifstream myfile("_test/website/test.html");
-    // std::ifstream myfile("./index.html");
-    // if (myfile.is_open()) {
-    //     while (std::getline(myfile, line)) {
-    //         html = html + line;
-    //     }
-    //     myfile.close();
-    // }
 
-
-    // server map config...
-    // std::cout << _server[_servChoice];
-
-
-    //test timo
-    // _quest.init("");
     _quest.parse();
-    // std::cout << "After parse: " << _quest.get_query() << std::endl;
+
     chooseServer();
     std::vector<Location>   locations = _server[_servChoice].getLocations();
     Location                match;
@@ -77,7 +58,6 @@ void Connection::buildResponse() {
         }
     }
     if (match_found) {
-        // std::cout << "---------" << match.getPath() << std::endl;
         _sponse.init(*this, _quest, _server[_servChoice], match);
 
     } else {
@@ -85,15 +65,10 @@ void Connection::buildResponse() {
     }
 
     
-    // std::cout << _sponse.generate() << std::endl;
-    
 
     if (_cgiState == CGI_ON) {
         return ;
     }
-
-    // create Response
-    // _sendBf = _sponse.generate();
 
     std::ostringstream ss(_sponse.generate());
     
@@ -120,7 +95,6 @@ void Connection::receive(char const *bf, size_t rcvd) {
 int Connection::send() {
     int sent;
     size_t bf_size = _sendBf.size();
-    Log::print(DEBUG, "Response buffer ", bf_size);
     if (bf_size <= RS_BF_SIZE) {
         sent = write(_fd, _sendBf.c_str(), bf_size);
         if (sent < 0) {
@@ -128,7 +102,6 @@ int Connection::send() {
             Log::print(ERROR, "Write error on fd ", _fd);
             throw std::runtime_error("Write Failed");
         }
-        Log::print(DEBUG, "Response sent ", sent);
         _sendBf.clear();
         updateTime();
         return 0;
@@ -180,7 +153,6 @@ std::string &Connection::getCgiSendBf() {
 void Connection::buildCgiResponse(std::string const &bd) {
     _sendBf = bd;
     std::cout << _sendBf << std::endl;
-    Log::print(DEBUG, "cgi received ", _sendBf.size());
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Length: " << _sendBf.size() << "\n" << _sendBf;
     _sendBf = ss.str();
